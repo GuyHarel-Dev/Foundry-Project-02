@@ -4,7 +4,7 @@ using SharedDTO;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/ai/chat")]
     [ApiController]
     public class ChatAiController : ControllerBase
     {

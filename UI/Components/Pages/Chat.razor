@@ -21,26 +21,27 @@
     {
         try
         {
-            var result = await apiClient.PostAsync<ChatRequest, ChatResponse>("api/ai/prompt",
-            new ChatRequest
+            var request = new ChatRequest
             {
                 Prompt = question
-            });
+            };
 
-            var test = 123;
+            var result = await apiClient.PostAsync<ChatRequest, ChatResponse>("api/ai/chat/prompt", request);
 
             if (!result.IsSuccess)
             {
                 error = result.ErrorMessage ?? "Unknown API error.";
                 return;
             }
+
+            response = result.Value?.Response ?? string.Empty;
         }
         catch (Exception ex)
         {
-            
+
             error = ex.Message;
             throw;
         }
-       
+
     }
 }
