@@ -13,7 +13,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerDocumentation();
 
 builder.Services.AddAzFoundryService();
-builder.Services.AddAzFoundryClient();
+builder.Services.AddAzFoundryHttpClient();
+builder.Services.AddTraceService();
 
 var app = builder.Build();
 

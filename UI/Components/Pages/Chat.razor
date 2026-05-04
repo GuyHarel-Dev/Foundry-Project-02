@@ -4,18 +4,27 @@
 @rendermode InteractiveServer
 @inject FoundryApiClient apiClient
 
-<h3>Ask AI</h3>
+<div>
+    <label for="question">Ask a question:</label>
+    <input @bind="question" placeholder="Type your question..." />
+    <label for="response">Response:</label>
+    <textarea readonly value="@response" rows="10" cols="50"></textarea>
+</div>
 
-<input @bind="question" placeholder="Type your question..." />
-<input @bind="response" />
+<div>
+    <button @onclick="SendQuestion">Ask</button>
+</div>
 
-<button @onclick="SendQuestion">Ask</button>
-<textarea readonly value="@error" rows="10" cols="50"></textarea>
+<div>
+    <label for="trace">Ask a question:</label>
+    <textarea readonly value="@trace" rows="10" cols="50"></textarea>
+</div>
+
 
 @code {
     private string question = string.Empty;
     private string response = string.Empty;
-    private string error = string.Empty;
+    private string trace = string.Empty;
 
     private async Task SendQuestion()
     {
@@ -30,7 +39,7 @@
 
             if (!result.IsSuccess)
             {
-                error = result.ErrorMessage ?? "Unknown API error.";
+                trace = result.ErrorMessage ?? "Unknown API error.";
                 return;
             }
 
@@ -39,7 +48,7 @@
         catch (Exception ex)
         {
 
-            error = ex.Message;
+            trace = ex.Message;
             throw;
         }
 

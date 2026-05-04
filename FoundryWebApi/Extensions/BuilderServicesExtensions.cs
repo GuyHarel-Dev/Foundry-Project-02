@@ -12,7 +12,7 @@ public static class BuilderServicesExtensions
         return services;
     }
 
-    public static IServiceCollection AddAzFoundryClient (this IServiceCollection services)
+    public static IServiceCollection AddAzFoundryHttpClient (this IServiceCollection services)
     {
         services.AddSingleton(sp =>
         {
@@ -26,6 +26,16 @@ public static class BuilderServicesExtensions
                 tokenProvider: new DefaultAzureCredential());
         });
 
+
+        return services;
+    }
+
+    public static IServiceCollection AddTraceService(this IServiceCollection services)
+    {
+        services.AddScoped(sp =>
+        {
+            return new ExecutionTraceService();
+        });
 
         return services;
     }
