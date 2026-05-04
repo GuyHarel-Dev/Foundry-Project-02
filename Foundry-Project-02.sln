@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37216.2 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{FE1BB1E9-A945-4280-998B-9A798AF0E937}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{8DFD4ECB-9486-45B9-A668-D26EF6BC359B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoundryWebApi", "FoundryWebApi\FoundryWebApi.csproj", "{128ED7EA-78B5-29E0-C688-4A2F2CDB271C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8DFD4ECB-9486-45B9-A668-D26EF6BC359B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DFD4ECB-9486-45B9-A668-D26EF6BC359B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DFD4ECB-9486-45B9-A668-D26EF6BC359B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DFD4ECB-9486-45B9-A668-D26EF6BC359B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{128ED7EA-78B5-29E0-C688-4A2F2CDB271C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{128ED7EA-78B5-29E0-C688-4A2F2CDB271C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{128ED7EA-78B5-29E0-C688-4A2F2CDB271C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{128ED7EA-78B5-29E0-C688-4A2F2CDB271C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8DFD4ECB-9486-45B9-A668-D26EF6BC359B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{128ED7EA-78B5-29E0-C688-4A2F2CDB271C} = {FE1BB1E9-A945-4280-998B-9A798AF0E937}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5896881E-35E5-40CE-B415-AC261FE90E9A}
+	EndGlobalSection
+EndGlobal
