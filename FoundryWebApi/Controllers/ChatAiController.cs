@@ -1,25 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebApi.Models;
 using WebApi.Services;
-
+using SharedDTO;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AiController : ControllerBase
+    public class ChatAiController : ControllerBase
     {
         private readonly IConfiguration _config; 
         private readonly IAzFoundryChatService _azFoundryChatService;
 
-        public AiController(IConfiguration config, IAzFoundryChatService azFoundryService)
+        public ChatAiController(IConfiguration config, IAzFoundryChatService azFoundryService)
         {
             _config = config;
             _azFoundryChatService = azFoundryService;
         }
 
         [HttpPost("prompt")]
-        public async Task<IActionResult> Prompt([FromBody] PromptRequest request)
+        public async Task<IActionResult> Prompt([FromBody] ChatRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Request))
             {

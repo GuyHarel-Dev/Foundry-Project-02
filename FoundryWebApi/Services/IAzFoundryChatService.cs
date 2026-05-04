@@ -1,9 +1,9 @@
-﻿using WebApi.Models;
+﻿using SharedDTO;
 
 namespace WebApi.Services
 {
     public interface IAzFoundryChatService
     {
-        Task<PromptResponse> GetResponseAsync(PromptRequest request, CancellationToken cancellationToken = default);
+        Task<ChatResponse> GetResponseAsync(ChatRequest request, CancellationToken cancellationToken = default);
     }
 }

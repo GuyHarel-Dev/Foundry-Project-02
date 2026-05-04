@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{8DFD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoundryWebApi", "FoundryWebApi\FoundryWebApi.csproj", "{128ED7EA-78B5-29E0-C688-4A2F2CDB271C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{A61FAABB-78D0-42E3-BE67-2A36A6B19A2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedDTO", "Shared\SharedDTO.csproj", "{A904D7E2-2EE3-4C37-B7DF-4A9E2DF5AE84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +29,10 @@ Global
 		{128ED7EA-78B5-29E0-C688-4A2F2CDB271C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{128ED7EA-78B5-29E0-C688-4A2F2CDB271C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{128ED7EA-78B5-29E0-C688-4A2F2CDB271C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A904D7E2-2EE3-4C37-B7DF-4A9E2DF5AE84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A904D7E2-2EE3-4C37-B7DF-4A9E2DF5AE84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A904D7E2-2EE3-4C37-B7DF-4A9E2DF5AE84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A904D7E2-2EE3-4C37-B7DF-4A9E2DF5AE84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{8DFD4ECB-9486-45B9-A668-D26EF6BC359B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{128ED7EA-78B5-29E0-C688-4A2F2CDB271C} = {FE1BB1E9-A945-4280-998B-9A798AF0E937}
+		{A904D7E2-2EE3-4C37-B7DF-4A9E2DF5AE84} = {A61FAABB-78D0-42E3-BE67-2A36A6B19A2E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5896881E-35E5-40CE-B415-AC261FE90E9A}
