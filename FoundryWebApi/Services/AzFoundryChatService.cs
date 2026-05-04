@@ -40,7 +40,7 @@ namespace WebApi.Services
             };  
 
             options.InputItems.Add(
-                ResponseItem.CreateUserMessageItem(request.Request));
+                ResponseItem.CreateUserMessageItem(request.Prompt));
 
             var client = _projectClient
                 .ProjectOpenAIClient

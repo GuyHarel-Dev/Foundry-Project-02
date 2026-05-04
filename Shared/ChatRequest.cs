@@ -2,6 +2,6 @@
 {
     public class ChatRequest
     {
-        public string Request { get; set; } = string.Empty;
+        public string Prompt { get; set; } = string.Empty;
     }
 }

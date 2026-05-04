@@ -14,7 +14,7 @@ namespace UI
                 .AddInteractiveServerComponents();
 
             // Add application services
-            builder.Services.AddFoundryHttpService(builder.Configuration);
+            builder.Services.AddFoundryHttpClient(builder.Configuration);
 
             var app = builder.Build();
 

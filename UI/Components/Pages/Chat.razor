@@ -1,5 +1,46 @@
-﻿<h3>Chat</h3>
+﻿@page "/chat"
+@using SharedDTO
+@using UI.Services
+@rendermode InteractiveServer
+@inject FoundryApiClient apiClient
+
+<h3>Ask AI</h3>
+
+<input @bind="question" placeholder="Type your question..." />
+<input @bind="response" />
+
+<button @onclick="SendQuestion">Ask</button>
+<textarea readonly value="@error" rows="10" cols="50"></textarea>
 
 @code {
+    private string question = string.Empty;
+    private string response = string.Empty;
+    private string error = string.Empty;
 
+    private async Task SendQuestion()
+    {
+        try
+        {
+            var result = await apiClient.PostAsync<ChatRequest, ChatResponse>("api/ai/prompt",
+            new ChatRequest
+            {
+                Prompt = question
+            });
+
+            var test = 123;
+
+            if (!result.IsSuccess)
+            {
+                error = result.ErrorMessage ?? "Unknown API error.";
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            error = ex.Message;
+            throw;
+        }
+       
+    }
 }

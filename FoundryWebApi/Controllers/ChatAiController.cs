@@ -20,7 +20,7 @@ namespace WebApi.Controllers
         [HttpPost("prompt")]
         public async Task<IActionResult> Prompt([FromBody] ChatRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Request))
+            if (string.IsNullOrWhiteSpace(request.Prompt))
             {
                 return BadRequest("Prompt text cannot be empty.");
             }
