@@ -1,4 +1,5 @@
 using UI.Components;
+using UI.Extensions;
 
 namespace UI
 {
@@ -11,6 +12,9 @@ namespace UI
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
+            // Add application services
+            builder.Services.AddFoundryHttpService(builder.Configuration);
 
             var app = builder.Build();
 
