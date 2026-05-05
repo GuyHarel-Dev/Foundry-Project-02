@@ -7,6 +7,6 @@ namespace Shared
         List<TraceStepDto> Steps { get; set; }
         void AddStep(string title);
         string GetTrace();
-        double GetTotalTime();
+        string GetTotalTime();
     }
 }
