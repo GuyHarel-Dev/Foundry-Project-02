@@ -32,6 +32,7 @@ namespace WebApi.Controllers
                 return BadRequest("Prompt text cannot be empty.");
             }
             var response = await _azFoundryChatService.GetResponseAsync(request);
+
             return Ok(response);
         }
 

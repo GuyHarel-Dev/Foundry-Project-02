@@ -8,8 +8,7 @@ namespace Shared.DTOs
 {
     public sealed class TraceStepDto
     {
-        public string Title { get; set; } = string.Empty;
-        public DateTime? BeginDateTime { get; set; }
-        public DateTime? EndDateTime { get; set; }
+        public string StepTitle { get; set; } = string.Empty;
+        public DateTime? StepDateTime { get; set; }
     }
 }

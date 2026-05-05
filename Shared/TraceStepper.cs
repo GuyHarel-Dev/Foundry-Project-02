@@ -1,27 +1,70 @@
 ﻿using Shared.DTOs;
 using System.Reflection.Metadata.Ecma335;
+using System.Text;
 
 namespace Shared
 {
     public class TraceStepper : ITraceStepper
     {
-        public List<TraceStepDto> Steps { get; set; } =  new ();
+        public List<TraceStepDto> Steps { get; set; } = new();
 
-        public TraceStepDto AddStep(string title)
+        public TraceStepper()
+        {
+                
+        }
+        public TraceStepper(List<TraceStepDto> steps)
+        {
+            Steps.AddRange(steps);
+        }
+
+        public void AddStep(string title)
         {
             var step = new TraceStepDto
             {
-                Title = title,
-                BeginDateTime = DateTime.UtcNow
+                StepTitle = title,
+                StepDateTime = DateTime.UtcNow
             };
             Steps.Add(step);
-            return step;
         }
 
         public string GetTrace()
         {
-            return string.Join(Environment.NewLine, Steps.Select(s =>
-                $"{s.Title}: {(s.BeginDateTime.HasValue ? s.BeginDateTime.Value.ToString("o") : "N/A")} - {(s.EndDateTime.HasValue ? s.EndDateTime.Value.ToString("o") : "N/A")}"));
+            if (Steps.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            var builder = new StringBuilder();
+
+            foreach (var step in Steps.OrderBy(x => x.StepDateTime))
+            {
+                builder.AppendLine(
+                    $"[{step.StepDateTime:yyyy-MM-dd HH:mm:ss.fff} UTC] {step.StepTitle}");
+            }
+
+            builder.AppendLine();
+            builder.AppendLine($"Total time: {GetTotalTime():0.000} seconds");
+
+            return builder.ToString();
+        }
+
+        public string GetTotalTime()
+        {
+            var orderedSteps = Steps
+                .Where(x => x.StepDateTime.HasValue)
+                .OrderBy(x => x.StepDateTime)
+                .ToList();
+
+            if (orderedSteps.Count < 2)
+            {
+                return "";
+            }
+
+            var firstStep = orderedSteps.First().StepDateTime!.Value;
+            var lastStep = orderedSteps.Last().StepDateTime!.Value;
+
+            var total =  (lastStep - firstStep).TotalSeconds;
+            return $"Total time: {total:0.000} seconds";
         }
     }
 }
