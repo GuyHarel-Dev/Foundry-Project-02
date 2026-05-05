@@ -5,7 +5,7 @@ namespace Shared
 {
     public class TraceStepper : ITraceStepper
     {
-        public List<TraceStepDto> Steps { get; set; } =  new List<TraceStepDto>();
+        public List<TraceStepDto> Steps { get; set; } =  new ();
 
         public TraceStepDto AddStep(string title)
         {

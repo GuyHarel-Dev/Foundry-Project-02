@@ -4,7 +4,8 @@ namespace Shared
 {
     public interface ITraceStepper
     {
-        public TraceStepDto AddStep(string title);
-        public string GetTrace();
+        List<TraceStepDto> Steps { get; set; }
+        TraceStepDto AddStep(string title);
+        string GetTrace();
     }
 }
