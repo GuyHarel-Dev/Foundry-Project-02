@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shared;
+using Shared.DTOs;
 using WebApi.Services;
-using SharedDTO;
-using Microsoft.Extensions.Azure;
+
 
 namespace WebApi.Controllers
 {
@@ -11,24 +12,22 @@ namespace WebApi.Controllers
     {
         private readonly IConfiguration _config; 
         private readonly IAzFoundryChatService _azFoundryChatService;
-        private readonly ExecutionTraceService _traces;
+        private readonly ITraceStepper _executionTraceStep;
 
         public ChatAiController(
                 IConfiguration config, 
                 IAzFoundryChatService azFoundryService,
-                ExecutionTraceService traces)
+                ITraceStepper executionTraceStep)
         {
             _config = config;
             _azFoundryChatService = azFoundryService;
-            _traces = traces;
+            _executionTraceStep = executionTraceStep;
         }
 
         [HttpPost("prompt")]
-        public async Task<IActionResult> Prompt([FromBody] ChatRequest request)
+        public async Task<IActionResult> Prompt([FromBody] ChatRequestDto request)
         {
-            _traces.AddTrace("...prompt...");
-
-            if (string.IsNullOrWhiteSpace(request.Prompt))
+             if (string.IsNullOrWhiteSpace(request.Prompt))
             {
                 return BadRequest("Prompt text cannot be empty.");
             }
@@ -44,13 +43,7 @@ namespace WebApi.Controllers
 
         }
 
-        [HttpGet("trace")]
-        public async Task<IActionResult> Trace()
-        {
-            await Task.Delay(100);
-            return Ok(_traces.ToString());
 
-        }
     }
 }
 

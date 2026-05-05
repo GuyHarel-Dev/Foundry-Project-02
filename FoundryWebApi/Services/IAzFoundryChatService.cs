@@ -1,9 +1,9 @@
-﻿using SharedDTO;
+﻿using Shared.DTOs;
 
 namespace WebApi.Services
 {
     public interface IAzFoundryChatService
     {
-        Task<ChatResponse> GetResponseAsync(ChatRequest request, CancellationToken cancellationToken = default);
+        Task<ChatResponseDto> GetResponseAsync(ChatRequestDto request, CancellationToken cancellationToken = default);
     }
 }

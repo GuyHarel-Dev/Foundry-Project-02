@@ -1,0 +1,8 @@
+﻿namespace Shared.DTOs
+{
+    public class ChatResponseDto
+    {
+        public string Response { get; set; } = string.Empty;
+        public List<TraceStepDto> Trace { get; set; } = new();
+    }
+}

@@ -1,6 +1,6 @@
 ﻿using Azure.AI.Projects;
 using OpenAI.Responses;
-using SharedDTO;
+using Shared.DTOs;
 using System.ClientModel;
 
 #pragma warning disable OPENAI001 // pour using OpenAI.Responses;
@@ -28,7 +28,7 @@ namespace WebApi.Services
 
         }
 
-        public async Task<ChatResponse> GetResponseAsync(ChatRequest request, CancellationToken cancellationToken = default)
+        public async Task<ChatResponseDto> GetResponseAsync(ChatRequestDto request, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Sending prompt to Azure AI Foundry");
 
@@ -52,7 +52,7 @@ namespace WebApi.Services
 
             var response = result.Value.GetOutputText();
 
-            return new ChatResponse
+            return new ChatResponseDto
             {
                 Response = response
             };

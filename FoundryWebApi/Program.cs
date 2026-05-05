@@ -14,7 +14,7 @@ builder.Services.AddSwaggerDocumentation();
 
 builder.Services.AddAzFoundryService();
 builder.Services.AddAzFoundryHttpClient();
-builder.Services.AddTraceService();
+builder.Services.AddTraceStepper();
 
 var app = builder.Build();
 

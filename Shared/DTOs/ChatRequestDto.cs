@@ -1,6 +1,6 @@
-﻿namespace SharedDTO
+﻿namespace Shared.DTOs
 {
-    public class ChatRequest
+    public class ChatRequestDto
     {
         public string Prompt { get; set; } = string.Empty;
     }

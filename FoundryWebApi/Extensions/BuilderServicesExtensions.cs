@@ -1,5 +1,6 @@
 ﻿using Azure.AI.Projects;
 using Azure.Identity;
+using Shared;
 using WebApi.Services;
 
 public static class BuilderServicesExtensions
@@ -30,12 +31,9 @@ public static class BuilderServicesExtensions
         return services;
     }
 
-    public static IServiceCollection AddTraceService(this IServiceCollection services)
+    public static IServiceCollection AddTraceStepper(this IServiceCollection services)
     {
-        services.AddScoped(sp =>
-        {
-            return new ExecutionTraceService();
-        });
+        services.AddScoped<ITraceStepper, TraceStepper>();
 
         return services;
     }

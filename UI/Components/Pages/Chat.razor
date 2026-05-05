@@ -1,28 +1,35 @@
 ﻿@page "/chat"
-@using SharedDTO
+@using Shared.DTOs
+@using Shared
 @using UI.Services
 @rendermode InteractiveServer
 @inject FoundryApiClient apiClient
+@inject ITraceStepper traceStepper
 
 <div>
-    <label for="question">Ask a question:</label>
-    <input @bind="question" placeholder="Type your question..." />
+
+
+    <form @onsubmit="SendQuestion">
+        <label for="question">Ask a question:</label>
+        <input @bind="question" placeholder="Type your question..." />
+
+        <button type="submit">
+            Ask
+        </button>
+    </form>
+
     <label for="response">Response:</label>
     <textarea readonly value="@response" rows="10" cols="50"></textarea>
 </div>
 
 <div>
-    <button @onclick="SendQuestion">Ask</button>
-</div>
-
-<div>
-    <label for="trace">Ask a question:</label>
+    <label for="trace">Execution log:</label>
     <textarea readonly value="@trace" rows="10" cols="50"></textarea>
 </div>
 
 
 @code {
-    private string question = string.Empty;
+    private string question = "This is just a test. No answer is expected.";
     private string response = string.Empty;
     private string trace = string.Empty;
 
@@ -30,12 +37,19 @@
     {
         try
         {
-            var request = new ChatRequest
+            var request = new ChatRequestDto
             {
                 Prompt = question
             };
 
-            var result = await apiClient.PostAsync<ChatRequest, ChatResponse>("api/ai/chat/prompt", request);
+            traceStepper.AddStep($"Sending question to API, Question: {question}");
+
+            trace = traceStepper.GetTrace();
+
+            await InvokeAsync(StateHasChanged);
+            await Task.Yield();
+
+            var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/ai/chat/prompt", request);
 
             if (!result.IsSuccess)
             {
@@ -44,6 +58,7 @@
             }
 
             response = result.Value?.Response ?? string.Empty;
+
         }
         catch (Exception ex)
         {

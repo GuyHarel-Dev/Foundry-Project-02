@@ -1,10 +1,10 @@
-﻿using UI.Services;
+﻿using Shared;
+using UI.Services;
 
 namespace UI.Extensions
 {
     static public class BuilderServicesExtensions
     {
-
         public static IServiceCollection AddFoundryHttpClient(this IServiceCollection services, IConfiguration config)
         {
             // Extract the base URL from configuration or use a default value
@@ -17,6 +17,13 @@ namespace UI.Extensions
 
             services.AddScoped(sp =>
               new FoundryApiClient(httpClient));
+
+            return services;
+        }
+
+        public static IServiceCollection AddTraceStepper(this IServiceCollection services)
+        {
+            services.AddScoped<ITraceStepper, TraceStepper>();
 
             return services;
         }
