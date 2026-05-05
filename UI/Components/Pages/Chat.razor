@@ -37,7 +37,7 @@
     {
         try
         {
-            traceStepper.AddStep($"Sending question to API, Question: {question}");
+            traceStepper.AddStep($"{nameof(SendQuestion)}: {question}");
             executionLog = traceStepper.GetTrace();
 
             await InvokeAsync(StateHasChanged);
@@ -62,6 +62,7 @@
             traceStepper.Steps = result.Value?.TraceSteps ?? new List<TraceStepDto>();
 
             executionLog = traceStepper.GetTrace();
+            executionLog += traceStepper.GetTotalTime();
 
 
         }

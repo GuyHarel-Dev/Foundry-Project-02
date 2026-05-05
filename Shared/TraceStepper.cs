@@ -42,9 +42,6 @@ namespace Shared
                     $"[{step.StepDateTime:yyyy-MM-dd HH:mm:ss.fff} UTC] {step.StepTitle}");
             }
 
-            builder.AppendLine();
-            builder.AppendLine($"Total time: {GetTotalTime():0.000} seconds");
-
             return builder.ToString();
         }
 
