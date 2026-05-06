@@ -9,19 +9,49 @@
 <div>
 
 
+    <!-- ask button -->
     <form @onsubmit="SendQuestion">
         <label for="question">Ask a question:</label>
         <input @bind="question" placeholder="Type your question..." />
 
-        <button type="submit">
-            Ask
+        <button type="submit" class="ask-button" disabled="@isBusy">
+            @if (isBusy)
+            {
+                <span class="spinner" aria-hidden="true"></span>
+                <span>Waiting for AI...</span>
+            }
+            else
+            {
+                <span>Ask</span>
+            }
         </button>
+
+        <!-- call wait panel -->
+        @if (isBusy)
+        {
+            <div class="loading-panel-container">
+                <div class="loading-panel" role="status" aria-live="polite">
+                    <div class="hourglass"></div>
+                    <span>Calling Azure AI Foundry...</span>
+                </div>
+            </div>
+        }
     </form>
 
-    <label for="response">Response:</label>
-    <textarea readonly value="@response" rows="10" cols="50"></textarea>
+
 </div>
 
+<!-- response panel -->
+<label for="response">Response:</label>
+<textarea readonly value="@response" rows="10" cols="50"></textarea>
+
+<!-- model statistic panel -->
+<div>
+    <label for="executionLog">Model statistics log:</label>
+    <textarea readonly value="statisticsLog" rows="10" cols="50"></textarea>
+</div>
+
+<!-- execution log panel -->
 <div>
     <label for="executionLog">Execution log:</label>
     <textarea readonly value="@executionLog" rows="10" cols="50"></textarea>
@@ -29,6 +59,7 @@
 
 
 @code {
+    private bool isBusy;
     private string question = "This is just a test. No answer is expected.";
     private string response = string.Empty;
     private string executionLog = string.Empty;
@@ -37,6 +68,8 @@
     {
         try
         {
+            isBusy = true;
+
             traceStepper.AddStep($"{nameof(SendQuestion)}: {question}");
             executionLog = traceStepper.GetTrace();
 
@@ -71,6 +104,10 @@
 
             executionLog = ex.Message;
             throw;
+        }
+        finally
+        {
+            isBusy = false;
         }
 
     }
