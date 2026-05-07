@@ -5,7 +5,7 @@ namespace Shared
     public interface ITraceStepper
     {
         List<TraceStepDto> Steps { get; set; }
-        void AddStep(string title);
+        void AddStep(TraceStepperSourceEnum source, string title);
         void AddRange(List<TraceStepDto> steps);
 
         string GetTrace();

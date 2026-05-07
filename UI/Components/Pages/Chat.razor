@@ -70,7 +70,7 @@
         {
             isBusy = true;
 
-            traceStepper.AddStep($"{nameof(SendQuestion)}: {question}");
+            traceStepper.AddStep(TraceStepperSourceEnum.BlazorUi, $"{nameof(SendQuestion)}: {question}");
             executionLog = traceStepper.GetTrace();
 
             await InvokeAsync(StateHasChanged);

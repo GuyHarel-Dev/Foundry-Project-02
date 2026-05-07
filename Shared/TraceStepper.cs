@@ -17,10 +17,11 @@ namespace Shared
             Steps.AddRange(steps);
         }
 
-        public void AddStep(string title)
+        public void AddStep(TraceStepperSourceEnum source, string title)
         {
             var step = new TraceStepDto
             {
+                Source = TraceStepperSourceEnumName.ToDisplayName(source),
                 StepTitle = title,
                 StepDateTime = DateTime.UtcNow
             };
@@ -43,7 +44,7 @@ namespace Shared
             foreach (var step in Steps.OrderBy(x => x.StepDateTime))
             {
                 builder.AppendLine(
-                    $"[{step.StepDateTime:yyyy-MM-dd HH:mm:ss.fff} UTC] {step.StepTitle}");
+                    $"[{step.StepDateTime:yyyy-MM-dd HH:mm:ss.fff} UTC] [{step.Source}] {step.StepTitle}");
             }
 
             return builder.ToString();

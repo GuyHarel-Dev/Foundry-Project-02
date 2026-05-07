@@ -13,7 +13,7 @@ namespace WebApi.Services
     {
         private readonly IConfiguration _config;
         private readonly AIProjectClient _projectClient;
-        private readonly string? _modelName;
+        private readonly string _modelName;
         private readonly ILogger<AzFoundryChatService> _logger;
         private readonly ITraceStepper _traceStepper;
 
@@ -37,40 +37,42 @@ namespace WebApi.Services
         {
             _logger.LogInformation("Sending prompt to Azure AI Foundry");
 
-            CreateResponseOptions options = CreateClientOptions(request);
-            ProjectResponsesClient client = CreateClient();
+            CreateResponseOptions options = CreateResponseOptions(request);
+            ProjectResponsesClient client = CreateResponseClient();
 
             _traceStepper.AddRange(request.TraceSteps);
-            _traceStepper.AddStep("Sending prompt to Azure AI Foundry2");
+            _traceStepper.AddStep(TraceStepperSourceEnum.WebApi, $"Sending prompt to Azure AI Foundry. Model: {_modelName}");
 
             ClientResult<ResponseResult> result = await client.CreateResponseAsync(
                 options, cancellationToken);
 
-            _traceStepper.AddStep("Received response from Azure AI Foundry");
+            _traceStepper.AddStep(TraceStepperSourceEnum.WebApi, "Received response from Azure AI Foundry");
 
-            ChatResponseDto responseDto = new();
-             
-            responseDto.Response = result.Value.GetOutputText();
-            responseDto.TraceSteps = _traceStepper.Steps;
-            responseDto.ModelStatistics = new ModelStatisticsDto
+            var responseDto = new ChatResponseDto
             {
-                ResponseId = result.Value.Id,
-                Model = result.Value.Model,
-                InputTokens = result.Value.Usage?.InputTokenCount,
-                OutputTokens = result.Value.Usage?.OutputTokenCount,
-                TotalTokens = result.Value.Usage?.TotalTokenCount
+                Response = result.Value.GetOutputText(),
+                TraceSteps = _traceStepper.Steps,
+                ModelStatistics = new ModelStatisticsDto
+                {
+                    ResponseId = result.Value.Id,
+                    Model = result.Value.Model,
+                    InputTokens = result.Value.Usage?.InputTokenCount,
+                    OutputTokens = result.Value.Usage?.OutputTokenCount,
+                    TotalTokens = result.Value.Usage?.TotalTokenCount
+                }
             };
+             
             return responseDto;
         }
 
-        private ProjectResponsesClient CreateClient()
+        private ProjectResponsesClient CreateResponseClient()
         {
             return _projectClient
                 .ProjectOpenAIClient
                 .GetProjectResponsesClientForModel(_modelName);
         }
 
-        private CreateResponseOptions CreateClientOptions(ChatRequestDto request)
+        private CreateResponseOptions CreateResponseOptions(ChatRequestDto request)
         {
             var systemPrompt = _config["FoundryWebApi:SystemPrompt"] ?? string.Empty;
 
