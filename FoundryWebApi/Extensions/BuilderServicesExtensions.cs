@@ -19,7 +19,7 @@ public static class BuilderServicesExtensions
         {
             var config = sp.GetRequiredService<IConfiguration>();
 
-            var endpoint = config["Foundry-Project-01:Endpoint"]
+            var endpoint = config["FoundryWebApi:Endpoint"]
                 ?? throw new InvalidOperationException("Endpoint not configured");
 
             return new AIProjectClient(
