@@ -26,6 +26,10 @@ namespace Shared
             };
             Steps.Add(step);
         }
+        public void AddRange(List<TraceStepDto> steps)
+        {
+            Steps.AddRange(steps);
+        }
 
         public string GetTrace()
         {

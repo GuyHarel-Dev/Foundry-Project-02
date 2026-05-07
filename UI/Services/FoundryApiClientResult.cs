@@ -3,9 +3,9 @@
     public sealed class FoundryApiClientResult<T>
     {
         public bool IsSuccess { get; init; }
-        public T? Value { get; init; }
+        public T? Value { get; init; } = default(T?);
         public string? ErrorMessage { get; init; }
-        public int? StatusCode { get; init; }
+        public int? StatusCode { get; init; } 
 
         public static FoundryApiClientResult<T> Success(T? value) =>
             new()

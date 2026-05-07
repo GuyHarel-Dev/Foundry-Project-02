@@ -12,16 +12,16 @@ namespace WebApi.Controllers
     {
         private readonly IConfiguration _config; 
         private readonly IAzFoundryChatService _azFoundryChatService;
-        private readonly ITraceStepper _executionTraceStep;
+        private readonly ITraceStepper _traceStepper;
 
         public ChatAiController(
                 IConfiguration config, 
                 IAzFoundryChatService azFoundryService,
-                ITraceStepper executionTraceStep)
+                ITraceStepper traceStepper)
         {
             _config = config;
             _azFoundryChatService = azFoundryService;
-            _executionTraceStep = executionTraceStep;
+            _traceStepper = traceStepper;
         }
 
         [HttpPost("prompt")]

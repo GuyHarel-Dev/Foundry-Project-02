@@ -15,15 +15,18 @@ namespace WebApi.Services
         private readonly AIProjectClient _projectClient;
         private readonly string? _modelName;
         private readonly ILogger<AzFoundryChatService> _logger;
+        private readonly ITraceStepper _traceStepper;
 
         public AzFoundryChatService(
             IConfiguration config,
             AIProjectClient projectClient,
-            ILogger<AzFoundryChatService> logger)
+            ILogger<AzFoundryChatService> logger,
+            ITraceStepper traceStepper)
         {
             _config = config;
             _projectClient = projectClient;
             _logger = logger;
+            _traceStepper = traceStepper;
 
             _modelName = _config["Foundry-Project-01:ModelName"]
                 ?? throw new InvalidOperationException("ModelName not configured");
@@ -32,26 +35,24 @@ namespace WebApi.Services
 
         public async Task<ChatResponseDto> GetResponseAsync(ChatRequestDto request, CancellationToken cancellationToken = default)
         {
-            string logEntry = CreateLogEntry("Sending prompt to Azure AI Foundry");
-
-            _logger.LogInformation(logEntry);
+            _logger.LogInformation("Sending prompt to Azure AI Foundry");
 
             CreateResponseOptions options = CreateClientOptions(request);
             ProjectResponsesClient client = CreateClient();
 
-            var stepper = new TraceStepper(request.TraceSteps);
-            stepper.AddStep(logEntry);
-
-            ChatResponseDto responseDto = new();
+            _traceStepper.AddRange(request.TraceSteps);
+            _traceStepper.AddStep("Sending prompt to Azure AI Foundry2");
 
             ClientResult<ResponseResult> result = await client.CreateResponseAsync(
                 options, cancellationToken);
 
-            stepper.AddStep(CreateLogEntry("Received response from Azure AI Foundry"));
+            _traceStepper.AddStep("Received response from Azure AI Foundry");
 
+            ChatResponseDto responseDto = new();
+             
             responseDto.Response = result.Value.GetOutputText();
-            responseDto.TraceSteps = stepper.Steps;
-            responseDto.Stats = new AiResponseStatsDto
+            responseDto.TraceSteps = _traceStepper.Steps;
+            responseDto.ModelStatistics = new ModelStatisticsDto
             {
                 ResponseId = result.Value.Id,
                 Model = result.Value.Model,
@@ -60,13 +61,6 @@ namespace WebApi.Services
                 TotalTokens = result.Value.Usage?.TotalTokenCount
             };
             return responseDto;
-
-
-        }
-
-        private string CreateLogEntry(string title)
-        {
-            return $"{nameof(AzFoundryChatService)}:{nameof(GetResponseAsync)} - {title}";
         }
 
         private ProjectResponsesClient CreateClient()

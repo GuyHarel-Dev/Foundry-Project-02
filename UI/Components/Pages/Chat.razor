@@ -15,15 +15,14 @@
         <input @bind="question" placeholder="Type your question..." />
 
         <button type="submit" class="ask-button" disabled="@isBusy">
-            @if (isBusy)
+@*             @if (isBusy)
             {
-                <span class="spinner" aria-hidden="true"></span>
-                <span>Waiting for AI...</span>
-            }
-            else
-            {
-                <span>Ask</span>
-            }
+                 <span class="spinner" aria-hidden="true"></span>
+                <span>Waiting for AI...</span> 
+            } *@
+
+           <span>Ask</span>
+
         </button>
 
         <!-- call wait panel -->
@@ -47,8 +46,8 @@
 
 <!-- model statistic panel -->
 <div>
-    <label for="executionLog">Model statistics log:</label>
-    <textarea readonly value="statisticsLog" rows="10" cols="50"></textarea>
+    <label for="statisticsPanel">Model statistics:</label>
+    <textarea readonly value="@statisticsPanel" rows="10" cols="50"></textarea>
 </div>
 
 <!-- execution log panel -->
@@ -63,6 +62,7 @@
     private string question = "This is just a test. No answer is expected.";
     private string response = string.Empty;
     private string executionLog = string.Empty;
+    private string statisticsPanel = string.Empty;
 
     private async Task SendQuestion()
     {
@@ -97,6 +97,9 @@
             executionLog = traceStepper.GetTrace();
             executionLog += traceStepper.GetTotalTime();
 
+            statisticsPanel = result.Value.ModelStatistics.ToString();
+
+            var test  = 123;
 
         }
         catch (Exception ex)
@@ -110,5 +113,10 @@
             isBusy = false;
         }
 
+    }
+
+    private void DisplayResponse()
+    {
+        // This method can be used to process and display the response if needed.
     }
 }
