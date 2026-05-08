@@ -28,7 +28,7 @@ namespace WebApi.Services
             _logger = logger;
             _traceStepper = traceStepper;
 
-            _modelName = _config["FoundryWebApi:Model:OpenAiChat"]
+            _modelName = _config["FoundryPrj01:Model:OpenAiChat"]
                 ?? throw new InvalidOperationException("ModelName not configured");
 
         }
@@ -74,7 +74,7 @@ namespace WebApi.Services
 
         private CreateResponseOptions CreateResponseOptions(ChatRequestDto request)
         {
-            var systemPrompt = _config["FoundryWebApi:SystemPrompt"] ?? string.Empty;
+            var systemPrompt = _config["FoundryPrj01:SystemPrompt"] ?? string.Empty;
 
             var options = new CreateResponseOptions
             {

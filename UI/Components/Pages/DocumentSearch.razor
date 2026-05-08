@@ -1,0 +1,61 @@
+﻿@page "/document-search"
+@rendermode InteractiveServer
+
+<h3>AI Document Search</h3>
+@* 
+<InputFile OnChange="OnFileSelected" accept=".pdf" disable="true"/>
+ *@
+
+<button class="btn btn-secondary" @onclick="LoadTestPdf">
+    Charger PDF de test
+</button>
+
+@if (pdfFileLoaded)
+{
+    <div class="mt-3">
+        <iframe src="@pdfUrl"
+                width="300"
+                height="400"
+                style="border:1px solid #ccc;">
+        </iframe>
+    </div>
+}
+
+@code {
+
+    [Inject]
+    private IWebHostEnvironment Env { get; set; } = default!;
+
+    private IBrowserFile? selectedFile;
+    private string selectedFileName = string.Empty;
+    private string physicalPdfUrl = string.Empty;
+    private string pdfUrl = string.Empty;
+    private bool pdfFileLoaded = false;
+
+    // private void OnFileSelected(InputFileChangeEventArgs e)
+    // {
+    //     selectedFile = e.File;
+    //     selectedFileName = selectedFile.Name;
+    // }
+
+    private async Task LoadTestPdf()
+    {
+        // fichier placé dans wwwroot/test/test.pdf
+
+        physicalPdfUrl = Path.Combine(Env.WebRootPath, "test", "pied-réseau-2026-04-29-Facture.pdf");
+
+        pdfUrl = "/test/pied-réseau-2026-04-29-Facture.pdf";
+
+        await using var stream = File.OpenRead(physicalPdfUrl);
+
+        await ProcessPdf(stream, "test.pdf");
+
+        var test = 123;
+    }
+
+    private async Task ProcessPdf(Stream stream, string fileName)
+    {
+        pdfFileLoaded = true;
+        await Task.CompletedTask;
+    }
+}

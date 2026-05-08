@@ -1,13 +1,13 @@
 ﻿@page "/chat"
+@rendermode InteractiveServer
+
 @using Shared.DTOs
 @using Shared
 @using UI.Services
-@rendermode InteractiveServer
 @inject FoundryApiClient apiClient
 @inject ITraceStepper traceStepper
 
 <div>
-
 
     <!-- ask button -->
     <form @onsubmit="SendQuestion">
@@ -15,14 +15,7 @@
         <input @bind="question" placeholder="Type your question..." />
 
         <button type="submit" class="ask-button" disabled="@isBusy">
-@*             @if (isBusy)
-            {
-                 <span class="spinner" aria-hidden="true"></span>
-                <span>Waiting for AI...</span> 
-            } *@
-
            <span>Ask</span>
-
         </button>
 
         <!-- call wait panel -->
