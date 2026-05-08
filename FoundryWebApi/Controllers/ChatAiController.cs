@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shared;
 using Shared.DTOs;
-using WebApi.Services;
+using WebApi.Services.Interfaces;
 
 
 namespace WebApi.Controllers

@@ -4,6 +4,7 @@ using OpenAI.Responses;
 using Shared;
 using Shared.DTOs;
 using System.ClientModel;
+using WebApi.Services.Interfaces;
 
 #pragma warning disable OPENAI001 // pour using OpenAI.Responses;
 

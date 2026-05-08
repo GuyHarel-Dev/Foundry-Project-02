@@ -1,7 +1,10 @@
-﻿using Azure.AI.Projects;
+﻿using Azure;
+using Azure.AI.DocumentIntelligence;
+using Azure.AI.Projects;
 using Azure.Identity;
 using Shared;
 using WebApi.Services;
+using WebApi.Services.Interfaces;
 
 public static class BuilderServicesExtensions
 {
@@ -13,20 +16,50 @@ public static class BuilderServicesExtensions
         return services;
     }
 
-    public static IServiceCollection AddAzFoundryHttpClient (this IServiceCollection services)
+    public static IServiceCollection AddAzFoundryHttpClient(this IServiceCollection services)
     {
         services.AddSingleton(sp =>
         {
             var config = sp.GetRequiredService<IConfiguration>();
 
             var endpoint = config["FoundryPrj01:Endpoint"]
-                ?? throw new InvalidOperationException("Endpoint not configured");
+                ?? throw new InvalidOperationException("FoundryPrj01 Endpoint not configured");
 
             return new AIProjectClient(
                 endpoint: new Uri(endpoint),
                 tokenProvider: new DefaultAzureCredential());
         });
 
+
+        return services;
+    }
+
+    public static IServiceCollection AddAzDocIntelligenceClient(this IServiceCollection services)
+    {
+        services.AddSingleton(sp =>
+        {
+            var config = sp.GetRequiredService<IConfiguration>();
+
+            var endpoint = config["AzureDocIntelligence:Endpoint"]
+                ?? throw new InvalidOperationException("AzureDocIntelligence Endpoint not configured");
+
+            var key = config["AzureDocIntelligence:Key1"]
+                ?? throw new InvalidOperationException("AzureDocIntelligence Key1 not configured");
+
+            AzureKeyCredential credential = new AzureKeyCredential(key);
+
+            return new DocumentIntelligenceClient(
+                endpoint: new Uri(endpoint),
+                credential: credential);
+        });
+
+
+        return services;
+    }
+
+    public static IServiceCollection AzAiDocIntelligenceService(this IServiceCollection services)
+    {
+        services.AddScoped<IAzAiDocIntelligenceService, AzAiDocIntelligenceService>();
 
         return services;
     }

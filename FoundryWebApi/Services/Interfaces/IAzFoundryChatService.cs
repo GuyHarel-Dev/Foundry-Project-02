@@ -1,6 +1,6 @@
 ﻿using Shared.DTOs;
 
-namespace WebApi.Services
+namespace WebApi.Services.Interfaces
 {
     public interface IAzFoundryChatService
     {
