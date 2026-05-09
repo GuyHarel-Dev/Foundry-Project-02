@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApi.Services;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers 
 {
     [Route("api/ai/doc")]
     [ApiController]

@@ -42,20 +42,21 @@
     {
         // fichier placé dans wwwroot/test/test.pdf
 
-        physicalPdfUrl = Path.Combine(Env.WebRootPath, "test", "pied-réseau-2026-04-29-Facture.pdf");
+        // physicalPdfUrl = Path.Combine(Env.WebRootPath, "Pdf", "fake-occular-center.pdf");
 
-        pdfUrl = "/test/pied-réseau-2026-04-29-Facture.pdf";
-
-        await using var stream = File.OpenRead(physicalPdfUrl);
-
-        await ProcessPdf(stream, "test.pdf");
-
-        var test = 123;
-    }
-
-    private async Task ProcessPdf(Stream stream, string fileName)
-    {
+        pdfUrl = "/Pdf/fake-occular-center.pdf";
         pdfFileLoaded = true;
-        await Task.CompletedTask;
+
+        // await using var stream = File.OpenRead(physicalPdfUrl);
+
+        // await ProcessPdf(stream, "fake-occular-center.pdf");
+
+        // var test = 123;
     }
+
+    // private async Task ProcessPdf(Stream stream, string fileName)
+    // {
+    //     pdfFileLoaded = true;
+    //     await Task.CompletedTask;
+    // }
 }
