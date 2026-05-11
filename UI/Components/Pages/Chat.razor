@@ -33,29 +33,14 @@
 
 </div>
 
-<!-- response panel -->
-<label for="response">Response:</label>
-<textarea readonly value="@response" rows="10" cols="50"></textarea>
-
-<!-- model statistic panel -->
-<div>
-    <label for="statisticsPanel">Model statistics:</label>
-    <textarea readonly value="@statisticsPanel" rows="10" cols="50"></textarea>
-</div>
-
-<!-- execution log panel -->
-<div>
-    <label for="executionLog">Execution log:</label>
-    <textarea readonly value="@executionLog" rows="10" cols="50"></textarea>
-</div>
-
+<ApiResult Response="@response" ExecutionLog="@executionLog" Statistics="@statistics"></ApiResult>
 
 @code {
     private bool isBusy;
     private string question = "This is just a test. No answer is expected.";
     private string response = string.Empty;
     private string executionLog = string.Empty;
-    private string statisticsPanel = string.Empty;
+    private string statistics = string.Empty;
 
     private async Task SendQuestion()
     {
@@ -90,7 +75,7 @@
             executionLog = traceStepper.GetTrace();
             executionLog += traceStepper.GetTotalTime();
 
-            statisticsPanel = result.Value.ModelStatistics.ToString();
+            statistics = result.Value.ModelStatistics.ToString();
 
             var test  = 123;
 

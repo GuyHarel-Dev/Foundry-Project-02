@@ -17,6 +17,8 @@
             fake-kayak-certificate
         </button>
 
+
+
 </div>
 
 <div class="column_display">
@@ -42,9 +44,11 @@
                 </div>
             }
         </form>
+        <ApiResult Response="@response" ExecutionLog="@executionLog" Statistics="@statistics"></ApiResult>
     </div>
 
 </div>
+
 
 
 @code {
@@ -53,6 +57,10 @@
     private IWebHostEnvironment Env { get; set; } = default!;
     private bool isBusy;
     private string pdfUrl = "/Pdf/empty-pdf.pdf";
+
+    private string response = string.Empty;
+    private string executionLog = string.Empty;
+    private string statistics = string.Empty;
 
     // private IBrowserFile? selectedFile;
     // private string selectedFileName = string.Empty;

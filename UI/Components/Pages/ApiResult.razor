@@ -1,0 +1,29 @@
+﻿
+<!-- response panel -->
+<div>
+    <label for="response">Response:</label>
+    <textarea readonly value="@Response" rows="10" cols="50"></textarea>
+</div>
+
+<!-- model statistic panel -->
+<div>
+    <label for="statisticsPanel">Model statistics:</label>
+    <textarea readonly value="@Statistics" rows="10" cols="50"></textarea>
+</div>
+
+<!-- execution log panel -->
+<div>
+    <label for="executionLog">Execution log:</label>
+    <textarea readonly value="@ExecutionLog" rows="10" cols="50"></textarea>
+</div>
+
+@code {
+    [Parameter]
+    public string Response { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Statistics { get; set; } = string.Empty;
+
+    [Parameter]
+    public string ExecutionLog { get; set; } = string.Empty;
+}
