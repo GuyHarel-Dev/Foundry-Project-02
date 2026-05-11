@@ -2,40 +2,62 @@
 @rendermode InteractiveServer
 
 <h3>AI Document Search</h3>
-@* 
-<InputFile OnChange="OnFileSelected" accept=".pdf" disable="true"/>
- *@
+ 
+<div class="">
 
-<button class="btn btn-secondary" @onclick="LoadTestPdf">
-    Charger PDF de test
-</button>
+        <button @onclick='() => SetPdf("/Pdf/fake-occular-center.pdf")'>
+            fake-occular-center
+        </button>
+
+        <button @onclick='() => SetPdf("/Pdf/fake-lamp-receit.pdf")'>
+            fake-lamp-receit
+        </button>
+
+        <button @onclick='() => SetPdf("/Pdf/fake-kayak-certificate.pdf")'>
+            fake-kayak-certificate
+        </button>
+
+</div>
 
 <div class="column_display">
     <div class="column_1">
-        <iframe src="@pdfUrl" />
+        <iframe src="@pdfUrl"></iframe>
     </div>
     <div class="column_2">
-        <textarea class="form-control" placeholder="Contenu extrait du PDF..."></textarea>
+        <form @onsubmit="AnalyzeDocument">
+
+            <button type="submit" class="ask-button" disabled="@isBusy">
+                <span>Ask</span>
+            </button>
+
+            <!-- call wait panel -->
+            @if (isBusy)
+            {
+                <div class="loading-panel-container">
+                    <div class="loading-panel" role="status" aria-live="polite">
+                        <div class="hourglass"></div>
+                        <span>Calling Azure AI Foundry...</span>
+                    </div>
+                </div>
+            }
+        </form>
     </div>
+
 </div>
 
-@* <div class="column_display">
-    <iframe src="@pdfUrl"/>
-    <textarea class="form-control" rows="10" placeholder="Contenu extrait du PDF..."></textarea>
-</div> *@
 
 @code {
 
     [Inject]
     private IWebHostEnvironment Env { get; set; } = default!;
-
+    private bool isBusy;
     private string pdfUrl = "/Pdf/empty-pdf.pdf";
 
-    private IBrowserFile? selectedFile;
-    private string selectedFileName = string.Empty;
-    private string physicalPdfUrl = string.Empty;
+    // private IBrowserFile? selectedFile;
+    // private string selectedFileName = string.Empty;
+    // private string physicalPdfUrl = string.Empty;
 
-    private bool pdfFileLoaded = false;
+    // private bool pdfFileLoaded = false;
 
     // private void OnFileSelected(InputFileChangeEventArgs e)
     // {
@@ -43,20 +65,55 @@
     //     selectedFileName = selectedFile.Name;
     // }
 
-    private async Task LoadTestPdf()
+    private async Task AnalyzeDocument()
     {
-        // fichier placé dans wwwroot/test/test.pdf
+        // try
+        // {
+        //     isBusy = true;
 
-        // physicalPdfUrl = Path.Combine(Env.WebRootPath, "Pdf", "fake-occular-center.pdf");
+        //     traceStepper.AddStep(TraceStepperSourceEnum.BlazorUi, $"{nameof(SendQuestion)}: {question}");
+        //     executionLog = traceStepper.GetTrace();
 
-        pdfUrl = "/Pdf/fake-occular-center.pdf";
-        pdfFileLoaded = true;
+        //     await InvokeAsync(StateHasChanged);
+        //     await Task.Yield();
 
-        // await using var stream = File.OpenRead(physicalPdfUrl);
+        //     var request = new ChatRequestDto
+        //     {
+        //         Prompt = question,
+        //         TraceSteps = traceStepper.Steps
+        //     };
 
-        // await ProcessPdf(stream, "fake-occular-center.pdf");
+        //     var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/ai/chat/prompt", request);
 
-        // var test = 123;
+        //     if (!result.IsSuccess)
+        //     {
+        //         executionLog = result.ErrorMessage ?? "Unknown API error.";
+        //         return;
+        //     }
+
+        //     response = result.Value?.Response ?? string.Empty;
+
+        //     traceStepper.Steps = result.Value?.TraceSteps ?? new List<TraceStepDto>();
+
+        //     executionLog = traceStepper.GetTrace();
+        //     executionLog += traceStepper.GetTotalTime();
+
+        //     statisticsPanel = result.Value.ModelStatistics.ToString();
+
+        //     var test = 123;
+
+        // }
+        // catch (Exception ex)
+        // {
+
+        //     executionLog = ex.Message;
+        //     throw;
+        // }
+        // finally
+        // {
+        //     isBusy = false;
+        // }
+
     }
 
     // private async Task ProcessPdf(Stream stream, string fileName)
@@ -64,4 +121,8 @@
     //     pdfFileLoaded = true;
     //     await Task.CompletedTask;
     // }
+    private void SetPdf(string url)
+    {
+        pdfUrl = url;
+    }
 }
