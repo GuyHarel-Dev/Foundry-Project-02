@@ -21,13 +21,14 @@
 
 <div class="column_display">
     <div class="column_1">
-        <iframe src="@pdfUrl"></iframe>
+        <iframe src="@($"{pdfUrl}#toolbar=0&navpanes=0&scrollbar=0")" >
+        </iframe>
     </div>
     <div class="column_2">
         <form @onsubmit="AnalyzeDocument">
 
             <button type="submit" class="ask-button" disabled="@isBusy">
-                <span>Ask</span>
+                <span>Analyze document</span>
             </button>
 
             <!-- call wait panel -->
