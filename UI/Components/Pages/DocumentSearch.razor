@@ -10,26 +10,31 @@
     Charger PDF de test
 </button>
 
-@if (pdfFileLoaded)
-{
-    <div class="mt-3">
-        <iframe src="@pdfUrl"
-                width="300"
-                height="400"
-                style="border:1px solid #ccc;">
-        </iframe>
+<div class="column_display">
+    <div class="column_1">
+        <iframe src="@pdfUrl" />
     </div>
-}
+    <div class="column_2">
+        <textarea class="form-control" placeholder="Contenu extrait du PDF..."></textarea>
+    </div>
+</div>
+
+@* <div class="column_display">
+    <iframe src="@pdfUrl"/>
+    <textarea class="form-control" rows="10" placeholder="Contenu extrait du PDF..."></textarea>
+</div> *@
 
 @code {
 
     [Inject]
     private IWebHostEnvironment Env { get; set; } = default!;
 
+    private string pdfUrl = "/Pdf/empty-pdf.pdf";
+
     private IBrowserFile? selectedFile;
     private string selectedFileName = string.Empty;
     private string physicalPdfUrl = string.Empty;
-    private string pdfUrl = string.Empty;
+
     private bool pdfFileLoaded = false;
 
     // private void OnFileSelected(InputFileChangeEventArgs e)
