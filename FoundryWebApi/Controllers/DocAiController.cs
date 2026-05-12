@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApi.Services;
+using WebApi.Services.Interfaces;
 
 namespace WebApi.Controllers 
 {
@@ -7,9 +8,9 @@ namespace WebApi.Controllers
     [ApiController]
     public class DocAiController : ControllerBase
     {
-        private readonly AzAiDocIntelligenceService _documentIntelligence;
+        private readonly IAzAiDocIntelligenceService _documentIntelligence;
 
-        public DocAiController(AzAiDocIntelligenceService documentIntelligence)
+        public DocAiController(IAzAiDocIntelligenceService documentIntelligence)
         {
             _documentIntelligence = documentIntelligence;
         }

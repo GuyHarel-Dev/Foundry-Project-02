@@ -1,27 +1,50 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
+using Azure.AI.Projects;
+using Shared;
+using Shared.DTOs;
 using WebApi.Services.Interfaces;
 
 namespace WebApi.Services
 {
     public class AzAiDocIntelligenceService : IAzAiDocIntelligenceService
     {
+        private readonly IConfiguration _config;
         private readonly DocumentIntelligenceClient _documentIntelligenceClient;
+        private readonly ILogger<AzAiDocIntelligenceService> _logger;
+        private readonly ITraceStepper _traceStepper;
 
-        public AzAiDocIntelligenceService(DocumentIntelligenceClient documentIntelligenceClient)
+        public AzAiDocIntelligenceService(
+            DocumentIntelligenceClient documentIntelligenceClient,
+            IConfiguration config,
+            ILogger<AzAiDocIntelligenceService> logger,
+            ITraceStepper traceStepper)
         {
             _documentIntelligenceClient = documentIntelligenceClient;
+            _config = config;
+            _logger = logger;
+            _traceStepper = traceStepper;
         }
 
         public void test()
         {
-    
-                //sample document
-                Uri fileUri = new Uri("https://raw.githubusercontent.com/Azure-Samples/cognitive-services-REST-api-samples/master/curl/form-recognizer/sample-layout.pdf");
-    
-                Operation<AnalyzeResult> operation = _documentIntelligenceClient.AnalyzeDocument(WaitUntil.Completed, "prebuilt-layout", fileUri);
-    
-                AnalyzeResult result = operation.Value;
+
+            //sample document
+            Uri fileUri = new Uri("https://raw.githubusercontent.com/Azure-Samples/cognitive-services-REST-api-samples/master/curl/form-recognizer/sample-layout.pdf");
+
+            Operation<AnalyzeResult> operation = _documentIntelligenceClient.AnalyzeDocument(WaitUntil.Completed, "prebuilt-layout", fileUri);
+
+            AnalyzeResult result = operation.Value;
+
+            var response = new AnalyzeDocumentResponseDto
+            {
+                DocContent = result.Content,
+                DocFormat = result.ContentFormat,
+                PageCount = result.Pages.Count,
+                ParagraphCount = result.Paragraphs.Count,
+                SectionCount = result.Sections.Count,
+                TableCount = result.Tables.Count
+            };
         }
     }
 }

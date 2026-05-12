@@ -57,7 +57,7 @@ public static class BuilderServicesExtensions
         return services;
     }
 
-    public static IServiceCollection AzAiDocIntelligenceService(this IServiceCollection services)
+    public static IServiceCollection AddAzAiDocIntelligenceService(this IServiceCollection services)
     {
         services.AddScoped<IAzAiDocIntelligenceService, AzAiDocIntelligenceService>();
 

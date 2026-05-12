@@ -8,7 +8,6 @@
 		<UserSecretsId>b58ee6fe-9529-4cdb-a7a3-cd8050577dee</UserSecretsId>
 	</PropertyGroup>
 
-
 	<ItemGroup>
 		<PackageReference Include="Azure.AI.DocumentIntelligence" Version="1.0.0" />
 		<PackageReference Include="Azure.AI.Extensions.OpenAI" Version="2.0.0" />
