@@ -26,13 +26,12 @@ namespace WebApi.Services
             _traceStepper = traceStepper;
         }
 
-        public void test()
+        public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument()
         {
-
             //sample document
             Uri fileUri = new Uri("https://raw.githubusercontent.com/Azure-Samples/cognitive-services-REST-api-samples/master/curl/form-recognizer/sample-layout.pdf");
 
-            Operation<AnalyzeResult> operation = _documentIntelligenceClient.AnalyzeDocument(WaitUntil.Completed, "prebuilt-layout", fileUri);
+            Operation<AnalyzeResult> operation = await _documentIntelligenceClient.AnalyzeDocumentAsync(WaitUntil.Completed, "prebuilt-layout", fileUri);
 
             AnalyzeResult result = operation.Value;
 
@@ -45,6 +44,8 @@ namespace WebApi.Services
                 SectionCount = result.Sections.Count,
                 TableCount = result.Tables.Count
             };
+
+            return response;
         }
     }
 }

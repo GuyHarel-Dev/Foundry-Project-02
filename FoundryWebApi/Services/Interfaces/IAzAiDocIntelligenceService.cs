@@ -1,7 +1,9 @@
-﻿namespace WebApi.Services.Interfaces
+﻿using Shared.DTOs;
+
+namespace WebApi.Services.Interfaces
 {
     public interface IAzAiDocIntelligenceService
     {
-        public void test();
+        public Task<AnalyzeDocumentResponseDto> AnalyzeDocument();
     }
 }

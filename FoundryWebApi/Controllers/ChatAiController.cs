@@ -25,7 +25,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("prompt")]
-        public async Task<IActionResult> Prompt([FromBody] ChatRequestDto request)
+        public async Task<ActionResult<ChatResponseDto>> Prompt([FromBody] ChatRequestDto request)
         {
              if (string.IsNullOrWhiteSpace(request.Prompt))
             {

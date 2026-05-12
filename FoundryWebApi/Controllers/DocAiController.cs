@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shared.DTOs;
 using WebApi.Services;
 using WebApi.Services.Interfaces;
 
@@ -14,11 +15,13 @@ namespace WebApi.Controllers
         {
             _documentIntelligence = documentIntelligence;
         }
-        [HttpGet("test")]
-        public async Task<IActionResult> Test()
+
+        [HttpGet("AnalyzeDocument")]
+        public async Task<ActionResult<AnalyzeDocumentResponseDto>> AnalyzeDocument()
         {
-            _documentIntelligence.test();
-            return Ok();
+            var response = await _documentIntelligence.AnalyzeDocument();
+
+            return Ok(response);
 
         }
     }
