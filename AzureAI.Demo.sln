@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureAI.Contracts", "AzureA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureAI.Blazor", "AzureAI.Blazor\AzureAI.Blazor.csproj", "{22900344-2616-C254-22D5-50D5C70EA8C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureAI.Common", "AzureAI.Common\AzureAI.Common.csproj", "{13E4E044-F3F6-43EF-AA0F-E4B22D9ED020}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{22900344-2616-C254-22D5-50D5C70EA8C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22900344-2616-C254-22D5-50D5C70EA8C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22900344-2616-C254-22D5-50D5C70EA8C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13E4E044-F3F6-43EF-AA0F-E4B22D9ED020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13E4E044-F3F6-43EF-AA0F-E4B22D9ED020}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13E4E044-F3F6-43EF-AA0F-E4B22D9ED020}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13E4E044-F3F6-43EF-AA0F-E4B22D9ED020}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,24 +1,24 @@
 ﻿using AzureAI.Contracts.Dtos;
 using System.Text;
 
-namespace AzureAI.Contracts
+namespace AzureAI.Common
 {
     public class TraceStepper : ITraceStepper
     {
-        public List<TraceStepDto> Steps { get; set; } = new();
+        public List<TraceStep> Steps { get; set; } = new();
 
         public TraceStepper()
         {
                 
         }
-        public TraceStepper(List<TraceStepDto> steps)
+        public TraceStepper(List<TraceStep> steps)
         {
             Steps.AddRange(steps);
         }
 
         public void AddStep(TraceStepperSourceEnum source, string title)
         {
-            var step = new TraceStepDto
+            var step = new TraceStep
             {
                 Source = TraceStepperSourceEnumName.ToDisplayName(source),
                 StepTitle = title,
@@ -26,7 +26,7 @@ namespace AzureAI.Contracts
             };
             Steps.Add(step);
         }
-        public void AddRange(List<TraceStepDto> steps)
+        public void AddRange(List<TraceStep> steps)
         {
             Steps.AddRange(steps);
         }

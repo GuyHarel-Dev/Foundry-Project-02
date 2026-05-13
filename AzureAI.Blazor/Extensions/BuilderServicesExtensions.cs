@@ -1,4 +1,4 @@
-﻿using Shared;
+﻿using AzureAI.Common;
 using UI.Services;
 
 namespace UI.Extensions

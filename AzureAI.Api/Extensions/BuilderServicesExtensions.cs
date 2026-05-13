@@ -4,7 +4,7 @@ using Azure.AI.Projects;
 using Azure.Identity;
 using AzureAI.Api.Services;
 using AzureAI.Api.Services.Interfaces;
-using AzureAI.Contracts;
+using AzureAI.Common;
 
 public static class BuilderServicesExtensions
 {

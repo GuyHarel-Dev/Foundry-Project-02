@@ -1,5 +1,5 @@
 ﻿using AzureAI.Api.Services.Interfaces;
-using AzureAI.Contracts;
+using AzureAI.Common;
 using AzureAI.Contracts.Requests;
 using AzureAI.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;

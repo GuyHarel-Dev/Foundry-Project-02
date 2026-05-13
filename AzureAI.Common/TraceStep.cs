@@ -1,6 +1,6 @@
 ﻿namespace AzureAI.Contracts.Dtos
 {
-    public sealed class TraceStepDto
+    public sealed class TraceStep
     {
         public string StepTitle { get; set; } = string.Empty;
         public DateTime? StepDateTime { get; set; }

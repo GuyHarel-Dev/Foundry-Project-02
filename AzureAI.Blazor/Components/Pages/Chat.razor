@@ -1,10 +1,11 @@
 ﻿@page "/chat"
 @rendermode InteractiveServer
 
+@using AzureAI.Blazor.Components.Fragments
 @using Contracts.Requests
 @using Contracts.Responses
 @using AzureAI.Contracts
-@* @using Shared.DTOs *@
+@using AzureAI.Common
 @using UI.Services
 
 @inject FoundryApiClient apiClient
@@ -59,8 +60,7 @@
 
             var request = new ChatRequestDto
             {
-                Prompt = question,
-                TraceSteps = traceStepper.Steps
+                Prompt = question
             };
 
             var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/ai/chat/prompt", request);
@@ -73,7 +73,7 @@
 
             response = result.Value?.Response ?? string.Empty;
 
-            traceStepper.Steps = result.Value?.TraceSteps ?? new List<TraceStepDto>();
+            // traceStepper.Steps = result.Value?.TraceSteps ?? new List<TraceStep>();
 
             executionLog = traceStepper.GetTrace();
             executionLog += traceStepper.GetTotalTime();

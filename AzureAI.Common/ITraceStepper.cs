@@ -1,13 +1,13 @@
 ﻿
 using AzureAI.Contracts.Dtos;
 
-namespace AzureAI.Contracts
+namespace AzureAI.Common
 {
     public interface ITraceStepper
     {
-        List<TraceStepDto> Steps { get; set; }
+        List<TraceStep> Steps { get; set; }
         void AddStep(TraceStepperSourceEnum source, string title);
-        void AddRange(List<TraceStepDto> steps);
+        void AddRange(List<TraceStep> steps);
 
         string GetTrace();
         string GetTotalTime();

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AzureAI.Common\AzureAI.Common.csproj" />
     <ProjectReference Include="..\AzureAI.Contracts\AzureAI.Contracts.csproj" />
   </ItemGroup>
 

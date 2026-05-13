@@ -1,7 +1,7 @@
 ﻿using Azure.AI.Extensions.OpenAI;
 using Azure.AI.Projects;
 using AzureAI.Api.Services.Interfaces;
-using AzureAI.Contracts;
+using AzureAI.Common;
 using AzureAI.Contracts.Dtos;
 using AzureAI.Contracts.Requests;
 using AzureAI.Contracts.Responses;
@@ -43,8 +43,8 @@ namespace AzureAI.Api.Services
             CreateResponseOptions options = CreateResponseOptions(request);
             ProjectResponsesClient client = CreateResponseClient();
 
-            _traceStepper.AddRange(request.TraceSteps);
-            _traceStepper.AddStep(TraceStepperSourceEnum.WebApi, $"Sending prompt to Azure AI Foundry. Model: {_modelName}");
+            //_traceStepper.AddRange(request.TraceSteps);
+            //_traceStepper.AddStep(TraceStepperSourceEnum.WebApi, $"Sending prompt to Azure AI Foundry. Model: {_modelName}");
 
             ClientResult<ResponseResult> result = await client.CreateResponseAsync(
                 options, cancellationToken);
@@ -54,7 +54,6 @@ namespace AzureAI.Api.Services
             var responseDto = new ChatResponseDto
             {
                 Response = result.Value.GetOutputText(),
-                TraceSteps = _traceStepper.Steps,
                 ModelStatistics = new ModelStatisticsDto
                 {
                     ResponseId = result.Value.Id,

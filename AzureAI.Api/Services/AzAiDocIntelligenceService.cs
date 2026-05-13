@@ -1,7 +1,7 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
 using AzureAI.Api.Services.Interfaces;
-using AzureAI.Contracts;
+using AzureAI.Common;
 using AzureAI.Contracts.Responses;
 
 namespace AzureAI.Api.Services
