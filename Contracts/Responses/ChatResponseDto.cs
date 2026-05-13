@@ -1,4 +1,6 @@
-﻿namespace Shared.DTOs
+﻿using Shared.DTOs;
+
+namespace Contracts.Responses
 {
     public class ChatResponseDto
     {

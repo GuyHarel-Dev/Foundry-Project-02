@@ -1,6 +1,6 @@
 ﻿using Azure.AI.DocumentIntelligence;
 
-namespace Shared.DTOs
+namespace Contracts.Responses
 {
     public class AnalyzeDocumentResponseDto
     {

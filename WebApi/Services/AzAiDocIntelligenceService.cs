@@ -1,8 +1,8 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
 using Azure.AI.Projects;
+using Contracts.Responses;
 using Shared;
-using Shared.DTOs;
 using WebApi.Services.Interfaces;
 
 namespace WebApi.Services

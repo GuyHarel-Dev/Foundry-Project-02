@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Contracts.Requests;
+using Contracts.Responses;
+using Microsoft.AspNetCore.Mvc;
 using Shared;
-using Shared.DTOs;
 using WebApi.Services.Interfaces;
 
 

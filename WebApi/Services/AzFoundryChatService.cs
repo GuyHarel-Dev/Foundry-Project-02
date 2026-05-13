@@ -1,5 +1,7 @@
 ﻿using Azure.AI.Extensions.OpenAI;
 using Azure.AI.Projects;
+using Contracts.Requests;
+using Contracts.Responses;
 using OpenAI.Responses;
 using Shared;
 using Shared.DTOs;

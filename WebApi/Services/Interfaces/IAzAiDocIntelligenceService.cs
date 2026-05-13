@@ -1,4 +1,4 @@
-﻿using Shared.DTOs;
+﻿using Contracts.Responses;
 
 namespace WebApi.Services.Interfaces
 {

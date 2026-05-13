@@ -1,9 +1,12 @@
 ﻿@page "/chat"
 @rendermode InteractiveServer
 
-@using Shared.DTOs
+@using Contracts.Requests
+@using Contracts.Responses
 @using Shared
+@using Shared.DTOs
 @using UI.Services
+
 @inject FoundryApiClient apiClient
 @inject ITraceStepper traceStepper
 
