@@ -1,5 +1,5 @@
-using UI.Components;
 using UI.Extensions;
+using WebUI.Components;
 
 namespace UI
 {
