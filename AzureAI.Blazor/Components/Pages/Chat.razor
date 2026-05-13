@@ -25,12 +25,13 @@
         <!-- call wait panel -->
         @if (isBusy)
         {
-            <div class="loading-panel-container">
+            <LoadingPanel></LoadingPanel>
+@*             <div class="loading-panel-container">
                 <div class="loading-panel" role="status" aria-live="polite">
                     <div class="hourglass"></div>
                     <span>Calling Azure AI Foundry...</span>
                 </div>
-            </div>
+            </div> *@
         }
     </form>
 
