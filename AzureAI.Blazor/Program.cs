@@ -1,5 +1,5 @@
 using UI.Extensions;
-using WebUI.Components;
+using AzureAI.Blazor.Components;
 
 namespace UI
 {
