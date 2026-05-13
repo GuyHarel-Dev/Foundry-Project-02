@@ -1,6 +1,7 @@
-﻿using Shared.DTOs;
+﻿
+using AzureAI.Contracts.Dtos;
 
-namespace Shared
+namespace AzureAI.Contracts
 {
     public interface ITraceStepper
     {

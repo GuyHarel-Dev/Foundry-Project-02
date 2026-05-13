@@ -1,6 +1,7 @@
-﻿using Shared.DTOs;
+﻿
+using AzureAI.Contracts.Dtos;
 
-namespace Contracts.Requests
+namespace AzureAI.Contracts.Requests
 {
     public class ChatRequestDto
     {

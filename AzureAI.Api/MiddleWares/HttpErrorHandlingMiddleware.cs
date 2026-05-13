@@ -1,9 +1,7 @@
-﻿
-using System.Net;
+﻿using Azure.Identity;
 using System.Text.Json;
-using Azure.Identity;
 
-namespace WebApi.MiddleWares
+namespace AzureAI.Api.MiddleWares
 {
     public class HttpErrorHandlingMiddleware
     {

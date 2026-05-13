@@ -1,11 +1,10 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
-using Azure.AI.Projects;
-using Contracts.Responses;
-using Shared;
-using WebApi.Services.Interfaces;
+using AzureAI.Api.Services.Interfaces;
+using AzureAI.Contracts;
+using AzureAI.Contracts.Responses;
 
-namespace WebApi.Services
+namespace AzureAI.Api.Services
 {
     public class AzAiDocIntelligenceService : IAzAiDocIntelligenceService
     {

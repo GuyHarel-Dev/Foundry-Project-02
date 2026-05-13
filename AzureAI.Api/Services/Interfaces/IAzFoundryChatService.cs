@@ -1,7 +1,7 @@
-﻿using Contracts.Requests;
-using Contracts.Responses;
+﻿using AzureAI.Contracts.Requests;
+using AzureAI.Contracts.Responses;
 
-namespace WebApi.Services.Interfaces
+namespace AzureAI.Api.Services.Interfaces
 {
     public interface IAzFoundryChatService
     {

@@ -1,16 +1,16 @@
 ﻿using Azure.AI.Extensions.OpenAI;
 using Azure.AI.Projects;
-using Contracts.Requests;
-using Contracts.Responses;
+using AzureAI.Api.Services.Interfaces;
+using AzureAI.Contracts;
+using AzureAI.Contracts.Dtos;
+using AzureAI.Contracts.Requests;
+using AzureAI.Contracts.Responses;
 using OpenAI.Responses;
-using Shared;
-using Shared.DTOs;
 using System.ClientModel;
-using WebApi.Services.Interfaces;
 
 #pragma warning disable OPENAI001 // pour using OpenAI.Responses;
 
-namespace WebApi.Services
+namespace AzureAI.Api.Services
 {
     public class AzFoundryChatService : IAzFoundryChatService
     {

@@ -2,9 +2,9 @@
 using Azure.AI.DocumentIntelligence;
 using Azure.AI.Projects;
 using Azure.Identity;
-using Shared;
-using WebApi.Services;
-using WebApi.Services.Interfaces;
+using AzureAI.Api.Services;
+using AzureAI.Api.Services.Interfaces;
+using AzureAI.Contracts;
 
 public static class BuilderServicesExtensions
 {

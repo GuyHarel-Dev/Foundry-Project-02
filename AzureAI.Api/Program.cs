@@ -1,5 +1,5 @@
-using WebApi.Extensions;
-using WebApi.MiddleWares;
+using AzureAI.Api.Extensions;
+using AzureAI.Api.MiddleWares;
 
 var builder = WebApplication.CreateBuilder(args);
 

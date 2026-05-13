@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Shared.DTOs
+namespace AzureAI.Contracts.Dtos
 {
     public sealed class ModelStatisticsDto
     {

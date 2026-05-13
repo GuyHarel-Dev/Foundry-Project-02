@@ -1,11 +1,11 @@
-﻿using Contracts.Requests;
-using Contracts.Responses;
+﻿using AzureAI.Api.Services.Interfaces;
+using AzureAI.Contracts;
+using AzureAI.Contracts.Requests;
+using AzureAI.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
-using Shared;
-using WebApi.Services.Interfaces;
 
 
-namespace WebApi.Controllers
+namespace AzureAI.Api.Controllers
 {
     [Route("api/ai/chat")]
     [ApiController]

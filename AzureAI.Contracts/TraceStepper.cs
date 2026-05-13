@@ -1,8 +1,7 @@
-﻿using Shared.DTOs;
-using System.Reflection.Metadata.Ecma335;
+﻿using AzureAI.Contracts.Dtos;
 using System.Text;
 
-namespace Shared
+namespace AzureAI.Contracts
 {
     public class TraceStepper : ITraceStepper
     {

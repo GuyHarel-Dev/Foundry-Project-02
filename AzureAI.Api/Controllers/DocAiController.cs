@@ -1,9 +1,8 @@
-﻿using Contracts.Responses;
+﻿using AzureAI.Api.Services.Interfaces;
+using AzureAI.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Services;
-using WebApi.Services.Interfaces;
 
-namespace WebApi.Controllers 
+namespace AzureAI.Api.Controllers 
 {
     [Route("api/ai/doc")]
     [ApiController]

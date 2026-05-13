@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace WebApi.Extensions
+namespace AzureAI.Api.Extensions
 {
     public static class SwaggerExtensions
     {
