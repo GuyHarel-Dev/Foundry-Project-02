@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37301.10
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureAI.Api", "AzureAI.Api\AzureAI.Api.csproj", "{BC179B3A-D642-77B5-C178-0896A787584E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureAI.Contracts", "AzureAI.Contracts\AzureAI.Contracts.csproj", "{4747EA2A-82B9-7CCE-2146-CEE9627617C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC179B3A-D642-77B5-C178-0896A787584E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC179B3A-D642-77B5-C178-0896A787584E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC179B3A-D642-77B5-C178-0896A787584E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC179B3A-D642-77B5-C178-0896A787584E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4747EA2A-82B9-7CCE-2146-CEE9627617C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4747EA2A-82B9-7CCE-2146-CEE9627617C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4747EA2A-82B9-7CCE-2146-CEE9627617C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4747EA2A-82B9-7CCE-2146-CEE9627617C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {574F6FCA-4F43-463D-B931-255FA564086A}
+	EndGlobalSection
+EndGlobal
