@@ -18,13 +18,13 @@ namespace AzureAI.Api.Services
         private readonly AIProjectClient _projectClient;
         private readonly string _modelName;
         private readonly ILogger<AzFoundryChatService> _logger;
-        private readonly ITraceStepper _traceStepper;
+        private readonly IApiStepTracer _traceStepper;
 
         public AzFoundryChatService(
             IConfiguration config,
             AIProjectClient projectClient,
             ILogger<AzFoundryChatService> logger,
-            ITraceStepper traceStepper)
+            IApiStepTracer traceStepper)
         {
             _config = config;
             _projectClient = projectClient;
@@ -49,7 +49,7 @@ namespace AzureAI.Api.Services
             ClientResult<ResponseResult> result = await client.CreateResponseAsync(
                 options, cancellationToken);
 
-            _traceStepper.AddStep(TraceStepperSourceEnum.WebApi, "Received response from Azure AI Foundry");
+            _traceStepper.AddStep(ApiStepTypeEnum.WebApi, "Received response from Azure AI Foundry");
 
             var responseDto = new ChatResponseDto
             {

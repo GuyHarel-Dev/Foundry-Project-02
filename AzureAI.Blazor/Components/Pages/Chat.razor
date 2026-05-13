@@ -9,7 +9,7 @@
 @using UI.Services
 
 @inject FoundryApiClient apiClient
-@inject ITraceStepper traceStepper
+@inject IApiStepTracer apiTracer
 
 <div>
 
@@ -52,8 +52,8 @@
         {
             isBusy = true;
 
-            traceStepper.AddStep(TraceStepperSourceEnum.BlazorUi, $"{nameof(SendQuestion)}: {question}");
-            executionLog = traceStepper.GetTrace();
+            apiTracer.AddStep(ApiStepTypeEnum.BlazorUi, $"{nameof(SendQuestion)}: {question}");
+            executionLog = apiTracer.GetTrace();
 
             await InvokeAsync(StateHasChanged);
             await Task.Yield();
@@ -75,8 +75,8 @@
 
             // traceStepper.Steps = result.Value?.TraceSteps ?? new List<TraceStep>();
 
-            executionLog = traceStepper.GetTrace();
-            executionLog += traceStepper.GetTotalTime();
+            executionLog = apiTracer.GetTrace();
+            executionLog += apiTracer.GetTotalTime();
 
             statistics = result.Value.ModelStatistics.ToString();
 

@@ -66,7 +66,7 @@ public static class BuilderServicesExtensions
 
     public static IServiceCollection AddTraceStepper(this IServiceCollection services)
     {
-        services.AddScoped<ITraceStepper, TraceStepper>();
+        services.AddScoped<IApiStepTracer, ApiStepTracer>();
 
         return services;
     }

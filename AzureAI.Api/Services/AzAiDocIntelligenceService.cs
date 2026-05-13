@@ -11,13 +11,13 @@ namespace AzureAI.Api.Services
         private readonly IConfiguration _config;
         private readonly DocumentIntelligenceClient _documentIntelligenceClient;
         private readonly ILogger<AzAiDocIntelligenceService> _logger;
-        private readonly ITraceStepper _traceStepper;
+        private readonly IApiStepTracer _traceStepper;
 
         public AzAiDocIntelligenceService(
             DocumentIntelligenceClient documentIntelligenceClient,
             IConfiguration config,
             ILogger<AzAiDocIntelligenceService> logger,
-            ITraceStepper traceStepper)
+            IApiStepTracer traceStepper)
         {
             _documentIntelligenceClient = documentIntelligenceClient;
             _config = config;
