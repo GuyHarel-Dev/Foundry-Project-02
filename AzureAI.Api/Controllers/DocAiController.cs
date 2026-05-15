@@ -15,13 +15,41 @@ namespace AzureAI.Api.Controllers
             _documentIntelligence = documentIntelligence;
         }
 
-        [HttpGet("AnalyzeDocument")]
-        public async Task<ActionResult<AnalyzeDocumentResponseDto>> AnalyzeDocument()
+        [HttpGet("prebuildmodel/read")]
+        public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelRead()
         {
             var response = await _documentIntelligence.AnalyzeDocument();
 
             return Ok(response);
 
         }
+
+        [HttpGet("prebuildmodel/layout")]
+        public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelLayout()
+        {
+            var response = await _documentIntelligence.AnalyzeDocument();
+
+            return Ok(response);
+
+        }
+
+        [HttpGet("prebuildmodel/invoice")]
+        public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelInvoice()
+        {
+            var response = await _documentIntelligence.AnalyzeDocument();
+
+            return Ok(response);
+
+        }
+
+        [HttpGet("prebuildmodel/receipt")]
+        public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelReceipt()
+        {
+            var response = await _documentIntelligence.AnalyzeDocument();
+
+            return Ok(response);
+
+        }
+
     }
 }
