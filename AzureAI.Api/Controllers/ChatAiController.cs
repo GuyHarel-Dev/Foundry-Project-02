@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AzureAI.Api.Controllers
 {
-    [Route("api/ai/chat")]
+    [Route("api/chat")]
     [ApiController]
     public class ChatAiController : ControllerBase
     {
@@ -25,8 +25,8 @@ namespace AzureAI.Api.Controllers
             _traceStepper = traceStepper;
         }
 
-        [HttpPost("prompt")]
-        public async Task<ActionResult<ChatResponseDto>> Prompt([FromBody] ChatRequestDto request)
+        [HttpPost("sendprompt")]
+        public async Task<ActionResult<ChatResponseDto>> SendPrompt([FromBody] ChatRequestDto request)
         {
              if (string.IsNullOrWhiteSpace(request.Prompt))
             {

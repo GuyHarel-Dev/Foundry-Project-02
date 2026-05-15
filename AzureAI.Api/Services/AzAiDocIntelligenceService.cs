@@ -3,6 +3,7 @@ using Azure.AI.DocumentIntelligence;
 using AzureAI.Api.Services.Interfaces;
 using AzureAI.Common;
 using AzureAI.Contracts.Responses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzureAI.Api.Services
@@ -54,26 +55,32 @@ namespace AzureAI.Api.Services
             };
         }
 
-        public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument()
+        public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument(string model, IFormFile formFile)
         {
-            //sample document
-            Uri fileUri = new Uri("https://raw.githubusercontent.com/Azure-Samples/cognitive-services-REST-api-samples/master/curl/form-recognizer/sample-layout.pdf");
+            using var stream = formFile.OpenReadStream();
 
-            Operation<AnalyzeResult> operation = await _documentIntelligenceClient.AnalyzeDocumentAsync(WaitUntil.Completed, "prebuilt-layout", fileUri);
+            var bytes = BinaryData.FromStream(stream);
+
+            var options = new AnalyzeDocumentOptions(
+                model,
+                bytes);
+
+            Operation<AnalyzeResult> operation =
+                await _documentIntelligenceClient.AnalyzeDocumentAsync(
+                    WaitUntil.Completed,
+                    options);
 
             AnalyzeResult result = operation.Value;
 
-            var response = new AnalyzeDocumentResponseDto
+            return new AnalyzeDocumentResponseDto
             {
                 DocContent = result.Content,
                 DocFormat = result.ContentFormat,
                 PageCount = result.Pages.Count,
-                ParagraphCount = result.Paragraphs.Count,
-                SectionCount = result.Sections.Count,
-                TableCount = result.Tables.Count
+                ParagraphCount = result.Paragraphs?.Count ?? 0,
+                SectionCount = result.Sections?.Count ?? 0,
+                TableCount = result.Tables?.Count ?? 0
             };
-
-            return response;
         }
     }
 }
