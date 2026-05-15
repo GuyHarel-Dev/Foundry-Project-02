@@ -5,5 +5,7 @@ namespace AzureAI.Api.Services.Interfaces
     public interface IAzAiDocIntelligenceService
     {
         public Task<AnalyzeDocumentResponseDto> AnalyzeDocument();
+
+        public Task<AnalyzeDocumentResponseDto> PrebuildModelTest(IFormFile formFile);
     }
 }

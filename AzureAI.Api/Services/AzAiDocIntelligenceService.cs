@@ -3,6 +3,7 @@ using Azure.AI.DocumentIntelligence;
 using AzureAI.Api.Services.Interfaces;
 using AzureAI.Common;
 using AzureAI.Contracts.Responses;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AzureAI.Api.Services
 {
@@ -23,6 +24,34 @@ namespace AzureAI.Api.Services
             _config = config;
             _logger = logger;
             _traceStepper = traceStepper;
+        }
+
+        public async Task<AnalyzeDocumentResponseDto> PrebuildModelTest(IFormFile formFile)
+        {
+            using var stream = formFile.OpenReadStream();
+
+            var bytes = BinaryData.FromStream(stream);
+
+            var options = new AnalyzeDocumentOptions(
+                "prebuilt-layout",
+                bytes);
+
+            Operation<AnalyzeResult> operation =
+                await _documentIntelligenceClient.AnalyzeDocumentAsync(
+                    WaitUntil.Completed,
+                    options);
+
+            AnalyzeResult result = operation.Value;
+
+            return new AnalyzeDocumentResponseDto
+            {
+                DocContent = result.Content,
+                DocFormat = result.ContentFormat,
+                PageCount = result.Pages.Count,
+                ParagraphCount = result.Paragraphs?.Count ?? 0,
+                SectionCount = result.Sections?.Count ?? 0,
+                TableCount = result.Tables?.Count ?? 0
+            };
         }
 
         public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument()

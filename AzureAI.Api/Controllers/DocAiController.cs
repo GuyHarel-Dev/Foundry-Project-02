@@ -15,7 +15,16 @@ namespace AzureAI.Api.Controllers
             _documentIntelligence = documentIntelligence;
         }
 
-        [HttpGet("prebuildmodel/read")]
+        [HttpPost("prebuildmodel/Test")]
+        public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelTest(IFormFile formFile)
+        {
+            var response = await _documentIntelligence.PrebuildModelTest(formFile);
+
+            return Ok(response);
+
+        }
+
+        [HttpPost("prebuildmodel/read")]
         public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelRead()
         {
             var response = await _documentIntelligence.AnalyzeDocument();
@@ -24,7 +33,7 @@ namespace AzureAI.Api.Controllers
 
         }
 
-        [HttpGet("prebuildmodel/layout")]
+        [HttpPost("prebuildmodel/layout")]
         public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelLayout()
         {
             var response = await _documentIntelligence.AnalyzeDocument();
@@ -33,7 +42,7 @@ namespace AzureAI.Api.Controllers
 
         }
 
-        [HttpGet("prebuildmodel/invoice")]
+        [HttpPost("prebuildmodel/invoice")]
         public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelInvoice()
         {
             var response = await _documentIntelligence.AnalyzeDocument();
@@ -42,7 +51,7 @@ namespace AzureAI.Api.Controllers
 
         }
 
-        [HttpGet("prebuildmodel/receipt")]
+        [HttpPost("prebuildmodel/receipt")]
         public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelReceipt()
         {
             var response = await _documentIntelligence.AnalyzeDocument();
