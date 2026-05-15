@@ -5,6 +5,7 @@ using AzureAI.Common;
 using AzureAI.Contracts.Dtos;
 using AzureAI.Contracts.Responses;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -76,28 +77,52 @@ namespace AzureAI.Api.Services
                     WaitUntil.Completed,
                     options);
 
+            var response = new AnalyzeDocumentResponseDto();
+
             AnalyzeResult result = operation.Value;
 
-            var pages = result.Pages;
-            var paragraphs = result.Paragraphs;
-            var tables = result.Tables;
-            var figures = result.Figures;
-            var sections = result.Sections;
-            var languages = result.Languages;
-
-            var response = new AnalyzeDocumentResponseDto
-            {
-                ModelId = result.ModelId,
-                DocContent = result.Content,
-                DocFormat = result.ContentFormat,
-                PageCount = result.Pages.Count,
-                ParagraphCount = result.Paragraphs?.Count ?? 0,
-                SectionCount = result.Sections?.Count ?? 0,
-                TableCount = result.Tables?.Count ?? 0,
-                LanguagesCount = result.Languages?.Count ?? 0
-            };
+            ExtractBaseInformation(operation.Value, response);
+            ExtractFields(result, response);
 
             return response;
+        }
+
+        private void ExtractBaseInformation(AnalyzeResult result, AnalyzeDocumentResponseDto response)
+        {
+
+            response.DocContent = result.Content;
+            response.DocFormat = result.ContentFormat;
+            response.PageCount = result.Pages.Count;
+            response.ParagraphCount = result.Paragraphs?.Count ?? 0;
+            response.SectionCount = result.Sections?.Count ?? 0;
+            response.TableCount = result.Tables?.Count ?? 0;
+            response.FigureCount = result.Figures?.Count ?? 0;
+            response.LanguagesCount = result.Languages?.Count ?? 0;
+
+        }
+
+        private static void ExtractFields(AnalyzeResult result, AnalyzeDocumentResponseDto response)
+        {
+            if (result.Documents != null)
+            {
+                foreach (var document in result.Documents)
+                {
+                    foreach (var field in document.Fields)
+                    {
+                        response.Fields.Add(new DocumentFieldDto
+                        {
+                            Name = field.Key,
+
+                            Value = field.Value.Content,
+
+                            FieldType = field.Value.FieldType.ToString(),
+
+                            Confidence = field.Value.Confidence
+                        });
+                    }
+                }
+
+            }
         }
 
         private static JsonElement SerializeToElement(AnalyzeResult result)
