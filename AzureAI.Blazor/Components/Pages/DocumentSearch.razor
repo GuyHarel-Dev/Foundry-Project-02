@@ -124,6 +124,11 @@
         responseString += $"FigureCount: {response.FigureCount}\n";
         responseString += $"SectionCount: {response.SectionCount}\n";
         responseString += $"LanguagesCount: {response.LanguagesCount}\n";
+        responseString += $"LanguagesCount: {response.LanguagesCount}\n";
+
+        // Derived statistics
+        responseString += $"CharacterCount : {response.DocContent.Length}\n";
+        responseString += $"WordCount : {response.DocContent.Split(' ').Length}\n";
 
         return responseString;
     }
