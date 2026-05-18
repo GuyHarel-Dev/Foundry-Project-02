@@ -5,6 +5,6 @@ namespace AzureAI.Api.Services.Interfaces
 {
     public interface IAzFoundryChatService
     {
-        Task<ChatResponseDto> GetResponseAsync(ChatRequestDto request, CancellationToken cancellationToken = default);
+        Task<ChatResponseDto> GetPromptResponseAsync(ChatRequestDto request, CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AzureAI.Api.Services.Interfaces;
+using AzureAI.Contracts.Requests;
 using AzureAI.Contracts.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,41 +26,19 @@ namespace AzureAI.Api.Controllers
 
         }
 
-        [HttpPost("analyze/read")]
-        public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelRead(IFormFile formFile)
+        [HttpPost("analyze")]
+        public async Task<ActionResult<AnalyzeDocumentResponseDto>> AnalyzeDocument(
+            [FromBody] AnalyzeDocumentRequestDto request)
         {
-            var response = await _documentIntelligence.AnalyzeDocument("prebuilt-read", formFile);
+            var modelName = request.ModelName;
+            await using var stream = new MemoryStream(request.Bytes);
+
+            var response = await _documentIntelligence.AnalyzeDocument(modelName, stream);
 
             return Ok(response);
 
         }
 
-        [HttpPost("analyze/layout")]
-        public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelLayout(IFormFile formFile)
-        {
-            var response = await _documentIntelligence.AnalyzeDocument("prebuilt-layout", formFile);
-
-            return Ok(response);
-
-        }
-
-        [HttpPost("analyze/invoice")]
-        public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelInvoice(IFormFile formFile)
-        {
-            var response = await _documentIntelligence.AnalyzeDocument("prebuilt-invoice", formFile);
-
-            return Ok(response);
-
-        }
-
-        [HttpPost("analyze/receipt")]
-        public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelReceipt(IFormFile formFile)
-        {
-            var response = await _documentIntelligence.AnalyzeDocument("prebuilt-receipt", formFile);
-
-            return Ok(response);
-
-        }
-
+   
     }
 }

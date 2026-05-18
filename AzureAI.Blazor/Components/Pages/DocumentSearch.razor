@@ -2,6 +2,13 @@
 @rendermode InteractiveServer
 
 @using AzureAI.Blazor.Components.Fragments
+@using AzureAI.Common
+@using AzureAI.Contracts.Requests
+@using AzureAI.Contracts.Responses
+@using UI.Services
+
+@inject FoundryApiClient apiClient
+@inject IApiStepTracer apiTracer
 
 <h3>AI Document Search</h3>
  
@@ -36,20 +43,13 @@
             <!-- call wait panel -->
             @if (isBusy)
             {
-                <div class="loading-panel-container">
-                    <div class="loading-panel" role="status" aria-live="polite">
-                        <div class="hourglass"></div>
-                        <span>Calling Azure AI Foundry...</span>
-                    </div>
-                </div>
+                <LoadingPanel></LoadingPanel>
             }
         </form>
         <ApiResult Response="@response" ExecutionLog="@executionLog" Statistics="@statistics"></ApiResult>
     </div>
 
 </div>
-
-
 
 @code {
 
@@ -62,74 +62,72 @@
     private string executionLog = string.Empty;
     private string statistics = string.Empty;
 
-    // private IBrowserFile? selectedFile;
-    // private string selectedFileName = string.Empty;
-    // private string physicalPdfUrl = string.Empty;
-
-    // private bool pdfFileLoaded = false;
-
-    // private void OnFileSelected(InputFileChangeEventArgs e)
-    // {
-    //     selectedFile = e.File;
-    //     selectedFileName = selectedFile.Name;
-    // }
-
     private async Task AnalyzeDocument()
     {
-        // try
-        // {
-        //     isBusy = true;
+        try
+        {
+            isBusy = true;
 
-        //     traceStepper.AddStep(TraceStepperSourceEnum.BlazorUi, $"{nameof(SendQuestion)}: {question}");
-        //     executionLog = traceStepper.GetTrace();
+            apiTracer.AddStep(ApiStepTypeEnum.BlazorUi, $"{nameof(AnalyzeDocument)}: Analyzing: {pdfUrl}");
+            executionLog = apiTracer.GetTrace();
 
-        //     await InvokeAsync(StateHasChanged);
-        //     await Task.Yield();
+            await InvokeAsync(StateHasChanged);
+            await Task.Yield();
 
-        //     var request = new ChatRequestDto
-        //     {
-        //         Prompt = question,
-        //         TraceSteps = traceStepper.Steps
-        //     };
+            var request = new AnalyzeDocumentRequestDto
+            {
+                ModelName = "prebuilt-read",
+                FileName = Path.GetFileName(pdfUrl),
+                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, pdfUrl.TrimStart('/')))     
+            };
 
-        //     var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/ai/chat/prompt", request);
+            var result = await apiClient.PostAsync<AnalyzeDocumentRequestDto, 
+                AnalyzeDocumentResponseDto>("api/document/analyze", request);
 
-        //     if (!result.IsSuccess)
-        //     {
-        //         executionLog = result.ErrorMessage ?? "Unknown API error.";
-        //         return;
-        //     }
+            if (!result.IsSuccess)
+            {
+                executionLog = result.ErrorMessage ?? "Unknown API error.";
+                return;
+            }
 
-        //     response = result.Value?.Response ?? string.Empty;
+            response = result.Value?.DocContent ?? string.Empty;
 
-        //     traceStepper.Steps = result.Value?.TraceSteps ?? new List<TraceStepDto>();
+            statistics = ExtractStatistics(result.Value);
 
-        //     executionLog = traceStepper.GetTrace();
-        //     executionLog += traceStepper.GetTotalTime();
+            executionLog = apiTracer.GetTrace();
+            executionLog += apiTracer.GetTotalTime();
 
-        //     statisticsPanel = result.Value.ModelStatistics.ToString();
+            var test = 123;
 
-        //     var test = 123;
 
-        // }
-        // catch (Exception ex)
-        // {
+        }
+        catch (Exception ex)
+        {
 
-        //     executionLog = ex.Message;
-        //     throw;
-        // }
-        // finally
-        // {
-        //     isBusy = false;
-        // }
+            executionLog = ex.Message;
+            throw;
+        }
+        finally
+        {
+            isBusy = false;
+        }
 
     }
 
-    // private async Task ProcessPdf(Stream stream, string fileName)
-    // {
-    //     pdfFileLoaded = true;
-    //     await Task.CompletedTask;
-    // }
+    private string ExtractStatistics(AnalyzeDocumentResponseDto response)
+    {
+        string responseString = "";
+
+        responseString += $"PageCount: {response.PageCount}\n";
+        responseString += $"ParagraphCount: {response.ParagraphCount}\n";
+        responseString += $"TableCount: {response.TableCount}\n";
+        responseString += $"FigureCount: {response.FigureCount}\n";
+        responseString += $"SectionCount: {response.SectionCount}\n";
+        responseString += $"LanguagesCount: {response.LanguagesCount}\n";
+
+        return responseString;
+    }
+
     private void SetPdf(string url)
     {
         pdfUrl = url;

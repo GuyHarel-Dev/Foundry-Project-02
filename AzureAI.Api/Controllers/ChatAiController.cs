@@ -32,7 +32,7 @@ namespace AzureAI.Api.Controllers
             {
                 return BadRequest("Prompt text cannot be empty.");
             }
-            var response = await _azFoundryChatService.GetResponseAsync(request);
+            var response = await _azFoundryChatService.GetPromptResponseAsync(request);
 
             return Ok(response);
         }

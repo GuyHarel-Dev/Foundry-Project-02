@@ -36,15 +36,12 @@ namespace AzureAI.Api.Services
 
         }
 
-        public async Task<ChatResponseDto> GetResponseAsync(ChatRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<ChatResponseDto> GetPromptResponseAsync(ChatRequestDto request, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Sending prompt to Azure AI Foundry");
 
             CreateResponseOptions options = CreateResponseOptions(request);
             ProjectResponsesClient client = CreateResponseClient();
-
-            //_traceStepper.AddRange(request.TraceSteps);
-            //_traceStepper.AddStep(TraceStepperSourceEnum.WebApi, $"Sending prompt to Azure AI Foundry. Model: {_modelName}");
 
             ClientResult<ResponseResult> result = await client.CreateResponseAsync(
                 options, cancellationToken);
@@ -53,7 +50,7 @@ namespace AzureAI.Api.Services
 
             var responseDto = new ChatResponseDto
             {
-                Response = result.Value.GetOutputText(),
+                ChatResponse = result.Value.GetOutputText(),
                 ModelStatistics = new ModelStatisticsDto
                 {
                     ResponseId = result.Value.Id,

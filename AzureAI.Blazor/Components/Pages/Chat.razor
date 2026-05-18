@@ -26,12 +26,6 @@
         @if (isBusy)
         {
             <LoadingPanel></LoadingPanel>
-@*             <div class="loading-panel-container">
-                <div class="loading-panel" role="status" aria-live="polite">
-                    <div class="hourglass"></div>
-                    <span>Calling Azure AI Foundry...</span>
-                </div>
-            </div> *@
         }
     </form>
 
@@ -72,9 +66,7 @@
                 return;
             }
 
-            response = result.Value?.Response ?? string.Empty;
-
-            // traceStepper.Steps = result.Value?.TraceSteps ?? new List<TraceStep>();
+            response = result.Value?.ChatResponse ?? string.Empty;
 
             executionLog = apiTracer.GetTrace();
             executionLog += apiTracer.GetTotalTime();
@@ -97,8 +89,4 @@
 
     }
 
-    private void DisplayResponse()
-    {
-        // This method can be used to process and display the response if needed.
-    }
 }

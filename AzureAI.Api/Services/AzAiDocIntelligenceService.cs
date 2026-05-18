@@ -4,9 +4,7 @@ using AzureAI.Api.Services.Interfaces;
 using AzureAI.Common;
 using AzureAI.Contracts.Dtos;
 using AzureAI.Contracts.Responses;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -15,17 +13,17 @@ namespace AzureAI.Api.Services
     public class AzAiDocIntelligenceService : IAzAiDocIntelligenceService
     {
         private readonly IConfiguration _config;
-        private readonly DocumentIntelligenceClient _documentIntelligenceClient;
+        private readonly DocumentIntelligenceClient _client;
         private readonly ILogger<AzAiDocIntelligenceService> _logger;
         private readonly IApiStepTracer _traceStepper;
 
         public AzAiDocIntelligenceService(
-            DocumentIntelligenceClient documentIntelligenceClient,
+            DocumentIntelligenceClient client,
             IConfiguration config,
             ILogger<AzAiDocIntelligenceService> logger,
             IApiStepTracer traceStepper)
         {
-            _documentIntelligenceClient = documentIntelligenceClient;
+            _client = client;
             _config = config;
             _logger = logger;
             _traceStepper = traceStepper;
@@ -33,38 +31,13 @@ namespace AzureAI.Api.Services
 
         public async Task<AnalyzeDocumentResponseDto> PrebuildModelTest(IFormFile formFile)
         {
-            using var stream = formFile.OpenReadStream();
 
-            var bytes = BinaryData.FromStream(stream);
-
-            var options = new AnalyzeDocumentOptions(
-                "prebuilt-layout",
-                bytes);
-
-            Operation<AnalyzeResult> operation =
-                await _documentIntelligenceClient.AnalyzeDocumentAsync(
-                    WaitUntil.Completed,
-                    options);
-
-            AnalyzeResult result = operation.Value;
-
-
-
-
-            return new AnalyzeDocumentResponseDto
-            {
-                DocContent = result.Content,
-                DocFormat = result.ContentFormat,
-                PageCount = result.Pages.Count,
-                ParagraphCount = result.Paragraphs?.Count ?? 0,
-                SectionCount = result.Sections?.Count ?? 0,
-                TableCount = result.Tables?.Count ?? 0
-            };
+            return new AnalyzeDocumentResponseDto();
         }
 
-        public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument(string model, IFormFile formFile)
+        public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument(string model, Stream stream, CancellationToken cancellationToken = default)
         {
-            using var stream = formFile.OpenReadStream();
+            _logger.LogInformation("Sending document to Azure AI Foundry");
 
             var bytes = BinaryData.FromStream(stream);
 
@@ -72,10 +45,13 @@ namespace AzureAI.Api.Services
                 model,
                 bytes);
 
-            Operation<AnalyzeResult> operation =
-                await _documentIntelligenceClient.AnalyzeDocumentAsync(
+            _traceStepper.AddStep(ApiStepTypeEnum.WebApi, "Sending document for analysis");
+
+            var operation =
+                await _client.AnalyzeDocumentAsync(
                     WaitUntil.Completed,
-                    options);
+                    options,
+                    cancellationToken);
 
             var response = new AnalyzeDocumentResponseDto();
 
@@ -84,8 +60,23 @@ namespace AzureAI.Api.Services
             ExtractBaseInformation(operation.Value, response);
             ExtractFields(result, response);
 
+            _traceStepper.AddStep(ApiStepTypeEnum.WebApi, "Returnining response");
+
             return response;
         }
+
+        //private void ExtractStatistics(AnalyzeResult result, AnalyzeDocumentResponseDto response)
+        //{
+        //    return new ModelStatisticsDto
+        //    {
+        //        //ResponseId = result.Id,
+        //        //Model = result.Value.Model,
+        //        //InputTokens = result.Value.Usage?.InputTokenCount,
+        //        //OutputTokens = result.Value.Usage?.OutputTokenCount,
+        //        //TotalTokens = result.Value.Usage?.TotalTokenCount
+        //    };
+
+        //}
 
         private void ExtractBaseInformation(AnalyzeResult result, AnalyzeDocumentResponseDto response)
         {
@@ -124,41 +115,5 @@ namespace AzureAI.Api.Services
 
             }
         }
-
-        private static JsonElement SerializeToElement(AnalyzeResult result)
-        {
-            return JsonSerializer.SerializeToElement(
-                result,
-                new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-                });
-        }
     }
 }
-
-
-/*
-    Pages
-        Number
-           words 
-                content
-           SelectionMarks
-           Lines
-            Content
-
-            Paragraphs
-                content
-
-        Tables
-            RowCount
-            ColumnCount 
-
-        Figures
-        Sections
-              Elements
-
-        Languages
-
- */
