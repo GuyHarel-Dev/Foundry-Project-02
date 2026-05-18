@@ -35,6 +35,10 @@
     </div>
     <div class="column_2">
         <form @onsubmit="AnalyzeDocument">
+            <input name="model" type="radio" value="@ReadModel" @onchange="e => OnModelRadioChange(e)" /><label>@ReadModel</label> <br />
+            <input name="model" type="radio" value="@LayoutModel" @onchange="e => OnModelRadioChange(e)" /><label>@LayoutModel</label> <br />
+            <input name="model" type="radio" value="@InvoiceModel" @onchange="e => OnModelRadioChange(e)" /><label>@InvoiceModel</label> <br />
+            <input name="model" type="radio" value="@ReceiptModel" @onchange="e => OnModelRadioChange(e)" /><label>@ReceiptModel</label> <br />
 
             <button type="submit" class="ask-button" disabled="@isBusy">
                 <span>Analyze document</span>
@@ -62,21 +66,32 @@
     private string executionLog = string.Empty;
     private string statistics = string.Empty;
 
+    private string ReadModel = "prebuilt-read";
+    private string LayoutModel = "prebuilt-layout";
+    private string InvoiceModel = "prebuilt-invoice";
+    private string ReceiptModel = "prebuilt-receipt";
+
+    private string SelectedModel = "prebuilt-read";
+
+    private async Task OnModelRadioChange(ChangeEventArgs e)
+    {
+        var test = e.Value;
+
+        SelectedModel = e.Value?.ToString() ?? "prebuilt-read";
+        await AddUiStep($"Model selected: {SelectedModel}");
+    }
+
     private async Task AnalyzeDocument()
     {
         try
         {
             isBusy = true;
 
-            apiTracer.AddStep(ApiStepTypeEnum.BlazorUi, $"{nameof(AnalyzeDocument)}: Analyzing: {pdfUrl}");
-            executionLog = apiTracer.GetTrace();
-
-            await InvokeAsync(StateHasChanged);
-            await Task.Yield();
+            await AddUiStep($"{nameof(AnalyzeDocument)}: Analyzing: {pdfUrl}");
 
             var request = new AnalyzeDocumentRequestDto
             {
-                ModelName = "prebuilt-read",
+                ModelName = SelectedModel,
                 FileName = Path.GetFileName(pdfUrl),
                 Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, pdfUrl.TrimStart('/')))     
             };
@@ -136,5 +151,14 @@
     private void SetPdf(string url)
     {
         pdfUrl = url;
+    }
+
+    private async Task AddUiStep(string message)
+    {
+        apiTracer.AddStep(ApiStepTypeEnum.BlazorUi, message);
+        executionLog = apiTracer.GetTrace();
+
+        await InvokeAsync(StateHasChanged);
+        await Task.Yield();
     }
 }
