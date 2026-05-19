@@ -6,6 +6,7 @@ using AzureAI.Common;
 using AzureAI.Contracts.Dtos;
 using AzureAI.Contracts.Requests;
 using AzureAI.Contracts.Responses;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace AzureAI.Api.Services
 {
@@ -32,11 +33,7 @@ namespace AzureAI.Api.Services
             var response = new AnalyzeDocumentResponseDto();
 
             response.Steps.AddRange(request.Steps);
-            response.Steps.Add(new StepTracerStepDto
-            {
-                StepTitle = "step 2",
-                StepDateTime = DateTime.UtcNow
-            });
+            StepTracer.AddStep(response.Steps, "AzAiDocIntelligenceService", "Start analyzing document");
 
             var options = CreateDocumentOptions(request);
 
@@ -51,6 +48,7 @@ namespace AzureAI.Api.Services
             ExtractBaseInformation(operation.Value, response);
             ExtractDocumentsFields(result, response);
 
+            StepTracer.AddStep(response.Steps, "AzAiDocIntelligenceService", "End of analyzing document");
 
             return response;
         }

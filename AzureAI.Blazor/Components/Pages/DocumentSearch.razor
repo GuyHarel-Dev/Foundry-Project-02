@@ -96,12 +96,11 @@
 
     private string SelectedModel = "prebuilt-read";
 
-    private async Task OnModelRadioChange(ChangeEventArgs e)
+    private void OnModelRadioChange(ChangeEventArgs e)
     {
         var test = e.Value;
 
         SelectedModel = e.Value?.ToString() ?? "prebuilt-read";
-        await AddUiStep($"Model selected: {SelectedModel}");
     }
 
     private async Task AnalyzeDocument()
@@ -114,8 +113,6 @@
             statistics = string.Empty;
             executionLog = string.Empty;
 
-            await AddUiStep($"{nameof(AnalyzeDocument)}: Analyzing: {pdfUrl}");
-
             var request = new AnalyzeDocumentRequestDto
             {
                 ModelName = SelectedModel,
@@ -123,11 +120,11 @@
                 Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, pdfUrl.TrimStart('/')))     
             };
 
-            request.Steps.Add(new StepTracerStepDto
-            {
-                StepTitle = "Step 1: Prepare document",
-                StepDateTime = DateTime.UtcNow
-            });
+            StepTracer.AddStep(request.Steps,"BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {pdfUrl} with model {SelectedModel}");
+ 
+            executionLog = StepTracer.GetTrace(request.Steps);
+
+            await RefreshUI();
 
             var result = await apiClient.PostAsync<AnalyzeDocumentRequestDto, 
                 AnalyzeDocumentResponseDto>("api/document/analyze", request);
@@ -138,14 +135,16 @@
                 return;
             }
 
-            response = ExtractDocumentsFields(result.Value);
+            var responseDto = result.Value;
+
+            if (responseDto == null)
+            {
+                executionLog = "API returned no data.";
+                return;
+            }
+            response = ExtractDocumentsFields(responseDto);
+            executionLog = StepTracer.GetTrace(responseDto.Steps);
             statistics = ExtractStatistics(result.Value);
-
-            // executionLog = apiTracer.GetTrace();
-            // executionLog += apiTracer.GetTotalTime();
-
-            var test = 123;
-
 
         }
         catch (Exception ex)
@@ -210,14 +209,6 @@
     private void SetPdf(string url)
     {
         pdfUrl = url;
-    }
-
-    private async Task AddUiStep(string message)
-    {
-        // apiTracer.AddStep(ApiStepTracerTraceeEnum.BlazorUi, message);
-        // executionLog = apiTracer.GetTrace();
-
-        await RefreshUI();
     }
 
     private async Task RefreshUI()

@@ -27,7 +27,6 @@ namespace AzureAI.Api.Controllers
 
             var response = await _documentIntelligence.AnalyzeDocument(request);
 
-
             return Ok(response);
 
         }

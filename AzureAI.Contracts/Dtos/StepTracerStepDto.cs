@@ -4,6 +4,6 @@
     {
         public string StepTitle { get; set; } = string.Empty;
         public DateTime? StepDateTime { get; set; }
-        public string Source { get; set; } = string.Empty;
+        public string StepSource { get; set; } = string.Empty;
     }
 }

@@ -3,74 +3,54 @@ using System.Text;
 
 namespace AzureAI.Common
 {
-    public class StepTracer : IStepTracer
+    public static class StepTracer
     {
-        //public List<StepTracerStep> Steps { get; set; } = new();
+        public static void AddStep(List<StepTracerStepDto> Steps, string source, string title)
+        {
+            Steps.Add(new StepTracerStepDto
+            {
+                StepTitle = title,
+                StepSource = source,
+                StepDateTime = DateTime.UtcNow
+            });
+        }
+        public static string GetTrace(List<StepTracerStepDto> Steps)
+        {
+            if (Steps.Count == 0)
+            {
+                return string.Empty;
+            }
 
-        //public StepTracer()
-        //{
-                
-        //}
-        //public StepTracer(List<StepTracerStep> steps)
-        //{
-        //    Steps.AddRange(steps);
-        //}
+            var builder = new StringBuilder();
 
-        //public void AddStep(StepTracerTraceTypeEnum source, string title)
-        //{
-        //    var step = new StepTracerStep
-        //    {
-        //        Source = TraceStepperSourceEnumName.ToDisplayName(source),
-        //        StepTitle = title,
-        //        StepDateTime = DateTime.UtcNow
-        //    };
-        //    Steps.Add(step);
-        //}
-        //public void AddRange(List<StepTracerStep> steps)
-        //{
-        //    Steps.AddRange(steps);
-        //}
+            foreach (var step in Steps.OrderBy(x => x.StepDateTime))
+            {
+                builder.AppendLine(
+                    $"[{step.StepDateTime?.ToLocalTime():yyyy-MM-dd HH:mm:ss.fff}] [{step.StepSource}] {step.StepTitle}");
+            }
 
-        //public string GetTrace()
-        //{
-        //    if (Steps.Count == 0)
-        //    {
-        //        return string.Empty;
-        //    }
+            builder.AppendLine(GetTotalTime(Steps));
 
-        //    var builder = new StringBuilder();
+            return builder.ToString();
+        }
 
-        //    foreach (var step in Steps.OrderBy(x => x.StepDateTime))
-        //    {
-        //        builder.AppendLine(
-        //            $"[{step.StepDateTime?.ToLocalTime():yyyy-MM-dd HH:mm:ss.fff}] [{step.Source}] {step.StepTitle}");
-        //    }
+        public static string GetTotalTime(List<StepTracerStepDto> Steps)
+        {
+            var orderedSteps = Steps
+                .Where(x => x.StepDateTime.HasValue)
+                .OrderBy(x => x.StepDateTime)
+                .ToList();
 
-        //    return builder.ToString();
-        //}
+            if (orderedSteps.Count < 2)
+            {
+                return "";
+            }
 
-        //public string GetTotalTime()
-        //{
-        //    var orderedSteps = Steps
-        //        .Where(x => x.StepDateTime.HasValue)
-        //        .OrderBy(x => x.StepDateTime)
-        //        .ToList();
+            var firstStep = orderedSteps.First().StepDateTime!.Value;
+            var lastStep = orderedSteps.Last().StepDateTime!.Value;
 
-        //    if (orderedSteps.Count < 2)
-        //    {
-        //        return "";
-        //    }
-
-        //    var firstStep = orderedSteps.First().StepDateTime!.Value;
-        //    var lastStep = orderedSteps.Last().StepDateTime!.Value;
-
-        //    var total =  (lastStep - firstStep).TotalSeconds;
-        //    return $"Total time: {total:0.000} seconds";
-        //}
-
-        //public void Clear()
-        //{
-        //    Steps.Clear();
-        //}
+            var total = (lastStep - firstStep).TotalSeconds;
+            return $"Total time: {total:0.000} seconds";
+        }
     }
 }
