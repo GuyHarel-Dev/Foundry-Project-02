@@ -58,25 +58,13 @@ namespace AzureAI.Api.Services
             AnalyzeResult result = operation.Value;
 
             ExtractBaseInformation(operation.Value, response);
-            ExtractFields(result, response);
+            ExtractDocumentsFields(result, response);
 
             _traceStepper.AddStep(ApiStepTypeEnum.WebApi, "Returnining response");
 
             return response;
         }
 
-        //private void ExtractStatistics(AnalyzeResult result, AnalyzeDocumentResponseDto response)
-        //{
-        //    return new ModelStatisticsDto
-        //    {
-        //        //ResponseId = result.Id,
-        //        //Model = result.Value.Model,
-        //        //InputTokens = result.Value.Usage?.InputTokenCount,
-        //        //OutputTokens = result.Value.Usage?.OutputTokenCount,
-        //        //TotalTokens = result.Value.Usage?.TotalTokenCount
-        //    };
-
-        //}
 
         private void ExtractBaseInformation(AnalyzeResult result, AnalyzeDocumentResponseDto response)
         {
@@ -92,15 +80,21 @@ namespace AzureAI.Api.Services
 
         }
 
-        private static void ExtractFields(AnalyzeResult result, AnalyzeDocumentResponseDto response)
+        private static void ExtractDocumentsFields(AnalyzeResult result, AnalyzeDocumentResponseDto response)
         {
             if (result.Documents != null)
             {
                 foreach (var document in result.Documents)
                 {
+                    var docDto = new DocumentDto
+                    {
+                        DocumentType = document.DocumentType,
+                        Confidence = document.Confidence
+                    };
+
                     foreach (var field in document.Fields)
                     {
-                        response.Fields.Add(new DocumentFieldDto
+                        docDto.Fields.Add(new DocumentFieldDto
                         {
                             Name = field.Key,
 
@@ -111,6 +105,8 @@ namespace AzureAI.Api.Services
                             Confidence = field.Value.Confidence
                         });
                     }
+
+                    response.Documents.Add(docDto);
                 }
 
             }

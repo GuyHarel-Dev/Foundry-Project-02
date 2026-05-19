@@ -21,7 +21,7 @@ namespace AzureAI.Contracts.Responses
         public int SectionCount { get; set; }
         public int LanguagesCount { get; set; }
 
-        public List<DocumentFieldDto> Fields { get; set; } = [];
+        public List<DocumentDto> Documents { get; set; } = [];
 
         public object JsonObjectResult { get; set; } = string.Empty;
     }

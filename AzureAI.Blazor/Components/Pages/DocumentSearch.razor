@@ -105,8 +105,7 @@
                 return;
             }
 
-            response = result.Value?.DocContent ?? string.Empty;
-
+            response = ExtractDocumentsFields(result.Value);
             statistics = ExtractStatistics(result.Value);
 
             executionLog = apiTracer.GetTrace();
@@ -129,23 +128,49 @@
 
     }
 
-    private string ExtractStatistics(AnalyzeDocumentResponseDto response)
+    private string ExtractDocumentsFields(AnalyzeDocumentResponseDto? response)
     {
-        string responseString = "";
+        if (response == null)
+            return "No response documents or fields to extract.";
 
-        responseString += $"PageCount: {response.PageCount}\n";
-        responseString += $"ParagraphCount: {response.ParagraphCount}\n";
-        responseString += $"TableCount: {response.TableCount}\n";
-        responseString += $"FigureCount: {response.FigureCount}\n";
-        responseString += $"SectionCount: {response.SectionCount}\n";
-        responseString += $"LanguagesCount: {response.LanguagesCount}\n";
-        responseString += $"LanguagesCount: {response.LanguagesCount}\n";
+        string str = "";
+
+        foreach (var doc in response.Documents)
+        {
+            str += $"Document Type: {doc.DocumentType}\n";
+            foreach (var field in doc.Fields)
+            {
+                str += $"  Field Name: {field.Name}\n";
+                str += $"    Value: {field.Value}\n";
+                str += $"    Confidence: {field.Confidence}\n";
+                str += $"    Confidence: {field.FieldType}\n";
+            }
+        }
+
+        return str;
+    }
+
+    private string ExtractStatistics(AnalyzeDocumentResponseDto? response)
+    {
+        if (response == null)
+            return "No response data to extract statistics.";
+
+        string str = "";
+
+        str += $"PageCount: {response.PageCount}\n";
+        str += $"ParagraphCount: {response.ParagraphCount}\n";
+        str += $"TableCount: {response.TableCount}\n";
+        str += $"FigureCount: {response.FigureCount}\n";
+        str += $"SectionCount: {response.SectionCount}\n";
+        str += $"LanguagesCount: {response.LanguagesCount}\n";
+        str += $"LanguagesCount: {response.LanguagesCount}\n";
 
         // Derived statistics
-        responseString += $"CharacterCount : {response.DocContent.Length}\n";
-        responseString += $"WordCount : {response.DocContent.Split(' ').Length}\n";
+        str += $"CharacterCount : {response.DocContent.Length}\n";
+        str += $"WordCount : {response.DocContent.Split(' ').Length}\n";
 
-        return responseString;
+        return str;
+
     }
 
     private void SetPdf(string url)
