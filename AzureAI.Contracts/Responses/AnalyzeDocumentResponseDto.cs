@@ -23,6 +23,6 @@ namespace AzureAI.Contracts.Responses
 
         public List<DocumentDto> Documents { get; set; } = [];
 
-        public object JsonObjectResult { get; set; } = string.Empty;
+        public List<StepTracerStepDto> Steps { get; set; } = new();
     }
 }

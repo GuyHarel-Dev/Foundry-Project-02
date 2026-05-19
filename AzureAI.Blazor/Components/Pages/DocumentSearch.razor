@@ -5,6 +5,7 @@
 @using AzureAI.Common
 @using AzureAI.Contracts.Requests
 @using AzureAI.Contracts.Responses
+@using AzureAI.Contracts.Dtos
 @using UI.Services
 
 @inject FoundryApiClient apiClient
@@ -121,6 +122,12 @@
                 FileName = Path.GetFileName(pdfUrl),
                 Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, pdfUrl.TrimStart('/')))     
             };
+
+            request.Steps.Add(new StepTracerStepDto
+            {
+                StepTitle = "Step 1: Prepare document",
+                StepDateTime = DateTime.UtcNow
+            });
 
             var result = await apiClient.PostAsync<AnalyzeDocumentRequestDto, 
                 AnalyzeDocumentResponseDto>("api/document/analyze", request);

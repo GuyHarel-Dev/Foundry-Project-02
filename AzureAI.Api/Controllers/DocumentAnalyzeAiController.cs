@@ -1,4 +1,6 @@
 ﻿using AzureAI.Api.Services.Interfaces;
+using AzureAI.Common;
+using AzureAI.Contracts.Dtos;
 using AzureAI.Contracts.Requests;
 using AzureAI.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +25,8 @@ namespace AzureAI.Api.Controllers
             var modelName = request.ModelName;
             await using var stream = new MemoryStream(request.Bytes);
 
-            var response = await _documentIntelligence.AnalyzeDocument(modelName, stream);
+            var response = await _documentIntelligence.AnalyzeDocument(request);
+
 
             return Ok(response);
 

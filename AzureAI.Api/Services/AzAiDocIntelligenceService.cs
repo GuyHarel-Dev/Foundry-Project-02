@@ -1,8 +1,10 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
+using Azure.Core;
 using AzureAI.Api.Services.Interfaces;
 using AzureAI.Common;
 using AzureAI.Contracts.Dtos;
+using AzureAI.Contracts.Requests;
 using AzureAI.Contracts.Responses;
 
 namespace AzureAI.Api.Services
@@ -23,17 +25,20 @@ namespace AzureAI.Api.Services
             _logger = logger;
         }
 
-        public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument(string model, Stream stream, CancellationToken cancellationToken = default)
+        public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument(AnalyzeDocumentRequestDto request, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Sending document to Azure AI Foundry");
 
-            var bytes = BinaryData.FromStream(stream);
+            var response = new AnalyzeDocumentResponseDto();
 
-            var options = new AnalyzeDocumentOptions(
-                model,
-                bytes);
+            response.Steps.AddRange(request.Steps);
+            response.Steps.Add(new StepTracerStepDto
+            {
+                StepTitle = "step 2",
+                StepDateTime = DateTime.UtcNow
+            });
 
-            //_traceStepper.AddStep(StepTracerTraceTypeEnum.WebApi, "Sending document for analysis");
+            var options = CreateDocumentOptions(request);
 
             var operation =
                 await _client.AnalyzeDocumentAsync(
@@ -41,18 +46,25 @@ namespace AzureAI.Api.Services
                     options,
                     cancellationToken);
 
-            var response = new AnalyzeDocumentResponseDto();
-
             AnalyzeResult result = operation.Value;
 
             ExtractBaseInformation(operation.Value, response);
             ExtractDocumentsFields(result, response);
 
-            //_traceStepper.AddStep(StepTracerTraceTypeEnum.WebApi, "Returnining response");
 
             return response;
         }
 
+        private AnalyzeDocumentOptions CreateDocumentOptions(AnalyzeDocumentRequestDto doc)
+        {
+            var modelName = doc.ModelName;
+            var stream = new MemoryStream(doc.Bytes);
+            var bytes = BinaryData.FromStream(stream);
+
+            return new AnalyzeDocumentOptions(
+                modelName,
+                bytes);
+        }
 
         private void ExtractBaseInformation(AnalyzeResult result, AnalyzeDocumentResponseDto response)
         {
