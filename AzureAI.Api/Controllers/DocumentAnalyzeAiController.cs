@@ -17,15 +17,6 @@ namespace AzureAI.Api.Controllers
             _documentIntelligence = documentIntelligence;
         }
 
-        [HttpPost("analyze/Test")]
-        public async Task<ActionResult<AnalyzeDocumentResponseDto>> PrebuildModelTest(IFormFile formFile)
-        {
-            var response = await _documentIntelligence.PrebuildModelTest(formFile);
-
-            return Ok(response);
-
-        }
-
         [HttpPost("analyze")]
         public async Task<ActionResult<AnalyzeDocumentResponseDto>> AnalyzeDocument(
             [FromBody] AnalyzeDocumentRequestDto request)

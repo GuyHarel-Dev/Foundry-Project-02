@@ -43,7 +43,7 @@ namespace AzureAI.Common
             foreach (var step in Steps.OrderBy(x => x.StepDateTime))
             {
                 builder.AppendLine(
-                    $"[{step.StepDateTime:yyyy-MM-dd HH:mm:ss.fff} UTC] [{step.Source}] {step.StepTitle}");
+                    $"[{step.StepDateTime?.ToLocalTime():yyyy-MM-dd HH:mm:ss.fff}] [{step.Source}] {step.StepTitle}");
             }
 
             return builder.ToString();
@@ -66,6 +66,11 @@ namespace AzureAI.Common
 
             var total =  (lastStep - firstStep).TotalSeconds;
             return $"Total time: {total:0.000} seconds";
+        }
+
+        public void Clear()
+        {
+            Steps.Clear();
         }
     }
 }

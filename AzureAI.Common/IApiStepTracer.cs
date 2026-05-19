@@ -7,6 +7,7 @@ namespace AzureAI.Common
     {
         List<ApiTraceStep> Steps { get; set; }
         void AddStep(ApiStepTypeEnum source, string title);
+        void Clear();
         void AddRange(List<ApiTraceStep> steps);
 
         string GetTrace();

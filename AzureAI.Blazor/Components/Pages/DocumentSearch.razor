@@ -35,10 +35,33 @@
     </div>
     <div class="column_2">
         <form @onsubmit="AnalyzeDocument">
-            <input name="model" type="radio" value="@ReadModel" @onchange="e => OnModelRadioChange(e)" /><label>@ReadModel</label> <br />
-            <input name="model" type="radio" value="@LayoutModel" @onchange="e => OnModelRadioChange(e)" /><label>@LayoutModel</label> <br />
-            <input name="model" type="radio" value="@InvoiceModel" @onchange="e => OnModelRadioChange(e)" /><label>@InvoiceModel</label> <br />
-            <input name="model" type="radio" value="@ReceiptModel" @onchange="e => OnModelRadioChange(e)" /><label>@ReceiptModel</label> <br />
+            <label class="radio-option">
+                <input name="model" type="radio"
+                       value="@ReadModel"
+                       @onchange="e => OnModelRadioChange(e)" />
+                @ReadModel
+            </label>
+
+            <label class="radio-option">
+                <input name="model" type="radio"
+                       value="@LayoutModel"
+                       @onchange="e => OnModelRadioChange(e)" />
+                @LayoutModel
+            </label>
+
+            <label class="radio-option">
+                <input name="model" type="radio"
+                       value="@InvoiceModel"
+                       @onchange="e => OnModelRadioChange(e)" />
+                @InvoiceModel
+            </label>
+
+            <label class="radio-option">
+                <input name="model" type="radio"
+                       value="@ReceiptModel"
+                       @onchange="e => OnModelRadioChange(e)" />
+                @ReceiptModel
+            </label>
 
             <button type="submit" class="ask-button" disabled="@isBusy">
                 <span>Analyze document</span>
@@ -86,6 +109,10 @@
         try
         {
             isBusy = true;
+
+            response = string.Empty;
+            statistics = string.Empty;
+            executionLog = string.Empty;
 
             await AddUiStep($"{nameof(AnalyzeDocument)}: Analyzing: {pdfUrl}");
 
@@ -140,6 +167,7 @@
             str += $"Document Type: {doc.DocumentType}\n";
             foreach (var field in doc.Fields)
             {
+                str += $"\n";
                 str += $"  Field Name: {field.Name}\n";
                 str += $"    Value: {field.Value}\n";
                 str += $"    Confidence: {field.Confidence}\n";
@@ -182,6 +210,12 @@
     {
         apiTracer.AddStep(ApiStepTypeEnum.BlazorUi, message);
         executionLog = apiTracer.GetTrace();
+
+        await RefreshUI();
+    }
+
+    private async Task RefreshUI()
+    {
 
         await InvokeAsync(StateHasChanged);
         await Task.Yield();

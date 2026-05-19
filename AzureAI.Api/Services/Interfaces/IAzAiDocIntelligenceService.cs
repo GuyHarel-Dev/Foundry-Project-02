@@ -5,7 +5,5 @@ namespace AzureAI.Api.Services.Interfaces
     public interface IAzAiDocIntelligenceService
     {
         Task<AnalyzeDocumentResponseDto> AnalyzeDocument(string model, Stream stream, CancellationToken cancellationToken = default);
-
-        Task<AnalyzeDocumentResponseDto> PrebuildModelTest(IFormFile formFile);
     }
 }

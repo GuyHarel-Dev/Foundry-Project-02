@@ -29,12 +29,6 @@ namespace AzureAI.Api.Services
             _traceStepper = traceStepper;
         }
 
-        public async Task<AnalyzeDocumentResponseDto> PrebuildModelTest(IFormFile formFile)
-        {
-
-            return new AnalyzeDocumentResponseDto();
-        }
-
         public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument(string model, Stream stream, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Sending document to Azure AI Foundry");
@@ -68,7 +62,6 @@ namespace AzureAI.Api.Services
 
         private void ExtractBaseInformation(AnalyzeResult result, AnalyzeDocumentResponseDto response)
         {
-
             response.DocContent = result.Content;
             response.DocFormat = result.ContentFormat;
             response.PageCount = result.Pages.Count;
@@ -77,7 +70,6 @@ namespace AzureAI.Api.Services
             response.TableCount = result.Tables?.Count ?? 0;
             response.FigureCount = result.Figures?.Count ?? 0;
             response.LanguagesCount = result.Languages?.Count ?? 0;
-
         }
 
         private static void ExtractDocumentsFields(AnalyzeResult result, AnalyzeDocumentResponseDto response)
