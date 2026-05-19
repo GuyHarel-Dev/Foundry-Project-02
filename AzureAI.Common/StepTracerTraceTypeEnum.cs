@@ -1,6 +1,6 @@
 ﻿namespace AzureAI.Common
 {
-    public enum ApiStepTypeEnum
+    public enum StepTracerTraceTypeEnum
     {
         Unknown = 0,
         BlazorUi = 1,
@@ -9,12 +9,12 @@
 
     public static class TraceStepperSourceEnumName
     {
-        public static string ToDisplayName(this ApiStepTypeEnum source)
+        public static string ToDisplayName(this StepTracerTraceTypeEnum source)
         {
             return source switch
             {
-                ApiStepTypeEnum.BlazorUi => "Blazor UI",
-                ApiStepTypeEnum.WebApi => "Web API",
+                StepTracerTraceTypeEnum.BlazorUi => "Blazor UI",
+                StepTracerTraceTypeEnum.WebApi => "Web API",
                 _ => "Unknown"
             };
         }

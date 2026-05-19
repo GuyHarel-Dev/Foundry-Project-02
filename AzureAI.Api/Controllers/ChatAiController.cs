@@ -13,16 +13,13 @@ namespace AzureAI.Api.Controllers
     {
         private readonly IConfiguration _config; 
         private readonly IAzFoundryChatService _azFoundryChatService;
-        private readonly IApiStepTracer _traceStepper;
 
         public ChatAiController(
                 IConfiguration config, 
-                IAzFoundryChatService azFoundryService,
-                IApiStepTracer traceStepper)
+                IAzFoundryChatService azFoundryService)
         {
             _config = config;
             _azFoundryChatService = azFoundryService;
-            _traceStepper = traceStepper;
         }
 
         [HttpPost("sendprompt")]

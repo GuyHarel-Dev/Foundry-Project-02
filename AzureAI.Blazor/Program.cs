@@ -15,7 +15,6 @@ namespace UI
 
             // Add application services
             builder.Services.AddFoundryHttpClient(builder.Configuration);
-            builder.Services.AddTraceStepper();
 
             var app = builder.Build();
 

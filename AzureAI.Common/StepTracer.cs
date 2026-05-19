@@ -3,22 +3,22 @@ using System.Text;
 
 namespace AzureAI.Common
 {
-    public class ApiStepTracer : IApiStepTracer
+    public class StepTracer : IStepTracer
     {
-        public List<ApiTraceStep> Steps { get; set; } = new();
+        public List<StepTracerStep> Steps { get; set; } = new();
 
-        public ApiStepTracer()
+        public StepTracer()
         {
                 
         }
-        public ApiStepTracer(List<ApiTraceStep> steps)
+        public StepTracer(List<StepTracerStep> steps)
         {
             Steps.AddRange(steps);
         }
 
-        public void AddStep(ApiStepTypeEnum source, string title)
+        public void AddStep(StepTracerTraceTypeEnum source, string title)
         {
-            var step = new ApiTraceStep
+            var step = new StepTracerStep
             {
                 Source = TraceStepperSourceEnumName.ToDisplayName(source),
                 StepTitle = title,
@@ -26,7 +26,7 @@ namespace AzureAI.Common
             };
             Steps.Add(step);
         }
-        public void AddRange(List<ApiTraceStep> steps)
+        public void AddRange(List<StepTracerStep> steps)
         {
             Steps.AddRange(steps);
         }

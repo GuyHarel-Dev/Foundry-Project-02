@@ -8,7 +8,6 @@
 @using UI.Services
 
 @inject FoundryApiClient apiClient
-@inject IApiStepTracer apiTracer
 
 <h3>AI Document Search</h3>
  
@@ -135,8 +134,8 @@
             response = ExtractDocumentsFields(result.Value);
             statistics = ExtractStatistics(result.Value);
 
-            executionLog = apiTracer.GetTrace();
-            executionLog += apiTracer.GetTotalTime();
+            // executionLog = apiTracer.GetTrace();
+            // executionLog += apiTracer.GetTotalTime();
 
             var test = 123;
 
@@ -208,8 +207,8 @@
 
     private async Task AddUiStep(string message)
     {
-        apiTracer.AddStep(ApiStepTypeEnum.BlazorUi, message);
-        executionLog = apiTracer.GetTrace();
+        // apiTracer.AddStep(ApiStepTracerTraceeEnum.BlazorUi, message);
+        // executionLog = apiTracer.GetTrace();
 
         await RefreshUI();
     }

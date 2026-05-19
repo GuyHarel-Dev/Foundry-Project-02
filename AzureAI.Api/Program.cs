@@ -16,7 +16,6 @@ builder.Services.AddAzFoundryService();
 builder.Services.AddAzFoundryHttpClient();
 builder.Services.AddAzDocIntelligenceClient();
 builder.Services.AddAzAiDocIntelligenceService();
-builder.Services.AddTraceStepper();
 
 var app = builder.Build();
 

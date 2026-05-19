@@ -20,12 +20,5 @@ namespace UI.Extensions
 
             return services;
         }
-
-        public static IServiceCollection AddTraceStepper(this IServiceCollection services)
-        {
-            services.AddScoped<IApiStepTracer, ApiStepTracer>();
-
-            return services;
-        }
     }
 }

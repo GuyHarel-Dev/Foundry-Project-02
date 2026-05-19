@@ -9,7 +9,6 @@
 @using UI.Services
 
 @inject FoundryApiClient apiClient
-@inject IApiStepTracer apiTracer
 
 <div>
 
@@ -47,8 +46,8 @@
         {
             isBusy = true;
 
-            apiTracer.AddStep(ApiStepTypeEnum.BlazorUi, $"{nameof(SendQuestion)}: {question}");
-            executionLog = apiTracer.GetTrace();
+            // apiTracer.AddStep(StepTracerTraceTypeEnum.BlazorUi, $"{nameof(SendQuestion)}: {question}");
+            // executionLog = apiTracer.GetTrace();
 
             await InvokeAsync(StateHasChanged);
             await Task.Yield();
@@ -68,8 +67,8 @@
 
             response = result.Value?.ChatResponse ?? string.Empty;
 
-            executionLog = apiTracer.GetTrace();
-            executionLog += apiTracer.GetTotalTime();
+            // executionLog = apiTracer.GetTrace();
+            // executionLog += apiTracer.GetTotalTime();
 
             statistics = result.Value.ModelStatistics.ToString();
 

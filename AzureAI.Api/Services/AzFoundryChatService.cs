@@ -18,18 +18,15 @@ namespace AzureAI.Api.Services
         private readonly AIProjectClient _projectClient;
         private readonly string _modelName;
         private readonly ILogger<AzFoundryChatService> _logger;
-        private readonly IApiStepTracer _traceStepper;
 
         public AzFoundryChatService(
             IConfiguration config,
             AIProjectClient projectClient,
-            ILogger<AzFoundryChatService> logger,
-            IApiStepTracer traceStepper)
-        {
+            ILogger<AzFoundryChatService> logger)
+       {
             _config = config;
             _projectClient = projectClient;
             _logger = logger;
-            _traceStepper = traceStepper;
 
             _modelName = _config["FoundryPrj01:Model:OpenAiChat"]
                 ?? throw new InvalidOperationException("ModelName not configured");
@@ -46,7 +43,7 @@ namespace AzureAI.Api.Services
             ClientResult<ResponseResult> result = await client.CreateResponseAsync(
                 options, cancellationToken);
 
-            _traceStepper.AddStep(ApiStepTypeEnum.WebApi, "Received response from Azure AI Foundry");
+            //_traceStepper.AddStep(StepTracerTraceTypeEnum.WebApi, "Received response from Azure AI Foundry");
 
             var responseDto = new ChatResponseDto
             {

@@ -4,9 +4,6 @@ using AzureAI.Api.Services.Interfaces;
 using AzureAI.Common;
 using AzureAI.Contracts.Dtos;
 using AzureAI.Contracts.Responses;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace AzureAI.Api.Services
 {
@@ -15,18 +12,15 @@ namespace AzureAI.Api.Services
         private readonly IConfiguration _config;
         private readonly DocumentIntelligenceClient _client;
         private readonly ILogger<AzAiDocIntelligenceService> _logger;
-        private readonly IApiStepTracer _traceStepper;
 
         public AzAiDocIntelligenceService(
             DocumentIntelligenceClient client,
             IConfiguration config,
-            ILogger<AzAiDocIntelligenceService> logger,
-            IApiStepTracer traceStepper)
+            ILogger<AzAiDocIntelligenceService> logger)
         {
             _client = client;
             _config = config;
             _logger = logger;
-            _traceStepper = traceStepper;
         }
 
         public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument(string model, Stream stream, CancellationToken cancellationToken = default)
@@ -39,7 +33,7 @@ namespace AzureAI.Api.Services
                 model,
                 bytes);
 
-            _traceStepper.AddStep(ApiStepTypeEnum.WebApi, "Sending document for analysis");
+            //_traceStepper.AddStep(StepTracerTraceTypeEnum.WebApi, "Sending document for analysis");
 
             var operation =
                 await _client.AnalyzeDocumentAsync(
@@ -54,7 +48,7 @@ namespace AzureAI.Api.Services
             ExtractBaseInformation(operation.Value, response);
             ExtractDocumentsFields(result, response);
 
-            _traceStepper.AddStep(ApiStepTypeEnum.WebApi, "Returnining response");
+            //_traceStepper.AddStep(StepTracerTraceTypeEnum.WebApi, "Returnining response");
 
             return response;
         }
