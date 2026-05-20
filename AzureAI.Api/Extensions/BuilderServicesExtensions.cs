@@ -40,10 +40,10 @@ public static class BuilderServicesExtensions
         {
             var config = sp.GetRequiredService<IConfiguration>();
 
-            var endpoint = config["AzureDocIntelligence:Endpoint"]
+            var endpoint = config["AzAiDocIntelligenceService:Endpoint"]
                 ?? throw new InvalidOperationException("AzureDocIntelligence Endpoint not configured");
 
-            var key = config["AzureDocIntelligence:Key1"]
+            var key = config["AzAiDocIntelligenceService:Key1"]
                 ?? throw new InvalidOperationException("AzureDocIntelligence Key1 not configured");
 
             AzureKeyCredential credential = new AzureKeyCredential(key);

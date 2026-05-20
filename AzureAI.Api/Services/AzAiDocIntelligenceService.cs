@@ -30,10 +30,9 @@ namespace AzureAI.Api.Services
         {
             _logger.LogInformation("Sending document to Azure AI Foundry");
 
-            var response = new AnalyzeDocumentResponseDto();
+            var response = new AnalyzeDocumentResponseDto(request.Steps);
 
-            response.Steps.AddRange(request.Steps);
-            StepTracer.AddStep(response.Steps, "AzAiDocIntelligenceService", "Start analyzing document");
+            StepTracer.AddStep(response.Steps, $"{nameof(AzAiDocIntelligenceService)}", "Start analyzing document");
 
             var options = CreateDocumentOptions(request);
 
@@ -48,7 +47,7 @@ namespace AzureAI.Api.Services
             ExtractBaseInformation(operation.Value, response);
             ExtractDocumentsFields(result, response);
 
-            StepTracer.AddStep(response.Steps, "AzAiDocIntelligenceService", "End of analyzing document");
+            StepTracer.AddStep(response.Steps, $"{nameof(AzAiDocIntelligenceService)}", "End of analyzing document");
 
             return response;
         }

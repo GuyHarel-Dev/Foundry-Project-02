@@ -34,15 +34,6 @@ namespace AzureAI.Api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("test")]
-        public async Task<IActionResult> Test()
-        {
-
-            return Ok();
-
-        }
-
-
     }
 }
 

@@ -1,10 +1,4 @@
 ﻿
-<!-- response panel -->
-<div>
-    <label for="response">Response:</label>
-    <textarea readonly value="@Response" rows="10" cols="50"></textarea>
-</div>
-
 <!-- model statistic panel -->
 <div>
     <label for="statisticsPanel">Model statistics:</label>
@@ -18,8 +12,6 @@
 </div>
 
 @code {
-    [Parameter]
-    public string Response { get; set; } = string.Empty;
 
     [Parameter]
     public string Statistics { get; set; } = string.Empty;

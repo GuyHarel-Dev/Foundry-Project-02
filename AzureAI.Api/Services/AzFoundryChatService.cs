@@ -1,4 +1,5 @@
-﻿using Azure.AI.Extensions.OpenAI;
+﻿using Azure;
+using Azure.AI.Extensions.OpenAI;
 using Azure.AI.Projects;
 using AzureAI.Api.Services.Interfaces;
 using AzureAI.Common;
@@ -45,20 +46,24 @@ namespace AzureAI.Api.Services
 
             //_traceStepper.AddStep(StepTracerTraceTypeEnum.WebApi, "Received response from Azure AI Foundry");
 
-            var responseDto = new ChatResponseDto
+            var response = new ChatResponseDto(request.Steps);
+
+            StepTracer.AddStep(response.Steps, $"{nameof(AzFoundryChatService)}", "Sending system prompt and user prompt");
+
+            response.ChatResponse = result.Value.GetOutputText();
+
+            response.ModelStatistics = new ModelStatisticsDto
             {
-                ChatResponse = result.Value.GetOutputText(),
-                ModelStatistics = new ModelStatisticsDto
-                {
-                    ResponseId = result.Value.Id,
-                    Model = result.Value.Model,
-                    InputTokens = result.Value.Usage?.InputTokenCount,
-                    OutputTokens = result.Value.Usage?.OutputTokenCount,
-                    TotalTokens = result.Value.Usage?.TotalTokenCount
-                }
+                Model = result.Value.Model,
+                InputTokens = result.Value.Usage?.InputTokenCount,
+                OutputTokens = result.Value.Usage?.OutputTokenCount,
+                TotalTokens = result.Value.Usage?.TotalTokenCount,
+                AnswerLength = response.ChatResponse.Length
             };
-             
-            return responseDto;
+
+            StepTracer.AddStep(response.Steps, $"{nameof(AzFoundryChatService)}", "Received model answer");
+
+            return response;
         }
 
         private ProjectResponsesClient CreateResponseClient()
