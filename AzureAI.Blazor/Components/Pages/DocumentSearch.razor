@@ -11,26 +11,26 @@
 @inject FoundryApiClient apiClient
 
 <h3>AI Document Search</h3>
- 
+
 <div class="">
 
-        <button @onclick='() => SetPdf("/Pdf/fake-occular-center.pdf")'>
-            fake-occular-center
-        </button>
+    <button @onclick='() => SetPdf("/Pdf/fake-occular-center.pdf")'>
+        fake-occular-center
+    </button>
 
-        <button @onclick='() => SetPdf("/Pdf/fake-lamp-receit.pdf")'>
-            fake-lamp-receit
-        </button>
+    <button @onclick='() => SetPdf("/Pdf/fake-lamp-receit.pdf")'>
+        fake-lamp-receit
+    </button>
 
-        <button @onclick='() => SetPdf("/Pdf/fake-kayak-certificate.pdf")'>
-            fake-kayak-certificate
-        </button>
+    <button @onclick='() => SetPdf("/Pdf/fake-kayak-certificate.pdf")'>
+        fake-kayak-certificate
+    </button>
 
 </div>
 
 <div class="column_display">
     <div class="column_1">
-        <iframe src="@($"{pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")" >
+        <iframe src="@($"{pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")">
         </iframe>
     </div>
     <div class="column_2">
@@ -73,12 +73,23 @@
                 <LoadingPanel></LoadingPanel>
             }
         </form>
- 
+
     </div>
+
 
 </div>
 
-<ApiResult ExecutionLog="@executionLog" Statistics="@statistics"></ApiResult>
+<div class="column_display">
+    <div>
+        <label for="response">Document analysis:</label>
+        <textarea readonly value="@response" rows="10" cols="50"></textarea>
+    </div>
+
+    <ApiResult ExecutionLog="@executionLog" Statistics="@statistics"></ApiResult>
+    
+</div>
+
+
 
 @code {
 
@@ -118,8 +129,8 @@
 
             List<StepTracerStepDto> Steps = new();
 
-            StepTracer.AddStep(Steps, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {pdfUrl} with model {SelectedModel}");
- 
+            StepTracer.AddStep(Steps, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {pdfUrl} with model: {SelectedModel}");
+
             executionLog = StepTracer.GetTrace(Steps);
 
             await RefreshUI();
@@ -132,7 +143,7 @@
 
             };
 
-            var result = await apiClient.PostAsync<AnalyzeDocumentRequestDto, 
+            var result = await apiClient.PostAsync<AnalyzeDocumentRequestDto,
                 AnalyzeDocumentResponseDto>("api/document/analyze", request);
 
             if (!result.IsSuccess)
