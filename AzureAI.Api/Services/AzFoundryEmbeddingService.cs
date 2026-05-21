@@ -35,7 +35,16 @@ namespace AzureAI.Api.Services
         {
             ProjectResponsesClient client = CreateResponseClient();
 
-            //var result = await client.CreateResponseAsync("user text", "previous resp id", cancellationToken);
+            try
+            {
+                var result = client.CreateResponseAsync("user text", "previous resp id", cancellationToken).Result;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+  
 
             var response = new EmbeddingResponseDto { RequestId = "123" };
 
