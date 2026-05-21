@@ -19,7 +19,7 @@
         <input @bind="question" placeholder="Type your question..." />
 
         <button type="submit" class="ask-button" disabled="@isBusy">
-           <span>Ask</span>
+            <span>Ask</span>
         </button>
 
         <!-- call wait panel -->
@@ -29,15 +29,32 @@
         }
     </form>
 
-    <!-- execution log panel -->
-    <div>
-        <label for="chatResponse">Chat Response:</label>
-        <textarea readonly value="@chatResponse" rows="10" cols="50"></textarea>
+    <!-- response -->
+    <div class="response_area">
+        <div>
+            <label for="chatResponse">Chat response:</label>
+            <textarea readonly value="@chatResponse"></textarea>
+        </div>
+
+    </div>
+
+
+    <!-- statistics, log -->
+    <div class="stats_log_area">
+
+        <div>
+            <label for="executionLog">Execution log:</label>
+            <textarea readonly value="@executionLog"></textarea>
+        </div>
+
+        <div>
+            <label for="statistics">Model statistics:</label>
+            <textarea readonly value="@statistics"></textarea>
+        </div>
+
     </div>
 
 </div>
-
-<ApiResult ExecutionLog="@executionLog" Statistics="@statistics"></ApiResult>
 
 @code {
     private bool isBusy;
@@ -59,9 +76,9 @@
             await RefreshUI();
 
             var request = new ChatRequestDto(Steps)
-                {
-                    Prompt = question
-                };
+            {
+                Prompt = question
+            };
 
             var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request);
 
@@ -72,7 +89,7 @@
             }
 
             if (result == null || result.Value is null)
-    {
+            {
                 executionLog = "API returned no data.";
                 return;
             }

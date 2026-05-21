@@ -28,35 +28,35 @@
 
 </div>
 
-<div class="column_display">
-    <div class="column_1">
+<div class="doc_selection_area">
+    <div class="">
         <iframe src="@($"{pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")">
         </iframe>
     </div>
-    <div class="column_2">
+    <div>
         <form @onsubmit="AnalyzeDocument">
-            <label class="radio-option">
+            <label>
                 <input name="model" type="radio"
                        value="@ReadModel"
                        @onchange="e => OnModelRadioChange(e)" />
                 @ReadModel
             </label>
 
-            <label class="radio-option">
+            <label>
                 <input name="model" type="radio"
                        value="@LayoutModel"
                        @onchange="e => OnModelRadioChange(e)" />
                 @LayoutModel
             </label>
 
-            <label class="radio-option">
+            <label>
                 <input name="model" type="radio"
                        value="@InvoiceModel"
                        @onchange="e => OnModelRadioChange(e)" />
                 @InvoiceModel
             </label>
 
-            <label class="radio-option">
+            <label>
                 <input name="model" type="radio"
                        value="@ReceiptModel"
                        @onchange="e => OnModelRadioChange(e)" />
@@ -79,17 +79,23 @@
 
 </div>
 
-<div class="column_display">
+<div class="log_stat_area">
     <div>
-        <label for="response">Document analysis:</label>
-        <textarea readonly value="@response" rows="10" cols="50"></textarea>
+        <label for="executionLog">Execution log:</label>
+        <textarea readonly value="@executionLog"></textarea>
     </div>
 
-    <ApiResult ExecutionLog="@executionLog" Statistics="@statistics"></ApiResult>
-    
+    <div>
+        <label for="statistics">Model statistics:</label>
+        <textarea readonly value="@statistics"></textarea>
+    </div>
+
 </div>
 
-
+<div class="doc_analysis_area">
+    <label for="response">Document analysis:</label>
+    <textarea readonly value="@response"></textarea>
+</div>
 
 @code {
 

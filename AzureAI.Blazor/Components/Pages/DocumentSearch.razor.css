@@ -5,31 +5,33 @@
 
 textarea {
     width: 100%;
-    margin-bottom: 0.5rem;
 }
 
-
-.column_display {
+.doc_selection_area {
     display: flex;
-    width: 100%;
-    height: 100%;
 }
 
-.column_1 {
-    width: 50%;
-    margin: 10px;
-}
-
-.column_2 {
-    width: 50%;
-    margin: 10px;
-}
-
-.radio-option {
+.doc_selection_area label {
     display: block;
-    margin-bottom: 6px;
 }
 
-.radio-option input {
-    margin-right: 8px;
+div {
+    margin: 5px 5px 5px 5px;
+}
+
+.log_stat_area {
+    display: flex;
+}
+
+.log_stat_area div {
+    width:100%;
+}
+
+.log_stat_area div textarea {
+    height: 15rem;
+}
+
+.doc_analysis_area textarea {
+    width: 100%;
+    height: 15rem;
 }
