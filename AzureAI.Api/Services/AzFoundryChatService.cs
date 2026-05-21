@@ -6,6 +6,7 @@ using AzureAI.Common;
 using AzureAI.Contracts.Dtos;
 using AzureAI.Contracts.Requests;
 using AzureAI.Contracts.Responses;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OpenAI.Responses;
 using System.ClientModel;
 
@@ -17,7 +18,6 @@ namespace AzureAI.Api.Services
     {
         private readonly IConfiguration _config;
         private readonly AIProjectClient _projectClient;
-        private readonly string _modelName;
         private readonly ILogger<AzFoundryChatService> _logger;
 
         public AzFoundryChatService(
@@ -29,8 +29,6 @@ namespace AzureAI.Api.Services
             _projectClient = projectClient;
             _logger = logger;
 
-            _modelName = _config["FoundryPrj01:Model:OpenAiChat"]
-                ?? throw new InvalidOperationException("ModelName not configured");
 
         }
 
@@ -68,9 +66,13 @@ namespace AzureAI.Api.Services
 
         private ProjectResponsesClient CreateResponseClient()
         {
+
+            var modelName = _config["FoundryPrj01:Model:OpenAiChat"]
+                ?? throw new InvalidOperationException("ModelName not configured");
+
             return _projectClient
                 .ProjectOpenAIClient
-                .GetProjectResponsesClientForModel(_modelName);
+                .GetProjectResponsesClientForModel(modelName);
         }
 
         private CreateResponseOptions CreateResponseOptions(ChatRequestDto request)

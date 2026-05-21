@@ -5,6 +5,7 @@ using Azure.Identity;
 using AzureAI.Api.Services;
 using AzureAI.Api.Services.Interfaces;
 using AzureAI.Common;
+using WebApi.Services.Interfaces;
 
 public static class BuilderServicesExtensions
 {
@@ -64,4 +65,10 @@ public static class BuilderServicesExtensions
         return services;
     }
 
+    public static IServiceCollection AddAzFoundryEmbeddingService(this IServiceCollection services)
+    {
+        services.AddScoped<IAzFoundryEmbeddingService, AzFoundryEmbeddingService>();
+
+        return services;
+    }
 }
