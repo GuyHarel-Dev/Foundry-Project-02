@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>WebApi</RootNamespace>
+		<UserSecretsId>b58ee6fe-9529-4cdb-a7a3-cd8050577dee</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Azure.AI.DocumentIntelligence" Version="1.0.0" />
+		<PackageReference Include="Azure.AI.Extensions.OpenAI" Version="2.0.0" />
+		<PackageReference Include="Azure.AI.Projects" Version="2.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\DemoAzAI.Common\DemoAzAI.Common.csproj" />
+	  <ProjectReference Include="..\DemoAzAI.Contracts\DemoAzAI.Contracts.csproj" />
+	</ItemGroup>
+
+</Project>

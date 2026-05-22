@@ -1,0 +1,127 @@
+﻿@page "/chat"
+@rendermode InteractiveServer
+
+@using DemoAzAI.Blazor.Components.Fragments
+@using DemoAzAI.Contracts.Dtos
+@using Contracts.Requests
+@using Contracts.Responses
+@using DemoAzAI.Contracts
+@using DemoAzAI.Common
+@using UI.Services
+
+@inject FoundryApiClient apiClient
+
+<div class="mt-3">
+
+    <!-- ask button -->
+    <form @onsubmit="SendQuestion">
+        <label for="question">Ask a question:</label>
+        <input @bind="question" placeholder="Type your question..." />
+
+        <button type="submit" class="ask-button" disabled="@isBusy">
+            <span>Ask</span>
+        </button>
+
+        <!-- call wait panel -->
+        @if (isBusy)
+        {
+            <LoadingPanel></LoadingPanel>
+        }
+    </form>
+
+    <!-- response -->
+    <div class="response_area">
+        <div>
+            <label for="chatResponse">Chat response:</label>
+            <textarea readonly value="@chatResponse"></textarea>
+        </div>
+
+    </div>
+
+
+    <!-- statistics, log -->
+    <div class="stats_log_area">
+
+        <div>
+            <label for="executionLog">Execution log:</label>
+            <textarea readonly value="@executionLog"></textarea>
+        </div>
+
+        <div>
+            <label for="statistics">Model statistics:</label>
+            <textarea readonly value="@statistics"></textarea>
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private bool isBusy;
+    private string question = "This is just a test. No answer is expected.";
+    private string chatResponse = string.Empty;
+    private string executionLog = string.Empty;
+    private string statistics = string.Empty;
+
+    private async Task SendQuestion()
+    {
+        try
+        {
+            isBusy = true;
+
+            List<StepTracerStepDto> Steps = new();
+            StepTracer.AddStep(Steps, "BlazorUi", $"{nameof(SendQuestion)}: Sending question to chat model");
+
+            executionLog = StepTracer.GetTrace(Steps);
+            await RefreshUI();
+
+            var request = new ChatRequestDto(Steps)
+            {
+                Prompt = question
+            };
+
+            var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request);
+
+            if (!result.IsSuccess)
+            {
+                executionLog = result.ErrorMessage ?? "Unknown API error.";
+                return;
+            }
+
+            if (result == null || result.Value is null)
+            {
+                executionLog = "API returned no data.";
+                return;
+            }
+            var responseDto = result.Value;
+
+            chatResponse = responseDto.ChatResponse;
+
+            executionLog = StepTracer.GetTrace(responseDto.Steps);
+
+            if (responseDto.ModelStatistics != null)
+                statistics = responseDto.ModelStatistics.ToString();
+
+
+        }
+        catch (Exception ex)
+        {
+
+            executionLog = ex.Message;
+            throw;
+        }
+        finally
+        {
+            isBusy = false;
+        }
+
+    }
+
+    private async Task RefreshUI()
+    {
+
+        await InvokeAsync(StateHasChanged);
+        await Task.Yield();
+    }
+
+}
