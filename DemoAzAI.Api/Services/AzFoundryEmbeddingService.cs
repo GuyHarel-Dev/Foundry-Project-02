@@ -31,52 +31,30 @@ namespace DemoAzAI.Api.Services
 
         public async Task<EmbeddingResponseDto> GetEmbeddingAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
         {
-            var client = CreateResponseClient();
+            var client = CreateEmbeddingClient();
 
-            //try
-            //{
-            //    var result = client.CreateResponseAsync("user text", "previous resp id", cancellationToken).Result;
-            //}
-            //catch (Exception ex)
-            //{
+            var options = new EmbeddingGenerationOptions
+            {
+                Dimensions = 1536,
+            };
 
-            //    throw;
-            //}
-  
+            try
+            {
+                var result = await client.GenerateEmbeddingAsync("text to embed", options, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
 
             var response = new EmbeddingResponseDto { RequestId = "123" };
 
             return response;
         }
 
-        //        public async Task<EmbeddingResponseDto> GetPromptResponseAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
-        //        {
-        //            _logger.LogInformation("Sending text do embed to Azure AI Foundry");
-
-        //            //CreateResponseOptions options = CreateResponseOptions(request);
-        //            ProjectResponsesClient client = CreateResponseClient();
-
-        //            ClientResult<ResponseResult> result = await client.CreateResponseAsync("user text", "previous resp id", cancellationToken);
-
-        //            var response = new EmbeddingResponseDto();
-
-
-
-        ///*            response.ModelStatistics = new ModelStatisticsDto
-        //            {
-        //                Model = result.Value.Model,
-        //                InputTokens = result.Value.Usage?.InputTokenCount,
-        //                OutputTokens = result.Value.Usage?.OutputTokenCount,
-        //                TotalTokens = result.Value.Usage?.TotalTokenCount,
-        //                AnswerLength = response.ChatResponse.Length
-        //            };
-
-        //            StepTracer.AddStep(response.Steps, $"{nameof(AzFoundryChatService)}", "Received model answer");*/
-
-        //            return response;
-        //        }
-
-        private EmbeddingClient CreateResponseClient()
+        private EmbeddingClient CreateEmbeddingClient()
         {
 
             var modelName = _config["FoundryPrj01:Model:TextEmbedding"]
@@ -87,19 +65,6 @@ namespace DemoAzAI.Api.Services
                 .GetEmbeddingClient(modelName);
         }
 
-/*        private CreateResponseOptions CreateResponseOptions(ChatRequestDto request)
-        {
-            var systemPrompt = _config["FoundryPrj01:SystemPrompt"] ?? string.Empty;
-
-            var options = new CreateResponseOptions
-            {
-                Instructions = systemPrompt
-            };
-
-            options.InputItems.Add(
-                ResponseItem.CreateUserMessageItem(request.Prompt));
-            return options;
-        }*/
     }
 }
 

@@ -25,18 +25,10 @@ namespace DemoAzAI.Api.Controllers
         [HttpPost("embedtext")]
         public async Task<ActionResult> EmbedText([FromBody] EmbeddingRequestDto request)
         {
-            var response = _azFoundryEmbeddingService.GetEmbeddingAsync(request);
+            var response = await _azFoundryEmbeddingService.GetEmbeddingAsync(request);
 
             return Ok(response);
         }
-
-        //[HttpPost("embedtext")]
-        //public async Task<ActionResult<EmbeddingResponseDto>> EmbedText([FromBody] EmbeddingRequestDto request)
-        //{
-        //    var response = _azFoundryEmbeddingService.GetEmbeddingAsync(request);
-
-        //    return Ok(response);
-        //}
 
     }
 }

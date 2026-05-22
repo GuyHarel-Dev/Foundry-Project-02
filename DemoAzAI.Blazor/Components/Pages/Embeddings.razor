@@ -1,13 +1,13 @@
 ﻿@page "/embeddings"
 @rendermode InteractiveServer
 
-
-
-<div class="dark-mode">
-    test
-    <h3>Embeddings</h3>
-</div>
+<form @onsubmit="EmbeddText">
+    <button type="submit">Submit</button>
+</form>
 
 @code {
-
+    private async Task EmbeddText()
+    {
+        var test = 123;
+    }
 }
