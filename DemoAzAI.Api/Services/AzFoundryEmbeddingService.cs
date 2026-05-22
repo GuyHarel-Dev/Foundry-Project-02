@@ -31,7 +31,7 @@ namespace DemoAzAI.Api.Services
 
         public async Task<EmbeddingResponseDto> GetEmbeddingAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
         {
-            //ProjectResponsesClient client = CreateResponseClient();
+            var client = CreateResponseClient();
 
             //try
             //{
@@ -81,9 +81,6 @@ namespace DemoAzAI.Api.Services
 
             var modelName = _config["FoundryPrj01:Model:TextEmbedding"]
                 ?? throw new InvalidOperationException("ModelName not configured");
-
-            var embeddingClient =
-                _projectClient.ProjectOpenAIClient.GetEmbeddingClient(modelName);
 
             return _projectClient
                 .ProjectOpenAIClient
