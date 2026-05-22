@@ -1,13 +1,57 @@
 ﻿@page "/embeddings"
 @rendermode InteractiveServer
 
+@using UI.Services
+@using DemoAzAI.Contracts.Requests
+@using DemoAzAI.Contracts.Responses
+@using DemoAzAI.Blazor.Components.Fragments
+
+@inject FoundryApiClient apiClient
+
 <form @onsubmit="EmbeddText">
     <button type="submit">Submit</button>
+    <!-- call wait panel -->
+    @if (isBusy)
+    {
+        <LoadingPanel></LoadingPanel>
+    }
 </form>
 
+<textarea @bind="TextGuid"></textarea>
 @code {
+
+    private bool isBusy;
+    private string TextGuid = string.Empty;
+
     private async Task EmbeddText()
     {
-        var test = 123;
+
+        try
+        {
+            isBusy = true;
+
+            var request = new EmbeddingRequestDto
+            {
+                Text = "The cat is sleeping on the sofa"
+            };
+
+            var response = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embedtext", request);
+
+            if (response is not null && response.Value is not null)
+            {
+                TextGuid = response.Value.EmbeddedTextGuid.ToString();
+            }
+        }
+        catch (Exception ex)
+        {
+
+            // executionLog = ex.Message;
+            throw;
+        }
+        finally
+        {
+            isBusy = false;
+        }
+
     }
 }
