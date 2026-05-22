@@ -1,10 +1,10 @@
 ﻿using Azure.AI.Extensions.OpenAI;
 using Azure.AI.Projects;
-using WebApi.Services.Interfaces;
-using OpenAI.Embeddings;
-
 using DemoAzAI.Contracts.Requests;
 using DemoAzAI.Contracts.Responses;
+using Microsoft.Extensions.Options;
+using OpenAI.Embeddings;
+using WebApi.Services.Interfaces;
 
 #pragma warning disable OPENAI001 // pour using OpenAI.Responses;
 
@@ -33,25 +33,11 @@ namespace DemoAzAI.Api.Services
         {
             var client = CreateEmbeddingClient();
 
-            var options = new EmbeddingGenerationOptions
+            var result = await client.GenerateEmbeddingAsync(request.Text, cancellationToken: cancellationToken);
+            return new EmbeddingResponseDto
             {
-                Dimensions = 1536,
+                EmbeddingVector = result.Value.ToFloats()
             };
-
-            try
-            {
-                var result = await client.GenerateEmbeddingAsync("text to embed", options, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-
-            var response = new EmbeddingResponseDto { RequestId = "123" };
-
-            return response;
         }
 
         private EmbeddingClient CreateEmbeddingClient()

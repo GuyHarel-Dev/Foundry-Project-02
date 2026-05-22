@@ -2,9 +2,11 @@
 {
     public class EmbeddingResponseDto
     {
-        public string RequestId { get; set; } = string.Empty;
-        public string ResponseId { get; set; } = string.Empty;
-        //public List<float> EmbeddingVector { get; set; } = new();
+        //public EmbeddingResponseDto(ReadOnlyMemory<float> floats)
+        //{
+        //    EmbeddingVector = [.. floats.Span];
+        //}
 
+        public ReadOnlyMemory<float> EmbeddingVector { get; init; }
     }
 }
