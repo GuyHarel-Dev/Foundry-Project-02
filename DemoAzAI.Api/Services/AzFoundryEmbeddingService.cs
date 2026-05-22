@@ -1,43 +1,45 @@
 ﻿using Azure.AI.Extensions.OpenAI;
 using Azure.AI.Projects;
+using DemoAzAI.Common;
 using DemoAzAI.Contracts.Requests;
 using DemoAzAI.Contracts.Responses;
 using Microsoft.Extensions.Options;
 using OpenAI.Embeddings;
 using WebApi.Services.Interfaces;
+using WebApi.Services.Store;
 
 #pragma warning disable OPENAI001 // pour using OpenAI.Responses;
 
 namespace DemoAzAI.Api.Services
 {
-    public class AzFoundryEmbeddingService : IAzFoundryEmbeddingService
+    public class AzFoundryEmbeddingService(
+        IConfiguration _config,
+        AIProjectClient _projectClient,
+        ILogger<AzFoundryEmbeddingService> _logger,
+        IEmbeddingStoreService _embeddingStoreService) : IAzFoundryEmbeddingService 
 
     {
-        private readonly IConfiguration _config;
-        private readonly AIProjectClient _projectClient;
-        private readonly ILogger<AzFoundryEmbeddingService> _logger;
 
-        public AzFoundryEmbeddingService(
-            IConfiguration config,
-            AIProjectClient projectClient,
-            ILogger<AzFoundryEmbeddingService> logger)
-        {
-            _config = config;
-            _projectClient = projectClient;
-            _logger = logger;
-
-        }
-
-
-        public async Task<EmbeddingResponseDto> GetEmbeddingAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<EmbeddingResponseDto> EmbeddTextAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
         {
             var client = CreateEmbeddingClient();
 
             var result = await client.GenerateEmbeddingAsync(request.Text, cancellationToken: cancellationToken);
+
+            var storedEmbedding = new StoredEmbedding(
+                Guid.NewGuid(),
+                request.Text,
+                result.Value.ToFloats().ToArray()
+            );
+
+            _embeddingStoreService.AddEmbedding(storedEmbedding);
+
             return new EmbeddingResponseDto
             {
-                EmbeddingVector = result.Value.ToFloats()
+                EmbeddedText = storedEmbedding.Text,
+                EmbeddedTextGuid = storedEmbedding.Id
             };
+
         }
 
         private EmbeddingClient CreateEmbeddingClient()

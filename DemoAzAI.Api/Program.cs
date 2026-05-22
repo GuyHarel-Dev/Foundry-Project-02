@@ -17,6 +17,7 @@ builder.Services.AddAzFoundryHttpClient();
 builder.Services.AddAzDocIntelligenceClient();
 builder.Services.AddAzAiDocIntelligenceService();
 builder.Services.AddAzFoundryEmbeddingService();
+builder.Services.AddEmbeddingStoreService();
 
 var app = builder.Build();
 

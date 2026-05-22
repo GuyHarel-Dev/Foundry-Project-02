@@ -6,6 +6,7 @@ using DemoAzAI.Api.Services;
 using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Common;
 using WebApi.Services.Interfaces;
+using WebApi.Services.Store;
 
 public static class BuilderServicesExtensions
 {
@@ -68,6 +69,13 @@ public static class BuilderServicesExtensions
     public static IServiceCollection AddAzFoundryEmbeddingService(this IServiceCollection services)
     {
         services.AddScoped<IAzFoundryEmbeddingService, AzFoundryEmbeddingService>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddEmbeddingStoreService(this IServiceCollection services)
+    {
+        services.AddSingleton<IEmbeddingStoreService, EmbeddingStoreService>();
 
         return services;
     }

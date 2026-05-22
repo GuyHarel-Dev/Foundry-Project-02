@@ -25,7 +25,7 @@ namespace DemoAzAI.Api.Controllers
         [HttpPost("embedtext")]
         public async Task<ActionResult> EmbedText([FromBody] EmbeddingRequestDto request)
         {
-            var response = await _azFoundryEmbeddingService.GetEmbeddingAsync(request);
+            var response = await _azFoundryEmbeddingService.EmbeddTextAsync(request);
 
             return Ok(response);
         }
