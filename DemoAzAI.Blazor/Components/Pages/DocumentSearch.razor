@@ -93,8 +93,17 @@
 </div>
 
 <div class="doc_analysis_area">
-    <label for="response">Document analysis:</label>
-    <textarea readonly value="@response"></textarea>
+    <div>
+        <label for="docContent">Document content:</label>
+        <textarea readonly value="@docContent"></textarea>
+    </div>
+
+    <div>
+        <label for="docFields">Documument fields:</label>
+        <textarea readonly value="@docFields"></textarea>
+    </div>
+
+
 </div>
 
 @code {
@@ -105,7 +114,9 @@
     private bool isBusy;
     private string pdfUrl = "/Pdf/empty-pdf.pdf";
 
-    private string response = string.Empty;
+    private string docContent = string.Empty;
+    private string docFields = string.Empty;
+
     private string executionLog = string.Empty;
     private string statistics = string.Empty;
 
@@ -129,7 +140,8 @@
         {
             isBusy = true;
 
-            response = string.Empty;
+            docContent = string.Empty;
+            docFields = string.Empty;
             statistics = string.Empty;
             executionLog = string.Empty;
 
@@ -166,7 +178,7 @@
                 return;
             }
 
-            response = ExtractDocumentsFields(responseDto);
+            ExtractDocumentsContent(responseDto);
             executionLog = StepTracer.GetTrace(responseDto.Steps);
             statistics = ExtractStatistics(result.Value);
 
@@ -184,27 +196,43 @@
 
     }
 
-    private string ExtractDocumentsFields(AnalyzeDocumentResponseDto? response)
+    private void ExtractDocumentsContent(AnalyzeDocumentResponseDto? response)
     {
         if (response == null)
-            return "No response documents or fields to extract.";
+        {
+            docContent = "No response documents or fields to extract.";
+            return;
+        }
 
-        string str = "";
+        docContent = response.DocContent ?? "No document content extracted.";
+
+        // Fields extraction
+
+        if (response.Documents is null)
+        {
+            docFields = "No documents fields found in the response.";
+            return;
+        }
+
+
+        var contentBuilder = new System.Text.StringBuilder();
 
         foreach (var doc in response.Documents)
         {
-            str += $"Document Type: {doc.DocumentType}\n";
+            contentBuilder.AppendLine($"Document Type: {doc.DocumentType}");
+
             foreach (var field in doc.Fields)
             {
-                str += $"\n";
-                str += $"  Field Name: {field.Name}\n";
-                str += $"    Value: {field.Value}\n";
-                str += $"    Confidence: {field.Confidence}\n";
-                str += $"    Confidence: {field.FieldType}\n";
+                contentBuilder.AppendLine();
+                contentBuilder.AppendLine($"  Field Name: {field.Name}");
+                contentBuilder.AppendLine($"  Field Value: {field.Value}");
+                contentBuilder.AppendLine($"  Field Confidence: {field.Confidence}");
+                contentBuilder.AppendLine($"  Field FieldType: {field.FieldType}");
             }
         }
 
-        return str;
+        docFields = contentBuilder.ToString();
+
     }
 
     private string ExtractStatistics(AnalyzeDocumentResponseDto? response)
