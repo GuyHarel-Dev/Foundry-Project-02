@@ -31,7 +31,7 @@
 
     </div>
 
-    <div class="model-selection-area">
+    <div class="ai-model-selection-area">
         <p>Select a model for the analysis:</p>
         <label>
             <input name="model" type="radio"
@@ -64,42 +64,48 @@
     </div>
 </div>
 
+<div class="doc-area">
 
-<div class="doc_selection_area">
+    <div class="doc-display-area">
+        @if (string.IsNullOrEmpty(StateContainer.PdfUrl)) { StateContainer.PdfUrl = "Pdf/empty-pdf.pdf"; }
 
-    <div class="doc_selection_area_1">
-         @if (!string.IsNullOrEmpty(StateContainer.PdfUrl))
+        <iframe src="@($"{StateContainer.PdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
+    </div>
+
+    <div class="doc-analysis-area">
+    </div>
+
+@*     <form @onsubmit="AnalyzeDocument">
+
+           
+        <button type="submit" class="ask-button" disabled="@isBusy">
+            <span>Analyze document</span>
+        </button>
+
+        <!-- call wait panel -->
+        @if (isBusy)
+        {
+            <LoadingPanel></LoadingPanel>
+        }
+    </form>
+
+    <div class="pdf-frame">
+        @if (!string.IsNullOrEmpty(StateContainer.PdfUrl))
         {
             <iframe src="@($"{StateContainer.PdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
         }
         else
         {
             <p>Please select a PDF document to begin extraction.</p>
-        } 
-    </div>
+        }
+    </div> *@
 
 
-    <div class="doc_selection_area_2">
-         <form @onsubmit="AnalyzeDocument">
-           
-
-            <button type="submit" class="ask-button" disabled="@isBusy">
-                <span>Analyze document</span>
-            </button>
-
-            <!-- call wait panel -->
-            @if (isBusy)
-            {
-                <LoadingPanel></LoadingPanel>
-            }
-        </form>
-
-    </div>
 
 
 </div>
 
-<div class="log_stat_area">
+@* <div class="model-analysis-area">
     <div>
         <label for="executionLog">Execution log:</label>
         <textarea readonly value="@StateContainer.ExecutionLog"></textarea>
@@ -112,7 +118,7 @@
 
 </div>
 
-<div class="doc_analysis_area">
+<div class="doc-analysis-area">
     <div>
         <label for="docContent">Document content:</label>
         <textarea readonly value="@StateContainer.DocContent"></textarea>
@@ -124,7 +130,12 @@
     </div>
 
 
-</div>
+
+</div> *@
+
+
+
+
 
 @code {
 
