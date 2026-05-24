@@ -14,56 +14,74 @@
 
 <h3>AI Document Search</h3>
 
-<div class="">
+<div class="pdf-model-selection-area">
+    <div class="pdf-selection-area">
+        <p>Select a PDF document to analyse:</p>
+        <button @onclick='() => StateContainer.SetPdf("/Pdf/fake-occular-center.pdf")'>
+            fake-occular-center
+        </button>
 
-    <button @onclick='() => SetPdf("/Pdf/fake-occular-center.pdf")'>
-        fake-occular-center
-    </button>
+        <button @onclick='() => StateContainer.SetPdf("/Pdf/fake-lamp-receit.pdf")'>
+            fake-lamp-receit
+        </button>
 
-    <button @onclick='() => SetPdf("/Pdf/fake-lamp-receit.pdf")'>
-        fake-lamp-receit
-    </button>
+        <button @onclick='() => StateContainer.SetPdf("/Pdf/fake-kayak-certificate.pdf")'>
+            fake-kayak-certificate
+        </button>
 
-    <button @onclick='() => SetPdf("/Pdf/fake-kayak-certificate.pdf")'>
-        fake-kayak-certificate
-    </button>
+    </div>
 
+    <div class="model-selection-area">
+        <p>Select a model for the analysis:</p>
+        <label>
+            <input name="model" type="radio"
+                   value="@ReadModel"
+                   @onchange="e => OnModelRadioChange(e)" />
+            @ReadModel
+        </label>
+
+        <label>
+            <input name="model" type="radio"
+                   value="@LayoutModel"
+                   @onchange="e => OnModelRadioChange(e)" />
+            @LayoutModel
+        </label>
+
+        <label>
+            <input name="model" type="radio"
+                   value="@InvoiceModel"
+                   @onchange="e => OnModelRadioChange(e)" />
+            @InvoiceModel
+        </label>
+
+        <label>
+            <input name="model" type="radio"
+                   value="@ReceiptModel"
+                   @onchange="e => OnModelRadioChange(e)" />
+            @ReceiptModel
+        </label>
+
+    </div>
 </div>
 
+
 <div class="doc_selection_area">
-    <div class="">
-        <iframe src="@($"{pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")">
-        </iframe>
+
+    <div class="doc_selection_area_1">
+         @if (!string.IsNullOrEmpty(StateContainer.PdfUrl))
+        {
+            <iframe src="@($"{StateContainer.PdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
+        }
+        else
+        {
+            <p>Please select a PDF document to begin extraction.</p>
+        } 
     </div>
-    <div>
-        <form @onsubmit="AnalyzeDocument">
-            <label>
-                <input name="model" type="radio"
-                       value="@ReadModel"
-                       @onchange="e => OnModelRadioChange(e)" />
-                @ReadModel
-            </label>
 
-            <label>
-                <input name="model" type="radio"
-                       value="@LayoutModel"
-                       @onchange="e => OnModelRadioChange(e)" />
-                @LayoutModel
-            </label>
 
-            <label>
-                <input name="model" type="radio"
-                       value="@InvoiceModel"
-                       @onchange="e => OnModelRadioChange(e)" />
-                @InvoiceModel
-            </label>
-
-            <label>
-                <input name="model" type="radio"
-                       value="@ReceiptModel"
-                       @onchange="e => OnModelRadioChange(e)" />
-                @ReceiptModel
-            </label>
+    <div class="doc_selection_area_2">
+         <form @onsubmit="AnalyzeDocument">
+           
 
             <button type="submit" class="ask-button" disabled="@isBusy">
                 <span>Analyze document</span>
@@ -114,7 +132,6 @@
     private IWebHostEnvironment Env { get; set; } = default!;
 
     private bool isBusy;
-    private string pdfUrl = "/Pdf/empty-pdf.pdf";
 
     private string ReadModel = "prebuilt-read";
     private string LayoutModel = "prebuilt-layout";
@@ -141,7 +158,7 @@
 
             List<StepTracerStepDto> Steps = new();
 
-            StepTracer.AddStep(Steps, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {pdfUrl} with model: {SelectedModel}");
+            StepTracer.AddStep(Steps, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}");
 
             StateContainer.ExecutionLog = StepTracer.GetTrace(Steps);
 
@@ -150,8 +167,8 @@
             var request = new AnalyzeDocumentRequestDto(Steps)
             {
                 ModelName = SelectedModel,
-                FileName = Path.GetFileName(pdfUrl),
-                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, pdfUrl.TrimStart('/')))
+                FileName = Path.GetFileName(StateContainer.PdfUrl),
+                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, StateContainer.PdfUrl.TrimStart('/')))
 
             };
 
@@ -254,7 +271,7 @@
 
     private void SetPdf(string url)
     {
-        pdfUrl = url;
+        StateContainer.PdfUrl = url;
     }
 
     private async Task RefreshUI()

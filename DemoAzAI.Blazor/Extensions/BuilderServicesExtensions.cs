@@ -23,8 +23,7 @@ namespace UI.Extensions
 
         public static IServiceCollection AddScopedPageContainers(this IServiceCollection services)
         {
-
-            services.AddScoped( sp=> new DocumentSearchStateContainer());
+            services.AddScoped( _ => new DocumentSearchStateContainer());
 
             return services;
         }
