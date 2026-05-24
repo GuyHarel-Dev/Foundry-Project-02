@@ -6,9 +6,11 @@
 @using DemoAzAI.Contracts.Requests
 @using DemoAzAI.Contracts.Responses
 @using DemoAzAI.Contracts.Dtos
-@using UI.Services
+@using DemoAzAI.Blazor.Services.Api
+@using DemoAzAI.Blazor.Services.UI
 
 @inject FoundryApiClient apiClient
+@inject DocumentSearchStateContainer StateContainer;
 
 <h3>AI Document Search</h3>
 
@@ -82,12 +84,12 @@
 <div class="log_stat_area">
     <div>
         <label for="executionLog">Execution log:</label>
-        <textarea readonly value="@executionLog"></textarea>
+        <textarea readonly value="@StateContainer.ExecutionLog"></textarea>
     </div>
 
     <div>
         <label for="statistics">Model statistics:</label>
-        <textarea readonly value="@statistics"></textarea>
+        <textarea readonly value="@StateContainer.Statistics"></textarea>
     </div>
 
 </div>
@@ -95,12 +97,12 @@
 <div class="doc_analysis_area">
     <div>
         <label for="docContent">Document content:</label>
-        <textarea readonly value="@docContent"></textarea>
+        <textarea readonly value="@StateContainer.DocContent"></textarea>
     </div>
 
     <div>
         <label for="docFields">Documument fields:</label>
-        <textarea readonly value="@docFields"></textarea>
+        <textarea readonly value="@StateContainer.DocFields"></textarea>
     </div>
 
 
@@ -113,12 +115,6 @@
 
     private bool isBusy;
     private string pdfUrl = "/Pdf/empty-pdf.pdf";
-
-    private string docContent = string.Empty;
-    private string docFields = string.Empty;
-
-    private string executionLog = string.Empty;
-    private string statistics = string.Empty;
 
     private string ReadModel = "prebuilt-read";
     private string LayoutModel = "prebuilt-layout";
@@ -140,16 +136,14 @@
         {
             isBusy = true;
 
-            docContent = string.Empty;
-            docFields = string.Empty;
-            statistics = string.Empty;
-            executionLog = string.Empty;
+            StateContainer.Statistics = string.Empty;
+            StateContainer.ExecutionLog = string.Empty;
 
             List<StepTracerStepDto> Steps = new();
 
             StepTracer.AddStep(Steps, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {pdfUrl} with model: {SelectedModel}");
 
-            executionLog = StepTracer.GetTrace(Steps);
+            StateContainer.ExecutionLog = StepTracer.GetTrace(Steps);
 
             await RefreshUI();
 
@@ -166,7 +160,7 @@
 
             if (!result.IsSuccess)
             {
-                executionLog = result.ErrorMessage ?? "Unknown API error.";
+                StateContainer.ExecutionLog = result.ErrorMessage ?? "Unknown API error.";
                 return;
             }
 
@@ -174,19 +168,19 @@
 
             if (responseDto == null)
             {
-                executionLog = "API returned no data.";
+                StateContainer.ExecutionLog = "API returned no data.";
                 return;
             }
 
             ExtractDocumentsContent(responseDto);
-            executionLog = StepTracer.GetTrace(responseDto.Steps);
-            statistics = ExtractStatistics(result.Value);
+            StateContainer.ExecutionLog = StepTracer.GetTrace(responseDto.Steps);
+            StateContainer.Statistics = ExtractStatistics(result.Value);
 
         }
         catch (Exception ex)
         {
 
-            executionLog = ex.Message;
+            StateContainer.ExecutionLog = ex.Message;
             throw;
         }
         finally
@@ -200,17 +194,17 @@
     {
         if (response == null)
         {
-            docContent = "No response documents or fields to extract.";
+            StateContainer.DocContent = "No response documents or fields to extract.";
             return;
         }
 
-        docContent = response.DocContent ?? "No document content extracted.";
+        StateContainer.DocContent = response.DocContent ?? "No document content extracted.";
 
         // Fields extraction
 
         if (response.Documents is null)
         {
-            docFields = "No documents fields found in the response.";
+            StateContainer.DocFields = "No documents fields found in the response.";
             return;
         }
 
@@ -231,7 +225,7 @@
             }
         }
 
-        docFields = contentBuilder.ToString();
+        StateContainer.DocFields = contentBuilder.ToString();
 
     }
 

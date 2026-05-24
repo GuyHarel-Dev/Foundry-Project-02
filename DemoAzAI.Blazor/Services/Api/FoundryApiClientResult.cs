@@ -1,4 +1,4 @@
-﻿namespace UI.Services
+﻿namespace DemoAzAI.Blazor.Services.Api
 {
     public sealed class FoundryApiClientResult<T>
     {

@@ -1,4 +1,5 @@
-﻿using UI.Services;
+﻿using DemoAzAI.Blazor.Services.Api;
+using DemoAzAI.Blazor.Services.UI;
 
 namespace UI.Extensions
 {
@@ -16,6 +17,14 @@ namespace UI.Extensions
 
             services.AddScoped(sp =>
               new FoundryApiClient(httpClient));
+
+            return services;
+        }
+
+        public static IServiceCollection AddScopedPageContainers(this IServiceCollection services)
+        {
+
+            services.AddScoped( sp=> new DocumentSearchStateContainer());
 
             return services;
         }
