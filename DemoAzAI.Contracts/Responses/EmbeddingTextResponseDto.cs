@@ -1,6 +1,6 @@
 ﻿namespace DemoAzAI.Contracts.Responses
 {
-    public class EmbeddingResponseDto
+    public class EmbeddingTextResponseDto
     {
         public string EmbeddedText { get; set; } = string.Empty;
         public Guid EmbeddedTextGuid { get; set; }

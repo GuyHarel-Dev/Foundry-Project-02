@@ -3,7 +3,6 @@ using DemoAzAI.Contracts.Dtos;
 using DemoAzAI.Contracts.Requests;
 using DemoAzAI.Contracts.Responses;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace DemoAzAI.Blazor.Components.Pages;
 
@@ -36,11 +35,6 @@ public partial class DocumentSearch : ComponentBase
     }
 
     protected string StatusMessage = "Ready";
-
-    protected void Test(MouseEventArgs e)
-    {
-        var test = 123;
-    }
 
     protected override async Task OnInitializedAsync()
     {

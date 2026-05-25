@@ -1,9 +1,6 @@
-﻿using Azure.AI.Extensions.OpenAI;
-using Azure.AI.Projects;
-using DemoAzAI.Common;
+﻿using Azure.AI.Projects;
 using DemoAzAI.Contracts.Requests;
 using DemoAzAI.Contracts.Responses;
-using Microsoft.Extensions.Options;
 using OpenAI.Embeddings;
 using WebApi.Services.Interfaces;
 using WebApi.Services.Store;
@@ -16,28 +13,51 @@ namespace DemoAzAI.Api.Services
         IConfiguration _config,
         AIProjectClient _projectClient,
         ILogger<AzFoundryEmbeddingService> _logger,
-        IEmbeddingStoreService _embeddingStoreService) : IAzFoundryEmbeddingService 
+        IEmbeddingStoreService _embeddingStoreService) : IAzFoundryEmbeddingService
 
     {
 
-        public async Task<EmbeddingResponseDto> EmbeddTextAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<EmbeddingTextResponseDto> EmbeddTextAsync(EmbeddingTextRequestDto request, CancellationToken cancellationToken = default)
         {
             var client = CreateEmbeddingClient();
 
-            var result = await client.GenerateEmbeddingAsync(request.Text, cancellationToken: cancellationToken);
+            OpenAIEmbedding result = await client.GenerateEmbeddingAsync(request.Text, cancellationToken: cancellationToken);
 
             var storedEmbedding = new StoredEmbedding(
                 Guid.NewGuid(),
                 request.Text,
-                result.Value.ToFloats().ToArray()
+                result.ToFloats().ToArray()
             );
 
             _embeddingStoreService.AddEmbedding(storedEmbedding);
 
-            return new EmbeddingResponseDto
+            return new EmbeddingTextResponseDto
             {
                 EmbeddedText = storedEmbedding.Text,
-                EmbeddedTextGuid = storedEmbedding.Id
+                EmbeddedTextGuid = storedEmbedding.Guid
+            };
+
+        }
+
+        public async Task<EmbeddingTextResponseDto> EmbeddTextLinesAsync(EmbeddingTextLinesRequestDto request, CancellationToken cancellationToken = default)
+        {
+            var client = CreateEmbeddingClient();
+
+            OpenAIEmbeddingCollection result = await client.GenerateEmbeddingsAsync(request.TextLines.ToArray(), cancellationToken: cancellationToken);
+
+            var embeddings = request.TextLines
+                .Select((text, index) => new StoredEmbedding(
+                    Guid.NewGuid(),
+                    text,
+                    result[index].ToFloats().ToArray()
+                ));
+
+            _embeddingStoreService.AddEmbeddings(embeddings);
+
+            return new EmbeddingTextResponseDto
+            {
+                EmbeddedText = "abc",
+                EmbeddedTextGuid = Guid.NewGuid()
             };
 
         }

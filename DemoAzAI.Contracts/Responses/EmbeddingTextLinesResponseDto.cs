@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DemoAzAI.Contracts.Requests
+namespace DemoAzAI.Contracts.Responses
 {
-    public class EmbeddingRequestDto
+    public class EmbeddingTextLinesResponseDto
     {
-        public string Text { get; set; } = string.Empty;
-
     }
 }

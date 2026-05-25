@@ -8,7 +8,7 @@
 
 @inject FoundryApiClient apiClient
 
-<textarea></textarea>
+<textarea @bind="TextToEmbedd"></textarea>
 
 <form @onsubmit="EmbeddText">
     <button type="submit">Submit</button>
@@ -20,9 +20,12 @@
 </form>
 
 <textarea @bind="TextGuid"></textarea>
+
+
 @code {
 
     private bool isBusy;
+    private string TextToEmbedd = string.Empty;
     private string TextGuid = string.Empty;
 
     private async Task EmbeddText()
@@ -32,12 +35,12 @@
         {
             isBusy = true;
 
-            var request = new EmbeddingRequestDto
+            var request = new EmbeddingTextRequestDto
             {
-                Text = "The cat is sleeping on the sofa"
+                Text = TextToEmbedd
             };
 
-            var response = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embedtext", request);
+            var response = await apiClient.PostAsync<EmbeddingTextRequestDto, EmbeddingTextResponseDto>("api/embedding/embedtext", request);
 
             if (response is not null && response.Value is not null)
             {

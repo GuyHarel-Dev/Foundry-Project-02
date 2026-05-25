@@ -3,15 +3,15 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace WebApi.Services.Store
 {
-    public record StoredEmbedding(
-        Guid Id,
-        string Text,
-        float[] Vector
-    );
-
     public class EmbeddingStoreService : IEmbeddingStoreService
     {
         public List<StoredEmbedding> Embeddings { get; set; } = new List<StoredEmbedding>();
+
+
+        public void AddEmbeddings(IEnumerable<StoredEmbedding> storedEmbedding)
+        {
+            Embeddings.AddRange(storedEmbedding);
+        }
 
         public void AddEmbedding(StoredEmbedding storedEmbedding)
         {
@@ -25,7 +25,7 @@ namespace WebApi.Services.Store
 
         StoredEmbedding? IEmbeddingStoreService.GetEmbedding(Guid id)
         {
-            return Embeddings.FirstOrDefault(e => e.Id == id);
+            return Embeddings.FirstOrDefault(e => e.Guid == id);
         }
     }
 }
