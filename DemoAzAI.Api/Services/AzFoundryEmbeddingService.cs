@@ -39,25 +39,33 @@ namespace DemoAzAI.Api.Services
 
         }
 
-        public async Task<EmbeddingTextResponseDto> EmbeddTextLinesAsync(EmbeddingTextLinesRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<EmbeddingTextLinesResponseDto> EmbeddTextLinesAsync(EmbeddingTextLinesRequestDto request, CancellationToken cancellationToken = default)
         {
             var client = CreateEmbeddingClient();
+            _embeddingStoreService.ClearEmbeddings();
 
             OpenAIEmbeddingCollection result = await client.GenerateEmbeddingsAsync(request.TextLines.ToArray(), cancellationToken: cancellationToken);
 
-            var embeddings = request.TextLines
-                .Select((text, index) => new StoredEmbedding(
-                    Guid.NewGuid(),
-                    text,
-                    result[index].ToFloats().ToArray()
-                ));
+            var storedEmbeddings =  new List<StoredEmbedding>();
 
-            _embeddingStoreService.AddEmbeddings(embeddings);
-
-            return new EmbeddingTextResponseDto
+            foreach (var embedding in result)
             {
-                EmbeddedText = "abc",
-                EmbeddedTextGuid = Guid.NewGuid()
+                var storedEmbedding = new StoredEmbedding(
+                    Guid.NewGuid(),
+                    request.TextLines[embedding.Index],
+                    embedding.ToFloats().ToArray()
+                );
+
+                storedEmbeddings.Add(storedEmbedding );
+
+            }
+
+            _embeddingStoreService.AddEmbeddings(storedEmbeddings);
+
+            return new EmbeddingTextLinesResponseDto
+            {
+                EmbeddedTextLines = storedEmbeddings.Select(e => e.Text).ToList(),
+                EmbeddedTextLinesGuids  = storedEmbeddings.Select(e => e.Guid).ToList()
             };
 
         }
