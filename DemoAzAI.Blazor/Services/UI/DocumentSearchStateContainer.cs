@@ -7,12 +7,7 @@
         public string DocContent { get; set; } = string.Empty;
         public string DocFields { get; set; } = string.Empty;
         public string PdfUrl { get; set; } = string.Empty;
-
-
-        public void SetPdf(string url)
-        {
-            PdfUrl = url;
-        }
+        public string AiModel { get; set; } = string.Empty;
 
         public void Reset()
         {

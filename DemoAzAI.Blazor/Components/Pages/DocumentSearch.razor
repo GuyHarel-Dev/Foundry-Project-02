@@ -2,10 +2,6 @@
 @rendermode InteractiveServer
 
 @using DemoAzAI.Blazor.Components.Fragments
-@using DemoAzAI.Common
-@using DemoAzAI.Contracts.Requests
-@using DemoAzAI.Contracts.Responses
-@using DemoAzAI.Contracts.Dtos
 @using DemoAzAI.Blazor.Services.Api
 @using DemoAzAI.Blazor.Services.UI
 
@@ -14,18 +10,20 @@
 
 <h3>AI Document Search</h3>
 
+<button @onclick="e => Test(e)"  >Test</button>
+
 <div class="pdf-model-selection-area">
     <div class="pdf-selection-area">
         <p>Select a PDF document to analyse:</p>
-        <button @onclick='() => StateContainer.SetPdf("/Pdf/fake-occular-center.pdf")'>
+        <button @onclick='() => StateContainer.PdfUrl ="/Pdf/fake-occular-center.pdf"'>
             fake-occular-center
         </button>
 
-        <button @onclick='() => StateContainer.SetPdf("/Pdf/fake-lamp-receit.pdf")'>
+        <button @onclick='() => StateContainer.PdfUrl = "/Pdf/fake-lamp-receit.pdf"'>
             fake-lamp-receit
         </button>
 
-        <button @onclick='() => StateContainer.SetPdf("/Pdf/fake-kayak-certificate.pdf")'>
+        <button @onclick='() => StateContainer.PdfUrl = "/Pdf/fake-kayak-certificate.pdf"'>
             fake-kayak-certificate
         </button>
 
@@ -60,7 +58,19 @@
                    @onchange="e => OnModelRadioChange(e)" />
             @ReceiptModel
         </label>
+        <form @onsubmit="AnalyzeDocument">
 
+           
+            <button type="submit" class="ask-button" disabled="@isBusy">
+                <span>Send document to model for analysis</span>
+            </button>
+
+            <!-- call wait panel -->
+            @if (isBusy)
+            {
+                <LoadingPanel></LoadingPanel>
+            }
+        </form>
     </div>
 </div>
 
@@ -73,222 +83,30 @@
     </div>
 
     <div class="doc-analysis-area">
-    </div>
+        <div>
+            <label for="docContent">Document content:</label>
+            <textarea readonly value="@StateContainer.DocContent"></textarea>
+        </div>
 
-@*     <form @onsubmit="AnalyzeDocument">
+        <div>
+            <label for="docFields">Documument fields:</label>
+            <textarea readonly value="@StateContainer.DocFields"></textarea>
+        </div>
 
-           
-        <button type="submit" class="ask-button" disabled="@isBusy">
-            <span>Analyze document</span>
-        </button>
+        <div>
+            <label for="executionLog">Execution log:</label>
+            <textarea readonly value="@StateContainer.ExecutionLog"></textarea>
+        </div>
 
-        <!-- call wait panel -->
-        @if (isBusy)
-        {
-            <LoadingPanel></LoadingPanel>
-        }
-    </form>
-
-    <div class="pdf-frame">
-        @if (!string.IsNullOrEmpty(StateContainer.PdfUrl))
-        {
-            <iframe src="@($"{StateContainer.PdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
-        }
-        else
-        {
-            <p>Please select a PDF document to begin extraction.</p>
-        }
-    </div> *@
-
-
-
-
-</div>
-
-@* <div class="model-analysis-area">
-    <div>
-        <label for="executionLog">Execution log:</label>
-        <textarea readonly value="@StateContainer.ExecutionLog"></textarea>
-    </div>
-
-    <div>
-        <label for="statistics">Model statistics:</label>
-        <textarea readonly value="@StateContainer.Statistics"></textarea>
+        <div>
+            <label for="statistics">Model statistics:</label>
+            <textarea readonly value="@StateContainer.Statistics"></textarea>
+        </div>
     </div>
 
 </div>
-
-<div class="doc-analysis-area">
-    <div>
-        <label for="docContent">Document content:</label>
-        <textarea readonly value="@StateContainer.DocContent"></textarea>
-    </div>
-
-    <div>
-        <label for="docFields">Documument fields:</label>
-        <textarea readonly value="@StateContainer.DocFields"></textarea>
-    </div>
-
-
-
-</div> *@
-
-
-
-
 
 @code {
 
-    [Inject]
-    private IWebHostEnvironment Env { get; set; } = default!;
 
-    private bool isBusy;
-
-    private string ReadModel = "prebuilt-read";
-    private string LayoutModel = "prebuilt-layout";
-    private string InvoiceModel = "prebuilt-invoice";
-    private string ReceiptModel = "prebuilt-receipt";
-
-    private string SelectedModel = "prebuilt-read";
-
-    private void OnModelRadioChange(ChangeEventArgs e)
-    {
-        var test = e.Value;
-
-        SelectedModel = e.Value?.ToString() ?? "prebuilt-read";
-    }
-
-    private async Task AnalyzeDocument()
-    {
-        try
-        {
-            isBusy = true;
-
-            StateContainer.Statistics = string.Empty;
-            StateContainer.ExecutionLog = string.Empty;
-
-            List<StepTracerStepDto> Steps = new();
-
-            StepTracer.AddStep(Steps, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}");
-
-            StateContainer.ExecutionLog = StepTracer.GetTrace(Steps);
-
-            await RefreshUI();
-
-            var request = new AnalyzeDocumentRequestDto(Steps)
-            {
-                ModelName = SelectedModel,
-                FileName = Path.GetFileName(StateContainer.PdfUrl),
-                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, StateContainer.PdfUrl.TrimStart('/')))
-
-            };
-
-            var result = await apiClient.PostAsync<AnalyzeDocumentRequestDto,
-                AnalyzeDocumentResponseDto>("api/document/analyze", request);
-
-            if (!result.IsSuccess)
-            {
-                StateContainer.ExecutionLog = result.ErrorMessage ?? "Unknown API error.";
-                return;
-            }
-
-            var responseDto = result.Value;
-
-            if (responseDto == null)
-            {
-                StateContainer.ExecutionLog = "API returned no data.";
-                return;
-            }
-
-            ExtractDocumentsContent(responseDto);
-            StateContainer.ExecutionLog = StepTracer.GetTrace(responseDto.Steps);
-            StateContainer.Statistics = ExtractStatistics(result.Value);
-
-        }
-        catch (Exception ex)
-        {
-
-            StateContainer.ExecutionLog = ex.Message;
-            throw;
-        }
-        finally
-        {
-            isBusy = false;
-        }
-
-    }
-
-    private void ExtractDocumentsContent(AnalyzeDocumentResponseDto? response)
-    {
-        if (response == null)
-        {
-            StateContainer.DocContent = "No response documents or fields to extract.";
-            return;
-        }
-
-        StateContainer.DocContent = response.DocContent ?? "No document content extracted.";
-
-        // Fields extraction
-
-        if (response.Documents is null)
-        {
-            StateContainer.DocFields = "No documents fields found in the response.";
-            return;
-        }
-
-
-        var contentBuilder = new System.Text.StringBuilder();
-
-        foreach (var doc in response.Documents)
-        {
-            contentBuilder.AppendLine($"Document Type: {doc.DocumentType}");
-
-            foreach (var field in doc.Fields)
-            {
-                contentBuilder.AppendLine();
-                contentBuilder.AppendLine($"  Field Name: {field.Name}");
-                contentBuilder.AppendLine($"  Field Value: {field.Value}");
-                contentBuilder.AppendLine($"  Field Confidence: {field.Confidence}");
-                contentBuilder.AppendLine($"  Field FieldType: {field.FieldType}");
-            }
-        }
-
-        StateContainer.DocFields = contentBuilder.ToString();
-
-    }
-
-    private string ExtractStatistics(AnalyzeDocumentResponseDto? response)
-    {
-        if (response == null)
-            return "No response data to extract statistics.";
-
-        string str = "";
-
-        str += $"PageCount: {response.PageCount}\n";
-        str += $"ParagraphCount: {response.ParagraphCount}\n";
-        str += $"TableCount: {response.TableCount}\n";
-        str += $"FigureCount: {response.FigureCount}\n";
-        str += $"SectionCount: {response.SectionCount}\n";
-        str += $"LanguagesCount: {response.LanguagesCount}\n";
-        str += $"LanguagesCount: {response.LanguagesCount}\n";
-
-        // Derived statistics
-        str += $"CharacterCount : {response.DocContent.Length}\n";
-        str += $"WordCount : {response.DocContent.Split(' ').Length}\n";
-
-        return str;
-
-    }
-
-    private void SetPdf(string url)
-    {
-        StateContainer.PdfUrl = url;
-    }
-
-    private async Task RefreshUI()
-    {
-
-        await InvokeAsync(StateHasChanged);
-        await Task.Yield();
-    }
 }

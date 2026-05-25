@@ -18,23 +18,19 @@
 
 .doc-area {
     display: flex;
-    flex-wrap: wrap;
     margin-top:10px;
 }
 
     .doc-area .doc-display-area {
-        width:50%;
-        border: 2px solid red;
+        width: 50%;
     }
 
     .doc-area .doc-display-area iframe {
         width:100%;
         height:85vh;
-        border: 2px solid red;
-
     }
 
     .doc-area .doc-analysis-area {
         width: 50%;
-        border: 2px solid red;
+        margin-left:10px;
     }
