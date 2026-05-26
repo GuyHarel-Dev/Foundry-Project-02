@@ -1,6 +1,11 @@
 ﻿<div class="loading-panel-container">
     <div class="loading-panel" role="status" aria-live="polite">
         <div class="hourglass"></div>
-        <span>Calling Azure AI Foundry...</span>
+        <span>@Message</span>
     </div>
 </div>
+
+@code {
+    [Parameter]
+    public string Message { get; set; } = "Calling Azure AI Foundry...";
+}

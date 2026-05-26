@@ -1,12 +1,17 @@
 ﻿@page "/embeddings"
+@inherits BasePage
 @rendermode InteractiveServer
 
 @using DemoAzAI.Contracts.Requests
 @using DemoAzAI.Contracts.Responses
 @using DemoAzAI.Blazor.Components.Fragments
 @using DemoAzAI.Blazor.Services.Api
+@using DemoAzAI.Blazor.Services.UI
+@using DemoAzAI.Contracts.Dtos
+@using DemoAzAI.Common
 
 @inject FoundryApiClient apiClient
+@inject DocumentSearchStateContainer StateContainer;
 
 <textarea @bind="TextToEmbedd"></textarea>
 
@@ -15,17 +20,28 @@
     <!-- call wait panel -->
     @if (isBusy)
     {
-        <LoadingPanel></LoadingPanel>
+        <LoadingPanel Message="Sending text for embedding to the embedding model..."></LoadingPanel>
     }
 </form>
 
 <textarea @bind="TextGuid"></textarea>
 
+<div class="doc-analysis-area">
+    <div>
+        <label for="executionLog">Execution log:</label>
+        <textarea readonly value="@StateContainer.ExecutionLog"></textarea>
+    </div>
+
+    <div>
+        <label for="statistics">Model statistics:</label>
+        <textarea readonly value="@StateContainer.Statistics"></textarea>
+    </div>
+</div>
 
 @code {
 
     private bool isBusy;
-    private string TextToEmbedd = string.Empty;
+    private string TextToEmbedd = TextToEmbeddDefault;
     private string TextGuid = string.Empty;
 
     private async Task EmbeddText()
@@ -35,22 +51,36 @@
         {
             isBusy = true;
 
+            StateContainer.Statistics = string.Empty;
+            StateContainer.ExecutionLog = string.Empty;
+
+            List<StepTracerStepDto> Steps = new();
+
+            StepTracer.AddStep(Steps, "BlazorUi", $"{nameof(EmbeddText)}: Starting embedding for text: {TextToEmbedd.Substring(0, 32)}...");
+
+            StateContainer.ExecutionLog = StepTracer.GetTrace(Steps);
+
+            await RefreshUI();
+
             var request = new EmbeddingTextRequestDto
             {
                 Text = TextToEmbedd
             };
 
-            var response = await apiClient.PostAsync<EmbeddingTextRequestDto, EmbeddingTextResponseDto>("api/embedding/embedtext", request);
+            var response = await apiClient.PostAsync<EmbeddingTextRequestDto, EmbeddingTextResponseDto>("api/embedding/embedlines", request);
 
-            if (response is not null && response.Value is not null)
+            
+            if (!response.IsSuccess)
             {
-                TextGuid = response.Value.EmbeddedTextGuid.ToString();
+                StateContainer.ExecutionLog = response.ErrorMessage ?? "Unknown API error.";
+                return;
+
             }
         }
         catch (Exception ex)
         {
 
-            // executionLog = ex.Message;
+            StateContainer.ExecutionLog = ex.Message;
             throw;
         }
         finally
@@ -59,4 +89,13 @@
         }
 
     }
+    
+    private static string TextToEmbeddDefault = @"Invoice / Facture
+CÉLINE FICTIVE
+3345 BOULEVARD FICTIF APPARTEMENT 001
+Paid / Payé
+Fictive City (FC) A1B 2C3
+Sold by / Vendu par: Lampes Internationales Inc
+CA.";
+
 }

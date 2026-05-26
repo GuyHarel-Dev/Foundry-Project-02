@@ -1,4 +1,5 @@
 ﻿@page "/document-search"
+@inherits BasePage
 @rendermode InteractiveServer
 
 @using DemoAzAI.Blazor.Components.Fragments
@@ -66,7 +67,7 @@
             <!-- call wait panel -->
             @if (isBusy)
             {
-                <LoadingPanel></LoadingPanel>
+                <LoadingPanel Message="Sending document to ai document analysis model..."></LoadingPanel>
             }
         </form>
     </div>

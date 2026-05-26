@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages;
 
-public partial class DocumentSearch : ComponentBase
+public partial class DocumentSearch
 {
     [Inject]
     private IWebHostEnvironment Env { get; set; } = default!;
@@ -25,13 +25,6 @@ public partial class DocumentSearch : ComponentBase
     {
         SelectedModel = e.Value?.ToString() ?? "prebuilt-read";
         StateContainer.AiModel = SelectedModel;
-    }
-
-    private async Task RefreshUI()
-    {
-
-        await InvokeAsync(StateHasChanged);
-        await Task.Yield();
     }
 
     protected string StatusMessage = "Ready";
