@@ -2,13 +2,11 @@
 @inherits BasePage
 @rendermode InteractiveServer
 
-@using DemoAzAI.Contracts.Requests
-@using DemoAzAI.Contracts.Responses
 @using DemoAzAI.Blazor.Components.Fragments
 @using DemoAzAI.Blazor.Services.Api
-@using DemoAzAI.Blazor.Services.UI
-@using DemoAzAI.Contracts.Dtos
 @using DemoAzAI.Common
+@using DemoAzAI.Contracts.Requests
+@using DemoAzAI.Contracts.Responses
 
 @inject FoundryApiClient apiClient
 
@@ -89,7 +87,7 @@
 
             EmbeddingTextResponseDto result = response.Value;
 
-
+            Statistics = result.GetSummary();
         }
         catch (Exception ex)
         {
