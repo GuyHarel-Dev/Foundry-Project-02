@@ -7,7 +7,6 @@ namespace WebApi.Services.Store
     {
         public List<StoredEmbedding> Embeddings { get; set; } = new List<StoredEmbedding>();
 
-
         public void AddEmbeddings(IEnumerable<StoredEmbedding> storedEmbedding)
         {
             Embeddings.AddRange(storedEmbedding);

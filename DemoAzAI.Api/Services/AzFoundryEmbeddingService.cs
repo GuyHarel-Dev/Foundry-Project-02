@@ -17,28 +17,6 @@ namespace DemoAzAI.Api.Services
 
     {
 
-        public async Task<EmbeddingTextResponseDto> EmbeddTextAsync(EmbeddingTextRequestDto request, CancellationToken cancellationToken = default)
-        {
-            var client = CreateEmbeddingClient();
-
-            OpenAIEmbedding result = await client.GenerateEmbeddingAsync(request.Text, cancellationToken: cancellationToken);
-
-            var storedEmbedding = new StoredEmbedding(
-                Guid.NewGuid(),
-                request.Text,
-                result.ToFloats().ToArray()
-            );
-
-            _embeddingStoreService.AddEmbedding(storedEmbedding);
-
-            return new EmbeddingTextResponseDto
-            {
-                EmbeddedText = storedEmbedding.Text,
-                EmbeddedTextGuid = storedEmbedding.Guid
-            };
-
-        }
-
         public async Task<EmbeddingTextLinesResponseDto> EmbeddTextLinesAsync(EmbeddingTextLinesRequestDto request, CancellationToken cancellationToken = default)
         {
             var client = CreateEmbeddingClient();
@@ -64,8 +42,9 @@ namespace DemoAzAI.Api.Services
 
             return new EmbeddingTextLinesResponseDto
             {
-                EmbeddedTextLines = storedEmbeddings.Select(e => e.Text).ToList(),
-                EmbeddedTextLinesGuids  = storedEmbeddings.Select(e => e.Guid).ToList()
+                TextLines = storedEmbeddings.Select(e => e.Text).ToList(),
+                Guid  = storedEmbeddings.Select(e => e.Guid).ToList(),
+                FloatValuesPreview = $"[ {string.Join(", ", storedEmbeddings.FirstOrDefault()?.Vector.Take(5) ?? Array.Empty<float>())} ... ]"
             };
 
         }

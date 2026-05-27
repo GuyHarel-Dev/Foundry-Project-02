@@ -8,8 +8,8 @@ namespace DemoAzAI.Contracts.Responses
 {
     public class EmbeddingTextLinesResponseDto
     {
-        public List<string> EmbeddedTextLines { get; set; } = new List<string>();
-        public List<Guid> EmbeddedTextLinesGuids { get; set; } = new List<Guid>();
-        public string EmbeddedTextLinesStats { get; set; } = string.Empty;
+        public List<string> TextLines { get; set; } = new List<string>();
+        public List<Guid> Guid { get; set; } = new List<Guid>();
+        public string FloatValuesPreview { get; set; } = string.Empty;
     }
 }
