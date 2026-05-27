@@ -1,4 +1,6 @@
-﻿using DemoAzAI.Common;
+﻿using DemoAzAI.Blazor.Services.Api;
+using DemoAzAI.Blazor.Services.UI;
+using DemoAzAI.Common;
 using DemoAzAI.Contracts.Requests;
 using DemoAzAI.Contracts.Responses;
 using Microsoft.AspNetCore.Components;
@@ -9,6 +11,12 @@ public partial class DocumentSearch
 {
     [Inject]
     private IWebHostEnvironment Env { get; set; } = default!;
+
+    [Inject]
+    private FoundryApiClient apiClient { get; set; } = default!;
+
+    [Inject] 
+    private DocumentSearchStateContainer StateContainer { get; set; } = default!;
 
     private bool isBusy;
 
@@ -37,13 +45,15 @@ public partial class DocumentSearch
         {
             isBusy = true;
 
-            //StateContainer.Statistics = string.Empty;
-            //StateContainer.ExecutionLog = string.Empty;
+            StateContainer.Statistics = string.Empty;
+            StateContainer.ExecutionLog = string.Empty;
 
-            StepTracer.ClearSteps();
-            StepTracer.AddStep("BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}");
+            StepTracer.AddStep("BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}", clearSteps:true);
 
-            //StateContainer.ExecutionLog = StepTracer.GetSteps();
+            StateContainer.ExecutionLog = StepTracer.GetSteps();
+            executionLog = StateContainer.ExecutionLog;
+
+            executionLog = StateContainer.ExecutionLog;
 
             await RefreshUI();
 
@@ -60,7 +70,7 @@ public partial class DocumentSearch
 
             if (!result.IsSuccess)
             {
-                //StateContainer.ExecutionLog = result.ErrorMessage ?? "Unknown API error.";
+                StateContainer.ExecutionLog = result.ErrorMessage ?? "Unknown API error.";
                 return;
             }
 
@@ -70,13 +80,15 @@ public partial class DocumentSearch
 
             if (responseDto == null)
             {
-                //StateContainer.ExecutionLog = "API returned no data.";
+                StateContainer.ExecutionLog = "API returned no data.";
                 return;
             }
 
             ExtractDocumentsContent(responseDto);
-            //StateContainer.ExecutionLog = StepTracer.GetSteps();
-            //StateContainer.Statistics = ExtractStatistics(result.Value);
+
+            StateContainer.ExecutionLog = StepTracer.GetSteps();
+            StateContainer.Statistics = ExtractStatistics(result.Value);
+            statistics = StateContainer.Statistics;
 
         }
         catch (Exception ex)

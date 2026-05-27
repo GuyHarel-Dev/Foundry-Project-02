@@ -10,9 +10,6 @@
         margin-right: 20px;
     }
 
-div {
-    border: 2px solid red;
-}
 .doc_view_result_area {
     display: flex;
     width: 100%;

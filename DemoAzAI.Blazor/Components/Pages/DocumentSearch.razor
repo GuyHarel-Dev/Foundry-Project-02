@@ -6,8 +6,6 @@
 @using DemoAzAI.Blazor.Services.Api
 @using DemoAzAI.Blazor.Services.UI
 
-@inject FoundryApiClient apiClient
-@inject DocumentSearchStateContainer StateContainer;
 
 <h3>AI Document Search</h3>
 
@@ -57,9 +55,9 @@
                    @onchange="e => OnModelRadioChange(e)" />
             @ReceiptModel
         </label>
-        <form @onsubmit="AnalyzeDocument">
 
-           
+        <form @onsubmit="AnalyzeDocument">
+      
             <button type="submit" class="ask-button" disabled="@isBusy">
                 <span>Send document to model for analysis</span>
             </button>
@@ -86,8 +84,8 @@
             <label for="docFields">Documument fields:</label>
             <textarea readonly value="@StateContainer.DocFields"></textarea>
 
-            <ExecutionLogPanel ExecutionLog="@executionLog"></ExecutionLogPanel>
-            <StatisticsPanel Statistics="@statistics"></StatisticsPanel>
+        <ExecutionLogPanel ExecutionLog="@StateContainer.ExecutionLog"></ExecutionLogPanel>
+        <StatisticsPanel Statistics="@StateContainer.Statistics"></StatisticsPanel>
 
     </div>
 </div>
