@@ -1,18 +1,19 @@
-﻿using System.Numerics;
+﻿using DemoAzAI.Contracts.Dtos;
+using System.Numerics;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace WebApi.Services.Store
 {
     public class EmbeddingStoreService : IEmbeddingStoreService
     {
-        public List<StoredEmbedding> Embeddings { get; set; } = new List<StoredEmbedding>();
+        public List<TextEmbeddingDto> Embeddings { get; set; } = new List<TextEmbeddingDto>();
 
-        public void AddEmbeddings(IEnumerable<StoredEmbedding> storedEmbedding)
+        public void AddEmbeddings(IEnumerable<TextEmbeddingDto> storedEmbedding)
         {
             Embeddings.AddRange(storedEmbedding);
         }
 
-        public void AddEmbedding(StoredEmbedding storedEmbedding)
+        public void AddEmbedding(TextEmbeddingDto storedEmbedding)
         {
             Embeddings.Add(storedEmbedding);
         }
@@ -22,7 +23,7 @@ namespace WebApi.Services.Store
             Embeddings.Clear();
         }
 
-        StoredEmbedding? IEmbeddingStoreService.GetEmbedding(Guid id)
+        TextEmbeddingDto? IEmbeddingStoreService.GetEmbedding(Guid id)
         {
             return Embeddings.FirstOrDefault(e => e.Guid == id);
         }

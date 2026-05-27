@@ -1,8 +1,14 @@
-﻿namespace DemoAzAI.Contracts.Responses
+﻿using DemoAzAI.Contracts.Dtos;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DemoAzAI.Contracts.Responses
 {
     public class EmbeddingTextResponseDto
     {
-        public string EmbeddedText { get; set; } = string.Empty;
-        public Guid EmbeddedTextGuid { get; set; }
+        public List<TextEmbeddingDto> TextEmbeddings { get; set; } = new List<TextEmbeddingDto>();
     }
 }

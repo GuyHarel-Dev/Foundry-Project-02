@@ -20,8 +20,12 @@ namespace DemoAzAI.Api.Controllers
         }
 
         [HttpPost("embedlines")]
-        public async Task<ActionResult> EmbedLines([FromBody] EmbeddingTextLinesRequestDto request)
+        public async Task<ActionResult> EmbedLines([FromBody] EmbeddingTextLRequestDto request)
         {
+            if (request.TextLines == null || !request.TextLines.Any())
+            {
+                return BadRequest("TextLines cannot be null or empty.");
+            }
             var response = await _azFoundryEmbeddingService.EmbeddTextLinesAsync(request);
 
             return Ok(response);

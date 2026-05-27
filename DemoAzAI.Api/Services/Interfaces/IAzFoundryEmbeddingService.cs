@@ -5,6 +5,6 @@ namespace WebApi.Services.Interfaces
 {
     public interface IAzFoundryEmbeddingService
     {
-        Task<EmbeddingTextLinesResponseDto> EmbeddTextLinesAsync(EmbeddingTextLinesRequestDto request, CancellationToken cancellationToken = default);
+        Task<EmbeddingTextResponseDto> EmbeddTextLinesAsync(EmbeddingTextLRequestDto request, CancellationToken cancellationToken = default);
     }
 }

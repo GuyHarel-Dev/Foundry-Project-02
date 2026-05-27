@@ -11,7 +11,6 @@
 @using DemoAzAI.Common
 
 @inject FoundryApiClient apiClient
-@inject DocumentSearchStateContainer StateContainer;
 
 <textarea @bind="TextToEmbedd"></textarea>
 
@@ -29,12 +28,12 @@
 <div class="doc-analysis-area">
     <div>
         <label for="executionLog">Execution log:</label>
-        <textarea readonly value="@StateContainer.ExecutionLog"></textarea>
+        <textarea readonly value="@ExecutionLog"></textarea>
     </div>
 
     <div>
         <label for="statistics">Model statistics:</label>
-        <textarea readonly value="@StateContainer.Statistics"></textarea>
+        <textarea readonly value="@Statistics"></textarea>
     </div>
 </div>
 
@@ -44,6 +43,9 @@
     private string TextToEmbedd = TextToEmbeddDefault;
     private string TextGuid = string.Empty;
 
+    private string ExecutionLog = string.Empty; 
+    private string Statistics = string.Empty;
+
     private async Task EmbeddText()
     {
 
@@ -51,35 +53,48 @@
         {
             isBusy = true;
 
-            StateContainer.Statistics = string.Empty;
-            StateContainer.ExecutionLog = string.Empty;
+            Statistics = string.Empty;
+            ExecutionLog = string.Empty;
 
             StepTracer.ClearSteps();
             StepTracer.AddStep( "BlazorUi", $"{nameof(EmbeddText)}: Starting embedding for text: {TextToEmbedd.Substring(0, 32)}...");
 
-            StateContainer.ExecutionLog = StepTracer.GetSteps();
+            ExecutionLog = StepTracer.GetSteps();
 
             await RefreshUI();
 
-            var request = new EmbeddingTextRequestDto
+            List<string> lines = TextToEmbedd
+                .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
+
+            var request = new EmbeddingTextLRequestDto
             {
-                Text = TextToEmbedd
+                TextLines = lines
             };
 
-            var response = await apiClient.PostAsync<EmbeddingTextRequestDto, EmbeddingTextResponseDto>("api/embedding/embedlines", request);
+            var response = await apiClient.PostAsync<EmbeddingTextLRequestDto, EmbeddingTextResponseDto>("api/embedding/embedlines", request);
 
-            
             if (!response.IsSuccess)
             {
-                StateContainer.ExecutionLog = response.ErrorMessage ?? "Unknown API error.";
+                ExecutionLog = response.ErrorMessage ?? "Unknown API error.";
                 return;
 
             }
+
+            if (response.Value == null)
+            {
+                ExecutionLog = "API error: response value is null.";
+                return;
+            }
+
+            EmbeddingTextResponseDto result = response.Value;
+
+
         }
         catch (Exception ex)
         {
 
-            StateContainer.ExecutionLog = ex.Message;
+            ExecutionLog = ex.Message;
             throw;
         }
         finally

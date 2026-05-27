@@ -1,11 +1,13 @@
-﻿namespace WebApi.Services.Store
+﻿using DemoAzAI.Contracts.Dtos;
+
+namespace WebApi.Services.Store
 {
     public interface IEmbeddingStoreService
     {
-        List<StoredEmbedding> Embeddings { get; set; }
-        void AddEmbedding(StoredEmbedding storedEmbedding);
-        void AddEmbeddings(IEnumerable<StoredEmbedding> storedEmbedding);
+        List<TextEmbeddingDto> Embeddings { get; set; }
+        void AddEmbedding(TextEmbeddingDto storedEmbedding);
+        void AddEmbeddings(IEnumerable<TextEmbeddingDto> storedEmbedding);
         void ClearEmbeddings();
-        StoredEmbedding? GetEmbedding(Guid id);
+        TextEmbeddingDto? GetEmbedding(Guid id);
     }
 }

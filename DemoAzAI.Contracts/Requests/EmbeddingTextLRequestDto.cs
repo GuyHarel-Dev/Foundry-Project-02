@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DemoAzAI.Contracts.Requests
 {
-    public class EmbeddingTextRequestDto
+    public class EmbeddingTextLRequestDto
     {
-        public string Text { get; set; } = string.Empty;
+        public List<string> TextLines { get; set; } = [];
 
     }
 }

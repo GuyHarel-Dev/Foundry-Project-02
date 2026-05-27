@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DemoAzAI.Contracts.Dtos;
+using Microsoft.AspNetCore.Mvc;
 using WebApi.Services.Store;
 
 namespace WebApi.Controllers
@@ -10,7 +11,7 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Route("embeddingvalues")]
-        public ActionResult<StoredEmbedding> Get(string guid)
+        public ActionResult<TextEmbeddingDto> Get(string guid)
         {
             if (string.IsNullOrEmpty(guid) ||!embeddingStoreService.Embeddings.Exists( e => e.Guid.Equals(Guid.Parse(guid))))
             {

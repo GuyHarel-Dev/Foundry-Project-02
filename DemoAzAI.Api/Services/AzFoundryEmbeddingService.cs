@@ -1,4 +1,5 @@
 ﻿using Azure.AI.Projects;
+using DemoAzAI.Contracts.Dtos;
 using DemoAzAI.Contracts.Requests;
 using DemoAzAI.Contracts.Responses;
 using OpenAI.Embeddings;
@@ -17,18 +18,18 @@ namespace DemoAzAI.Api.Services
 
     {
 
-        public async Task<EmbeddingTextLinesResponseDto> EmbeddTextLinesAsync(EmbeddingTextLinesRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<EmbeddingTextResponseDto> EmbeddTextLinesAsync(EmbeddingTextLRequestDto request, CancellationToken cancellationToken = default)
         {
             var client = CreateEmbeddingClient();
             _embeddingStoreService.ClearEmbeddings();
 
             OpenAIEmbeddingCollection result = await client.GenerateEmbeddingsAsync(request.TextLines.ToArray(), cancellationToken: cancellationToken);
 
-            var storedEmbeddings =  new List<StoredEmbedding>();
+            var storedEmbeddings =  new List<TextEmbeddingDto>();
 
             foreach (var embedding in result)
             {
-                var storedEmbedding = new StoredEmbedding(
+                var storedEmbedding = new TextEmbeddingDto(
                     Guid.NewGuid(),
                     request.TextLines[embedding.Index],
                     embedding.ToFloats().ToArray()
@@ -40,11 +41,9 @@ namespace DemoAzAI.Api.Services
 
             _embeddingStoreService.AddEmbeddings(storedEmbeddings);
 
-            return new EmbeddingTextLinesResponseDto
+            return new EmbeddingTextResponseDto
             {
-                TextLines = storedEmbeddings.Select(e => e.Text).ToList(),
-                Guid  = storedEmbeddings.Select(e => e.Guid).ToList(),
-                FloatValuesPreview = $"[ {string.Join(", ", storedEmbeddings.FirstOrDefault()?.Vector.Take(5) ?? Array.Empty<float>())} ... ]"
+                TextEmbeddings = storedEmbeddings
             };
 
         }
