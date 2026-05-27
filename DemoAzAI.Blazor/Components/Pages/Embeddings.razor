@@ -10,7 +10,8 @@
 
 @inject FoundryApiClient apiClient
 
-<textarea @bind="TextToEmbedd"></textarea>
+<label for="TextToEmbed">Text to embed:</label>
+<textarea @bind="TextToEmbed"></textarea>
 
 <form @onsubmit="EmbeddText">
     <button type="submit">Submit</button>
@@ -23,26 +24,27 @@
 
 <textarea @bind="TextGuid"></textarea>
 
-<div class="doc-analysis-area">
+<div>
+    <div>
+        <label for="EmbeddedText">Text embedding:</label>
+        <textarea readonly value="@EmbeddedText"></textarea>
+    </div>
     <div>
         <label for="executionLog">Execution log:</label>
         <textarea readonly value="@ExecutionLog"></textarea>
     </div>
 
-    <div>
-        <label for="statistics">Model statistics:</label>
-        <textarea readonly value="@Statistics"></textarea>
-    </div>
+
 </div>
 
 @code {
 
     private bool isBusy;
-    private string TextToEmbedd = TextToEmbeddDefault;
+    private string TextToEmbed = TextToEmbedDefault;
     private string TextGuid = string.Empty;
 
     private string ExecutionLog = string.Empty; 
-    private string Statistics = string.Empty;
+    private string EmbeddedText = string.Empty;
 
     private async Task EmbeddText()
     {
@@ -51,17 +53,17 @@
         {
             isBusy = true;
 
-            Statistics = string.Empty;
+            EmbeddedText = string.Empty;
             ExecutionLog = string.Empty;
 
             StepTracer.ClearSteps();
-            StepTracer.AddStep( "BlazorUi", $"{nameof(EmbeddText)}: Starting embedding for text: {TextToEmbedd.Substring(0, 32)}...");
+            StepTracer.AddStep( "BlazorUi", $"{nameof(EmbeddText)}: Starting embedding text...");
 
             ExecutionLog = StepTracer.GetSteps();
 
             await RefreshUI();
 
-            List<string> lines = TextToEmbedd
+            List<string> lines = TextToEmbed
                 .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
 
@@ -87,7 +89,7 @@
 
             EmbeddingTextResponseDto result = response.Value;
 
-            Statistics = result.GetSummary();
+            EmbeddedText = result.GetSummary();
         }
         catch (Exception ex)
         {
@@ -102,7 +104,7 @@
 
     }
     
-    private static string TextToEmbeddDefault = @"Invoice / Facture
+    private static string TextToEmbedDefault = @"Invoice / Facture
 CÉLINE FICTIVE
 3345 BOULEVARD FICTIF APPARTEMENT 001
 Paid / Payé
