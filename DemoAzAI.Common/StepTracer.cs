@@ -5,16 +5,29 @@ namespace DemoAzAI.Common
 {
     public static class StepTracer
     {
-        public static void AddStep(List<StepTracerStepDto> Steps, string source, string title)
+        private static readonly List<StepTracerStep> Steps = new();
+
+        public static void ClearSteps()
         {
-            Steps.Add(new StepTracerStepDto
+            Steps.Clear();
+        }   
+
+        public static void AddStep(string source, string title, bool clearSteps = false)
+        {
+            if (clearSteps)
+            {
+                ClearSteps();
+            }
+
+            Steps.Add(new StepTracerStep
             {
                 StepTitle = title,
                 StepSource = source,
                 StepDateTime = DateTime.UtcNow
             });
+
         }
-        public static string GetTrace(List<StepTracerStepDto> Steps)
+        public static string GetSteps()
         {
             if (Steps.Count == 0)
             {
@@ -29,12 +42,12 @@ namespace DemoAzAI.Common
                     $"[{step.StepDateTime?.ToLocalTime():yyyy-MM-dd HH:mm:ss.fff}] [{step.StepSource}] {step.StepTitle}");
             }
 
-            builder.AppendLine(GetTotalTime(Steps));
+            builder.AppendLine(GetTotalTime());
 
             return builder.ToString();
         }
 
-        public static string GetTotalTime(List<StepTracerStepDto> Steps)
+        public static string GetTotalTime()
         {
             var orderedSteps = Steps
                 .Where(x => x.StepDateTime.HasValue)

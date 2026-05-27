@@ -1,13 +1,11 @@
 ﻿@page "/chat"
 @rendermode InteractiveServer
 
-@using DemoAzAI.Blazor.Components.Fragments
-@using DemoAzAI.Contracts.Dtos
 @using Contracts.Requests
 @using Contracts.Responses
-@using DemoAzAI.Contracts
-@using DemoAzAI.Common
+@using DemoAzAI.Blazor.Components.Fragments
 @using DemoAzAI.Blazor.Services.Api
+@using DemoAzAI.Common
 
 @inject FoundryApiClient apiClient
 
@@ -42,12 +40,11 @@
     <!-- statistics, log -->
     <div class="stats_log_area">
 
-        <div>
-            <label for="executionLog">Execution log:</label>
-            <textarea readonly value="@executionLog"></textarea>
+        <div class="log_area">
+            <ExecutionLogPanel ExecutionLog="@executionLog"></ExecutionLogPanel>
         </div>
 
-        <div>
+        <div class="stat_area">
             <label for="statistics">Model statistics:</label>
             <textarea readonly value="@statistics"></textarea>
         </div>
@@ -69,13 +66,12 @@
         {
             isBusy = true;
 
-            List<StepTracerStepDto> Steps = new();
-            StepTracer.AddStep(Steps, "BlazorUi", $"{nameof(SendQuestion)}: Sending question to chat model");
+            StepTracer.AddStep("BlazorUi", $"{nameof(SendQuestion)}: Sending question to chat model", clearSteps: true);
 
-            executionLog = StepTracer.GetTrace(Steps);
+            executionLog = StepTracer.GetSteps();
             await RefreshUI();
 
-            var request = new ChatRequestDto(Steps)
+            var request = new ChatRequestDto()
             {
                 Prompt = question
             };
@@ -93,11 +89,14 @@
                 executionLog = "API returned no data.";
                 return;
             }
+
+            StepTracer.AddStep("BlazorUi", $"{nameof(SendQuestion)}: Received answer for question: {question}");
+
             var responseDto = result.Value;
 
             chatResponse = responseDto.ChatResponse;
 
-            executionLog = StepTracer.GetTrace(responseDto.Steps);
+            executionLog = StepTracer.GetSteps();
 
             if (responseDto.ModelStatistics != null)
                 statistics = responseDto.ModelStatistics.ToString();

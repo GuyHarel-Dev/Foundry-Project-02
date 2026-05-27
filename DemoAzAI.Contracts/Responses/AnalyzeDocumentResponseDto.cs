@@ -5,10 +5,6 @@ namespace DemoAzAI.Contracts.Responses
 {
     public class AnalyzeDocumentResponseDto
     {
-        public AnalyzeDocumentResponseDto(List<StepTracerStepDto> steps)
-        {
-            Steps.AddRange(steps);
-        }
 
         public string? ModelId { get; set; }
 
@@ -27,7 +23,5 @@ namespace DemoAzAI.Contracts.Responses
         public int LanguagesCount { get; set; }
 
         public List<DocumentDto> Documents { get; set; } = [];
-
-        public List<StepTracerStepDto> Steps { get; set; } = new();
     }
 }

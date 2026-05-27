@@ -54,11 +54,10 @@
             StateContainer.Statistics = string.Empty;
             StateContainer.ExecutionLog = string.Empty;
 
-            List<StepTracerStepDto> Steps = new();
+            StepTracer.ClearSteps();
+            StepTracer.AddStep( "BlazorUi", $"{nameof(EmbeddText)}: Starting embedding for text: {TextToEmbedd.Substring(0, 32)}...");
 
-            StepTracer.AddStep(Steps, "BlazorUi", $"{nameof(EmbeddText)}: Starting embedding for text: {TextToEmbedd.Substring(0, 32)}...");
-
-            StateContainer.ExecutionLog = StepTracer.GetTrace(Steps);
+            StateContainer.ExecutionLog = StepTracer.GetSteps();
 
             await RefreshUI();
 

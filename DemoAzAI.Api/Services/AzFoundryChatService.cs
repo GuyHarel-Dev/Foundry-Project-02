@@ -44,9 +44,9 @@ namespace DemoAzAI.Api.Services
 
             //_traceStepper.AddStep(StepTracerTraceTypeEnum.WebApi, "Received response from Azure AI Foundry");
 
-            var response = new ChatResponseDto(request.Steps);
+            var response = new ChatResponseDto();
 
-            StepTracer.AddStep(response.Steps, $"{nameof(AzFoundryChatService)}", "Sending system prompt and user prompt");
+            StepTracer.AddStep($"{nameof(AzFoundryChatService)}", "Sending system prompt and user prompt");
 
             response.ChatResponse = result.Value.GetOutputText();
 
@@ -59,7 +59,7 @@ namespace DemoAzAI.Api.Services
                 AnswerLength = response.ChatResponse.Length
             };
 
-            StepTracer.AddStep(response.Steps, $"{nameof(AzFoundryChatService)}", "Received model answer");
+            StepTracer.AddStep($"{nameof(AzFoundryChatService)}", "Received model answer");
 
             return response;
         }

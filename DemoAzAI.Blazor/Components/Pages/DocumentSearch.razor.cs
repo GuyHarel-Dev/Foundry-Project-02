@@ -1,5 +1,4 @@
 ﻿using DemoAzAI.Common;
-using DemoAzAI.Contracts.Dtos;
 using DemoAzAI.Contracts.Requests;
 using DemoAzAI.Contracts.Responses;
 using Microsoft.AspNetCore.Components;
@@ -29,30 +28,23 @@ public partial class DocumentSearch
 
     protected string StatusMessage = "Ready";
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Set a breakpoint here
-        StatusMessage = "Initialized";
-    }
-
     private async Task AnalyzeDocument()
     {
         try
         {
             isBusy = true;
 
-            StateContainer.Statistics = string.Empty;
-            StateContainer.ExecutionLog = string.Empty;
+            //StateContainer.Statistics = string.Empty;
+            //StateContainer.ExecutionLog = string.Empty;
 
-            List<StepTracerStepDto> Steps = new();
+            StepTracer.ClearSteps();
+            StepTracer.AddStep("BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}");
 
-            StepTracer.AddStep(Steps, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}");
-
-            StateContainer.ExecutionLog = StepTracer.GetTrace(Steps);
+            //StateContainer.ExecutionLog = StepTracer.GetSteps();
 
             await RefreshUI();
 
-            var request = new AnalyzeDocumentRequestDto(Steps)
+            var request = new AnalyzeDocumentRequestDto()
             {
                 ModelName = SelectedModel,
                 FileName = Path.GetFileName(StateContainer.PdfUrl),
@@ -65,21 +57,23 @@ public partial class DocumentSearch
 
             if (!result.IsSuccess)
             {
-                StateContainer.ExecutionLog = result.ErrorMessage ?? "Unknown API error.";
+                //StateContainer.ExecutionLog = result.ErrorMessage ?? "Unknown API error.";
                 return;
             }
+
+            StepTracer.AddStep("BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {StateContainer.PdfUrl} with model: {SelectedModel}");
 
             var responseDto = result.Value;
 
             if (responseDto == null)
             {
-                StateContainer.ExecutionLog = "API returned no data.";
+                //StateContainer.ExecutionLog = "API returned no data.";
                 return;
             }
 
             ExtractDocumentsContent(responseDto);
-            StateContainer.ExecutionLog = StepTracer.GetTrace(responseDto.Steps);
-            StateContainer.Statistics = ExtractStatistics(result.Value);
+            //StateContainer.ExecutionLog = StepTracer.GetSteps();
+            //StateContainer.Statistics = ExtractStatistics(result.Value);
 
         }
         catch (Exception ex)

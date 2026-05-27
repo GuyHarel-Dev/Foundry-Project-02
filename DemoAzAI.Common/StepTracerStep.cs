@@ -1,6 +1,12 @@
-﻿namespace DemoAzAI.Contracts.Dtos
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DemoAzAI.Common
 {
-    public class StepTracerStepDto
+    public class StepTracerStep
     {
         public string StepTitle { get; set; } = string.Empty;
         public DateTime? StepDateTime { get; set; }
