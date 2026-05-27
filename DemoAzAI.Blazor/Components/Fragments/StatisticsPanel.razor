@@ -1,0 +1,9 @@
+﻿<div >
+    <label for="Statistics">Model statistics:</label>
+    <textarea readonly value="@Statistics"></textarea>
+</div>
+
+@code {
+    [Parameter]
+    public string Statistics { get; set; } = string.Empty;
+}

@@ -14,7 +14,7 @@
 <div class="pdf-model-selection-area">
     <div class="pdf-selection-area">
         <p>Select a PDF document to analyse:</p>
-        <button @onclick='() => StateContainer.PdfUrl ="/Pdf/fake-occular-center.pdf"'>
+        <button @onclick='() => StateContainer.PdfUrl = "/Pdf/fake-occular-center.pdf"'>
             fake-occular-center
         </button>
 
@@ -73,37 +73,26 @@
     </div>
 </div>
 
-<div class="doc-area">
+<div class="doc_view_result_area">
 
-    <div class="doc-display-area">
-        @if (string.IsNullOrEmpty(StateContainer.PdfUrl)) { StateContainer.PdfUrl = "Pdf/empty-pdf.pdf"; }
-
+    <div class="doc_view_area">
         <iframe src="@($"{StateContainer.PdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
     </div>
 
-    <div class="doc-analysis-area">
-        <div>
+    <div class="doc_result_area">
+
             <label for="docContent">Document content:</label>
             <textarea readonly value="@StateContainer.DocContent"></textarea>
-        </div>
-
-        <div>
             <label for="docFields">Documument fields:</label>
             <textarea readonly value="@StateContainer.DocFields"></textarea>
-        </div>
 
-        <div>
-            <label for="executionLog">Execution log:</label>
-            <textarea readonly value="@StateContainer.ExecutionLog"></textarea>
-        </div>
+            <ExecutionLogPanel ExecutionLog="@executionLog"></ExecutionLogPanel>
+            <StatisticsPanel Statistics="@statistics"></StatisticsPanel>
 
-        <div>
-            <label for="statistics">Model statistics:</label>
-            <textarea readonly value="@StateContainer.Statistics"></textarea>
-        </div>
     </div>
-
 </div>
+
+
 
 @code {
 

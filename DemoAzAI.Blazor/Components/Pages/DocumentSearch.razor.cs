@@ -19,6 +19,9 @@ public partial class DocumentSearch
 
     private string SelectedModel = "prebuilt-read";
 
+    private string executionLog = string.Empty;
+    private string statistics = string.Empty;
+
 
     private void OnModelRadioChange(ChangeEventArgs e)
     {
