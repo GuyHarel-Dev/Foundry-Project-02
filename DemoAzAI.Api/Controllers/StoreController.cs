@@ -10,15 +10,18 @@ namespace WebApi.Controllers
     {
 
         [HttpGet]
-        [Route("embeddingvalues")]
-        public ActionResult<TextEmbeddingDto> Get(string guid)
+        [Route("embeddingvalues/{guid:guid}")]
+        public ActionResult<TextEmbeddingDto> Get(Guid guid)
         {
-            if (string.IsNullOrEmpty(guid) ||!embeddingStoreService.Embeddings.Exists( e => e.Guid.Equals(Guid.Parse(guid))))
+            var embedding = embeddingStoreService.Embeddings
+                .FirstOrDefault(e => e.Guid == guid);
+
+            if (embedding is null)
             {
                 return NotFound($"Guid not found in in-memory embedding store: {guid}");
             }
 
-            return Ok(embeddingStoreService.Embeddings.First(e => e.Guid == Guid.Parse(guid)));
+            return Ok(embedding);
         }
     }
 }

@@ -15,10 +15,13 @@ namespace DemoAzAI.Contracts.Responses
         {
             var sb = new StringBuilder();
             sb.AppendLine($"Received {TextEmbeddings.Count} embeddings:");
+            sb.AppendLine();
 
             foreach (var embedding in TextEmbeddings)
             {
-                sb.AppendLine($"[{string.Join(", ", embedding.Vector.Take(5))}...] --> {embedding.Text}");
+                sb.AppendLine($"{embedding.Text}");
+                sb.AppendLine($"[{string.Join(", ", embedding.Vector.Take(5))}...]");
+                sb.AppendLine();
 
             }
             return sb.ToString();

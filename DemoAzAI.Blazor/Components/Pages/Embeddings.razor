@@ -14,7 +14,7 @@
 <textarea @bind="TextToEmbed"></textarea>
 
 <form @onsubmit="EmbeddText">
-    <button type="submit">Submit</button>
+    <button type="submit">Generate Embeddings</button>
     <!-- call wait panel -->
     @if (isBusy)
     {
@@ -103,12 +103,9 @@
 
     }
     
-    private static string TextToEmbedDefault = @"Invoice / Facture
-CÉLINE FICTIVE
-3345 BOULEVARD FICTIF APPARTEMENT 001
-Paid / Payé
-Fictive City (FC) A1B 2C3
-Sold by / Vendu par: Lampes Internationales Inc
-CA.";
+    private static string TextToEmbedDefault = @"Cats are playful pets
+Dogs are loyal animals
+Pizza is delicious
+Machine learning uses vectors";
 
 }
