@@ -1,16 +1,11 @@
-﻿using DemoAzAI.Contracts.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using DemoAzAI.Domain;
 using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace DemoAzAI.Contracts.Responses
+namespace DemoAzAI.Api.Contracts.Responses
 {
     public class EmbeddingTextResponseDto
     {
-        public List<TextEmbeddingDto> TextEmbeddings { get; set; } = new List<TextEmbeddingDto>();
+        public List<TextEmbedding> TextEmbeddings { get; set; } = new List<TextEmbedding>();
         public string GetSummary()
         {
             var sb = new StringBuilder();

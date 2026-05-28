@@ -1,10 +1,10 @@
 ﻿using Azure.AI.Projects;
-using DemoAzAI.Contracts.Dtos;
-using DemoAzAI.Contracts.Requests;
-using DemoAzAI.Contracts.Responses;
+using DemoAzAI.Api.Contracts.Requests;
+using DemoAzAI.Api.Contracts.Responses;
+using DemoAzAI.Domain;
+using DemoAzAI.Infrastructure.Stores;
 using OpenAI.Embeddings;
 using WebApi.Services.Interfaces;
-using WebApi.Services.Store;
 
 #pragma warning disable OPENAI001 // pour using OpenAI.Responses;
 
@@ -25,11 +25,11 @@ namespace DemoAzAI.Api.Services
 
             OpenAIEmbeddingCollection result = await client.GenerateEmbeddingsAsync(request.TextLines.ToArray(), cancellationToken: cancellationToken);
 
-            var storedEmbeddings =  new List<TextEmbeddingDto>();
+            var storedEmbeddings =  new List<TextEmbedding>();
 
             foreach (var embedding in result)
             {
-                var storedEmbedding = new TextEmbeddingDto(
+                var storedEmbedding = new TextEmbedding(
                     Guid.NewGuid(),
                     request.TextLines[embedding.Index],
                     embedding.ToFloats().ToArray()

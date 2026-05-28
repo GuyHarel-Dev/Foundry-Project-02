@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace DemoAzAI.Contracts.Dtos
+namespace DemoAzAI.Api.Contracts.Dtos
 {
     public sealed class ModelStatisticsDto
     {

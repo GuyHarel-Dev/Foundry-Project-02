@@ -1,9 +1,9 @@
 ﻿using Azure.AI.Extensions.OpenAI;
 using Azure.AI.Projects;
 using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Contracts.Dtos;
-using DemoAzAI.Contracts.Requests;
-using DemoAzAI.Contracts.Responses;
+using DemoAzAI.Api.Contracts.Dtos;
+using DemoAzAI.Api.Contracts.Requests;
+using DemoAzAI.Api.Contracts.Responses;
 using OpenAI.Responses;
 using System.ClientModel;
 

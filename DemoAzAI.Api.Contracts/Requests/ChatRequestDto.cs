@@ -1,6 +1,6 @@
-﻿using DemoAzAI.Contracts.Dtos;
+﻿using DemoAzAI.Api.Contracts.Dtos;
 
-namespace DemoAzAI.Contracts.Requests
+namespace DemoAzAI.Api.Contracts.Requests
 {
     public class ChatRequestDto
     {

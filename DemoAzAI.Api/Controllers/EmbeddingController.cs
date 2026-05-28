@@ -1,4 +1,4 @@
-﻿using DemoAzAI.Contracts.Requests;
+﻿using DemoAzAI.Api.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Services.Interfaces;
 

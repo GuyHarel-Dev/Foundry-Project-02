@@ -1,4 +1,4 @@
-﻿namespace DemoAzAI.Domain
+﻿namespace DemoAzAI.Infrastructure
 {
     public class Class1
     {

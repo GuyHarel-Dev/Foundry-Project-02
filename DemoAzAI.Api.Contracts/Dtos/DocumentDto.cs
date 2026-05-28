@@ -1,4 +1,4 @@
-﻿namespace DemoAzAI.Contracts.Dtos
+﻿namespace DemoAzAI.Api.Contracts.Dtos
 {
     public class DocumentDto
     {

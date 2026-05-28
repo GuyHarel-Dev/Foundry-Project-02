@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DemoAzAI.Contracts.Dtos
+namespace DemoAzAI.Api.Contracts.Dtos
 {
     public class DocumentFieldDto
     {

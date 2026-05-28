@@ -1,5 +1,5 @@
-﻿using DemoAzAI.Contracts.Requests;
-using DemoAzAI.Contracts.Responses;
+﻿using DemoAzAI.Api.Contracts.Requests;
+using DemoAzAI.Api.Contracts.Responses;
 
 namespace DemoAzAI.Api.Services.Interfaces
 {

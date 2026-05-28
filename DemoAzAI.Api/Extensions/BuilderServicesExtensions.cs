@@ -5,7 +5,6 @@ using Azure.Identity;
 using DemoAzAI.Api.Services;
 using DemoAzAI.Api.Services.Interfaces;
 using WebApi.Services.Interfaces;
-using WebApi.Services.Store;
 
 public static class BuilderServicesExtensions
 {
@@ -72,10 +71,4 @@ public static class BuilderServicesExtensions
         return services;
     }
 
-    public static IServiceCollection AddEmbeddingStoreService(this IServiceCollection services)
-    {
-        services.AddSingleton<IEmbeddingStoreService, EmbeddingStoreService>();
-
-        return services;
-    }
 }
