@@ -48,12 +48,7 @@ public partial class DocumentSearch
             StateContainer.Statistics = string.Empty;
             StateContainer.ExecutionLog = string.Empty;
 
-            StepTracer.AddStep("BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}", clearSteps:true);
-
-            StateContainer.ExecutionLog = StepTracer.GetSteps();
-            executionLog = StateContainer.ExecutionLog;
-
-            executionLog = StateContainer.ExecutionLog;
+            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}", clearSteps: true);
 
             await RefreshUI();
 
@@ -74,7 +69,7 @@ public partial class DocumentSearch
                 return;
             }
 
-            StepTracer.AddStep("BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {StateContainer.PdfUrl} with model: {SelectedModel}");
+            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {StateContainer.PdfUrl} with model: {SelectedModel}");
 
             var responseDto = result.Value;
 

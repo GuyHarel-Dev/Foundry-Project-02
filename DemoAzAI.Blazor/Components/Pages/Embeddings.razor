@@ -26,12 +26,12 @@
 
 <div>
     <div>
-        <label for="EmbeddedText">Text embedding:</label>
-        <textarea readonly value="@EmbeddedText"></textarea>
+        <label for="embeddedText">Text embedding:</label>
+        <textarea readonly value="@embeddedText"></textarea>
     </div>
     <div>
         <label for="executionLog">Execution log:</label>
-        <textarea readonly value="@ExecutionLog"></textarea>
+        <textarea readonly value="@executionLog"></textarea>
     </div>
 
 
@@ -43,8 +43,8 @@
     private string TextToEmbed = TextToEmbedDefault;
     private string TextGuid = string.Empty;
 
-    private string ExecutionLog = string.Empty; 
-    private string EmbeddedText = string.Empty;
+    private string executionLog = string.Empty; 
+    private string embeddedText = string.Empty;
 
     private async Task EmbeddText()
     {
@@ -53,13 +53,10 @@
         {
             isBusy = true;
 
-            EmbeddedText = string.Empty;
-            ExecutionLog = string.Empty;
+            embeddedText = string.Empty;
+            executionLog = string.Empty;
 
-            StepTracer.ClearSteps();
-            StepTracer.AddStep( "BlazorUi", $"{nameof(EmbeddText)}: Starting embedding text...");
-
-            ExecutionLog = StepTracer.GetSteps();
+            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(EmbeddText)}: Starting embedding text...", clearSteps: true);
 
             await RefreshUI();
 
@@ -74,27 +71,29 @@
 
             var response = await apiClient.PostAsync<EmbeddingTextLRequestDto, EmbeddingTextResponseDto>("api/embedding/embedlines", request);
 
+            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(EmbeddText)}: Received embedding vectors...");
+
             if (!response.IsSuccess)
             {
-                ExecutionLog = response.ErrorMessage ?? "Unknown API error.";
+                executionLog = response.ErrorMessage ?? "Unknown API error.";
                 return;
 
             }
 
             if (response.Value == null)
             {
-                ExecutionLog = "API error: response value is null.";
+                executionLog = "API error: response value is null.";
                 return;
             }
 
             EmbeddingTextResponseDto result = response.Value;
 
-            EmbeddedText = result.GetSummary();
+            embeddedText = result.GetSummary();
         }
         catch (Exception ex)
         {
 
-            ExecutionLog = ex.Message;
+            executionLog = ex.Message;
             throw;
         }
         finally

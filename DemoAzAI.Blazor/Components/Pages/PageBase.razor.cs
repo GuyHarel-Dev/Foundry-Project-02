@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using DemoAzAI.Common;
+using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
@@ -8,6 +9,15 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
         }
 
+        protected string AddUiStepperStep(string source, string title, bool clearSteps = false)
+        {
+            if(clearSteps) StepTracer.ClearSteps();
+
+            StepTracer.AddStep(source, title);
+
+            return StepTracer.GetSteps();
+
+        }
         protected async Task RefreshUI()
         {
             await InvokeAsync(StateHasChanged);

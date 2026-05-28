@@ -1,4 +1,5 @@
 ﻿@page "/chat"
+@inherits BasePage
 @rendermode InteractiveServer
 
 @using Contracts.Requests
@@ -65,7 +66,7 @@
         {
             isBusy = true;
 
-            StepTracer.AddStep("BlazorUi", $"{nameof(SendQuestion)}: Sending question to chat model", clearSteps: true);
+            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(SendQuestion)}: Sending question to chat model", clearSteps: true);
 
             executionLog = StepTracer.GetSteps();
             await RefreshUI();
@@ -89,13 +90,11 @@
                 return;
             }
 
-            StepTracer.AddStep("BlazorUi", $"{nameof(SendQuestion)}: Received answer for question: {question}");
+            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(SendQuestion)}: Received answer for question: {question}");
 
             var responseDto = result.Value;
 
             chatResponse = responseDto.ChatResponse;
-
-            executionLog = StepTracer.GetSteps();
 
             if (responseDto.ModelStatistics != null)
                 statistics = responseDto.ModelStatistics.ToString();
