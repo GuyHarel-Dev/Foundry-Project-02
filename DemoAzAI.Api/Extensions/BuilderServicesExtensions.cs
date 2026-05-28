@@ -4,6 +4,7 @@ using Azure.AI.Projects;
 using Azure.Identity;
 using DemoAzAI.Api.Services;
 using DemoAzAI.Api.Services.Interfaces;
+using DemoAzAI.Infrastructure.Stores;
 using WebApi.Services.Interfaces;
 
 public static class BuilderServicesExtensions
@@ -67,6 +68,13 @@ public static class BuilderServicesExtensions
     public static IServiceCollection AddAzFoundryEmbeddingService(this IServiceCollection services)
     {
         services.AddScoped<IAzFoundryEmbeddingService, AzFoundryEmbeddingService>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddEmbeddingStoreService(this IServiceCollection services)
+    {
+        services.AddScoped<IEmbeddingStoreService, EmbeddingStoreService>();
 
         return services;
     }

@@ -1,5 +1,5 @@
 ﻿using Azure.AI.DocumentIntelligence;
-using DemoAzAI.Api.Contracts.Dtos;
+using DemoAzAI.Domain;
 
 namespace DemoAzAI.Api.Contracts.Responses
 {
@@ -22,6 +22,6 @@ namespace DemoAzAI.Api.Contracts.Responses
         public int SectionCount { get; set; }
         public int LanguagesCount { get; set; }
 
-        public List<DocumentDto> Documents { get; set; } = [];
+        public List<DocumentAnalysisResult> Documents { get; set; } = [];
     }
 }

@@ -10,7 +10,6 @@
     <ProjectReference Include="..\DemoAzAI.Api.Contracts\DemoAzAI.Api.Contracts.csproj" />
     <ProjectReference Include="..\DemoAzAI.Application\DemoAzAI.Application.csproj" />
     <ProjectReference Include="..\DemoAzAI.Common\DemoAzAI.Application.csproj" />
-    <ProjectReference Include="..\DemoAzAI.Contracts\DemoAzAI.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

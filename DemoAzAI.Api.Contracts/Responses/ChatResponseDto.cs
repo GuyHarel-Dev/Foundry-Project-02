@@ -1,10 +1,10 @@
-﻿using DemoAzAI.Api.Contracts.Dtos;
+﻿using DemoAzAI.Domain;
 
 namespace DemoAzAI.Api.Contracts.Responses
 {
     public class ChatResponseDto
     {
         public string ChatResponse { get; set; } = string.Empty;
-        public ModelStatisticsDto? ModelStatistics { get; set; }
+        public ModelStatistics? ModelStatistics { get; set; }
     }
 }

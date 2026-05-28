@@ -1,9 +1,9 @@
 ﻿using Azure.AI.Extensions.OpenAI;
 using Azure.AI.Projects;
-using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Api.Contracts.Dtos;
 using DemoAzAI.Api.Contracts.Requests;
 using DemoAzAI.Api.Contracts.Responses;
+using DemoAzAI.Api.Services.Interfaces;
+using DemoAzAI.Domain;
 using OpenAI.Responses;
 using System.ClientModel;
 
@@ -43,14 +43,14 @@ namespace DemoAzAI.Api.Services
 
             response.ChatResponse = result.Value.GetOutputText();
 
-            response.ModelStatistics = new ModelStatisticsDto
-            {
-                Model = result.Value.Model,
-                InputTokens = result.Value.Usage?.InputTokenCount,
-                OutputTokens = result.Value.Usage?.OutputTokenCount,
-                TotalTokens = result.Value.Usage?.TotalTokenCount,
-                AnswerLength = response.ChatResponse.Length
-            };
+            response.ModelStatistics = new ModelStatistics
+            (
+                result.Value.Model,
+                result.Value.Usage?.InputTokenCount,
+                result.Value.Usage?.OutputTokenCount,
+                result.Value.Usage?.TotalTokenCount,
+                response.ChatResponse.Length
+            );
 
 
             return response;

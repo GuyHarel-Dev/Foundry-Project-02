@@ -1,9 +1,9 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
-using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Api.Contracts.Dtos;
 using DemoAzAI.Api.Contracts.Requests;
 using DemoAzAI.Api.Contracts.Responses;
+using DemoAzAI.Api.Services.Interfaces;
+using DemoAzAI.Domain;
 
 namespace DemoAzAI.Api.Services
 {
@@ -75,25 +75,23 @@ namespace DemoAzAI.Api.Services
             {
                 foreach (var document in result.Documents)
                 {
-                    var docDto = new DocumentDto
-                    {
+                    var docDto = new DocumentAnalysisResult
+					{
                         DocumentType = document.DocumentType,
                         Confidence = document.Confidence
                     };
 
                     foreach (var field in document.Fields)
                     {
-                        docDto.Fields.Add(new DocumentFieldDto
-                        {
-                            Name = field.Key,
+                        docDto.Fields.Add(new DocumentAnalysisResultField
+                        (
+                            field.Key,
+                            field.Value.Content,
+							 field.Value.FieldType.ToString(),
+							field.Value.Confidence ?? 0
+                        ));
 
-                            Value = field.Value.Content,
-
-                            FieldType = field.Value.FieldType.ToString(),
-
-                            Confidence = field.Value.Confidence
-                        });
-                    }
+					}
 
                     response.Documents.Add(docDto);
                 }
