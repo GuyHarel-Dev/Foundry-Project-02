@@ -1,35 +1,37 @@
 ﻿using DemoAzAI.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace DemoAzAI.Infrastructure.Stores
 {
     public class EmbeddingStoreService : IEmbeddingStoreService
     {
-        public List<TextEmbedding> Embeddings { get; set; } = new List<TextEmbedding>();
-        IReadOnlyCollection<TextEmbedding> IEmbeddingStoreService.Embeddings { get => Embeddings; }
+        private static readonly ConcurrentDictionary<Guid, TextEmbedding> _store = new();
 
-        public void AddEmbeddings(IEnumerable<TextEmbedding> storedEmbedding)
+        public IReadOnlyCollection<TextEmbedding> Embeddings
+            => _store.Values.ToList();
+
+        public void AddEmbedding(TextEmbedding embedding)
         {
-            Embeddings.AddRange(storedEmbedding);
+            _store[embedding.Guid] = embedding;
         }
 
-        public void AddEmbedding(TextEmbedding storedEmbedding)
+        public void AddEmbeddings(IEnumerable<TextEmbedding> embeddings)
         {
-            Embeddings.Add(storedEmbedding);
+            foreach (var embedding in embeddings)
+            {
+                _store[embedding.Guid] = embedding;
+            }
         }
 
         public void ClearEmbeddings()
         {
-            Embeddings.Clear();
+            _store.Clear();
         }
 
-        TextEmbedding? IEmbeddingStoreService.GetEmbedding(Guid id)
+        public TextEmbedding? GetEmbedding(Guid id)
         {
-            return Embeddings.FirstOrDefault(e => e.Guid == id);
+            _store.TryGetValue(id, out var embedding);
+            return embedding;
         }
     }
 }

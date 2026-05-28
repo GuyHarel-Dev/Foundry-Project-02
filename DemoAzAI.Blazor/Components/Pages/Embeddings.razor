@@ -7,9 +7,11 @@
 @using DemoAzAI.Api.Contracts.Requests
 @using DemoAzAI.Api.Contracts.Responses
 @using DemoAzAI.Application
+@using DemoAzAI.Infrastructure.Stores
 
 @inject FoundryApiClient apiClient
 @inject IStepTracer StepTracer
+@inject IEmbeddingStoreService EmbeddingStoreService
 
 <label for="TextToEmbed">Text to embed:</label>
 <textarea @bind="textToEmbed"></textarea>
@@ -63,6 +65,8 @@
 
     private async Task SemanticSearch()
     {
+        var test = EmbeddingStoreService.Embeddings.Count();
+
         if (string.IsNullOrWhiteSpace(semanticQuestion))
         {
             semanticQuestion = "Please enter a semantic question...";

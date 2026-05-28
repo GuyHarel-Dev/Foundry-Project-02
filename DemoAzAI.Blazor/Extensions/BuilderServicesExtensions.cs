@@ -1,6 +1,7 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Blazor.Services.UI;
+using DemoAzAI.Infrastructure.Stores;
 
 namespace UI.Extensions
 {
@@ -32,6 +33,13 @@ namespace UI.Extensions
         public static IServiceCollection AddApplicationStepTracer(this IServiceCollection services)
         {
             services.AddScoped<IStepTracer, StepTracer>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddEmbeddingStoreService(this IServiceCollection services)
+        {
+            services.AddScoped<IEmbeddingStoreService, EmbeddingStoreService>();
 
             return services;
         }
