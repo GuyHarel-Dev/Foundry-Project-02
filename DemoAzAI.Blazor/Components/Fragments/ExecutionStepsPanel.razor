@@ -1,0 +1,9 @@
+﻿<div>
+    <label for="ExecutionLog">Execution steps:</label>
+    <textarea readonly value="@ExecutionSteps"></textarea>
+</div>
+
+@code {
+    [Parameter]
+    public string ExecutionSteps { get; set; } = string.Empty;
+}

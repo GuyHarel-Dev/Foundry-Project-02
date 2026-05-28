@@ -3,8 +3,6 @@
 @rendermode InteractiveServer
 
 @using DemoAzAI.Blazor.Components.Fragments
-@using DemoAzAI.Blazor.Services.Api
-@using DemoAzAI.Blazor.Services.UI
 
 
 <h3>AI Document Search</h3>
@@ -84,7 +82,7 @@
             <label for="docFields">Documument fields:</label>
             <textarea readonly value="@StateContainer.DocFields"></textarea>
 
-        <ExecutionLogPanel ExecutionLog="@StateContainer.ExecutionLog"></ExecutionLogPanel>
+        <ExecutionStepsPanel executionSteps="@StateContainer.ExecutionSteps"></ExecutionStepsPanel>
         <StatisticsPanel Statistics="@StateContainer.Statistics"></StatisticsPanel>
 
     </div>

@@ -42,7 +42,7 @@
     <div class="stats_log_area">
 
         <div class="log_area">
-            <ExecutionLogPanel ExecutionLog="@executionLog"></ExecutionLogPanel>
+            <ExecutionStepsPanel executionSteps="@executionSteps"></ExecutionStepsPanel>
         </div>
 
         <div class="stat_area">
@@ -57,7 +57,7 @@
     private bool isBusy;
     private string question = "This is just a test. No answer is expected.";
     private string chatResponse = string.Empty;
-    private string executionLog = string.Empty;
+    private string executionSteps = string.Empty;
     private string statistics = string.Empty;
 
     private async Task SendQuestion()
@@ -66,9 +66,9 @@
         {
             isBusy = true;
 
-            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(SendQuestion)}: Sending question to chat model", clearSteps: true);
+            executionSteps = AddUiStepperStep("BlazorUi", $"{nameof(SendQuestion)}: Sending question to chat model", clearSteps: true);
 
-            executionLog = StepTracer.GetSteps();
+            executionSteps = StepTracer.GetSteps();
             await RefreshUI();
 
             var request = new ChatRequestDto()
@@ -80,17 +80,17 @@
 
             if (!result.IsSuccess)
             {
-                executionLog = result.ErrorMessage ?? "Unknown API error.";
+                executionSteps = result.ErrorMessage ?? "Unknown API error.";
                 return;
             }
 
             if (result == null || result.Value is null)
             {
-                executionLog = "API returned no data.";
+                executionSteps = "API returned no data.";
                 return;
             }
 
-            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(SendQuestion)}: Received answer for question: {question}");
+            executionSteps = AddUiStepperStep("BlazorUi", $"{nameof(SendQuestion)}: Received answer for question: {question}");
 
             var responseDto = result.Value;
 
@@ -104,7 +104,7 @@
         catch (Exception ex)
         {
 
-            executionLog = ex.Message;
+            executionSteps = ex.Message;
             throw;
         }
         finally

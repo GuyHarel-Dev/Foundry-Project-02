@@ -3,7 +3,7 @@
     public class DocumentSearchStateContainer : IDisposable
     {
         public Guid Id { get; } = Guid.NewGuid();
-        public string ExecutionLog { get; set; } = string.Empty;
+        public string ExecutionSteps { get; set; } = string.Empty;
         public string Statistics { get; set; } = string.Empty;
         public string DocContent { get; set; } = string.Empty;
         public string DocFields { get; set; } = string.Empty;
@@ -12,7 +12,7 @@
 
         public void Reset()
         {
-            ExecutionLog = string.Empty;
+            ExecutionSteps = string.Empty;
             Statistics = string.Empty;
             DocContent = string.Empty;
             DocFields = string.Empty;

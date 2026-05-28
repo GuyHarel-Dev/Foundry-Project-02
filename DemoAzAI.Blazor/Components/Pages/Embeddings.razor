@@ -4,14 +4,13 @@
 
 @using DemoAzAI.Blazor.Components.Fragments
 @using DemoAzAI.Blazor.Services.Api
-@using DemoAzAI.Common
 @using DemoAzAI.Contracts.Requests
 @using DemoAzAI.Contracts.Responses
 
 @inject FoundryApiClient apiClient
 
 <label for="TextToEmbed">Text to embed:</label>
-<textarea @bind="TextToEmbed"></textarea>
+<textarea @bind="textToEmbed"></textarea>
 
 <form @onsubmit="EmbeddText">
     <button type="submit">Generate Embeddings</button>
@@ -22,29 +21,52 @@
     }
 </form>
 
-<textarea @bind="TextGuid"></textarea>
-
 <div>
     <div>
         <label for="embeddedText">Text embedding:</label>
         <textarea readonly value="@embeddedText"></textarea>
     </div>
     <div>
-        <label for="executionLog">Execution log:</label>
-        <textarea readonly value="@executionLog"></textarea>
+        <label for="executionSteps">Execution log:</label>
+        <textarea readonly value="@executionSteps"></textarea>
     </div>
 
 
 </div>
 
+<div>
+    <label for="semanticQuestion">Semantic search:</label>
+    <textarea readonly value="@semanticQuestion"></textarea>
+    <form @onsubmit="SemanticSearch">
+        <button type="submit">Perform semantic search</button>
+
+    </form>
+
+    <div>
+        <label for="searchSteps">Semantic search log:</label>
+        <textarea readonly value="@searchSteps"></textarea>
+    </div>
+</div>
+
 @code {
 
     private bool isBusy;
-    private string TextToEmbed = TextToEmbedDefault;
-    private string TextGuid = string.Empty;
+    private string textToEmbed = TextToEmbedDefault;
 
-    private string executionLog = string.Empty; 
     private string embeddedText = string.Empty;
+    private string executionSteps = string.Empty;
+    private string searchSteps = string.Empty;
+
+    private string semanticQuestion = "What animal likes humans?";
+
+    private async Task SemanticSearch()
+    {
+        searchSteps = AddUiStepperStep("BlazorUi", $"{nameof(SemanticSearch)}: Embedding the semantic search question...", clearSteps: true);
+        searchSteps = AddUiStepperStep("BlazorUi", $"{nameof(SemanticSearch)}: Searching embedding store...");
+        searchSteps = AddUiStepperStep("BlazorUi", $"{nameof(SemanticSearch)}: Displaying best answers...");
+
+        await RefreshUI();
+    }
 
     private async Task EmbeddText()
     {
@@ -54,13 +76,13 @@
             isBusy = true;
 
             embeddedText = string.Empty;
-            executionLog = string.Empty;
+            executionSteps = string.Empty;
 
-            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(EmbeddText)}: Starting embedding text...", clearSteps: true);
+            executionSteps = AddUiStepperStep("BlazorUi", $"{nameof(EmbeddText)}: Starting embedding text...", clearSteps: true);
 
             await RefreshUI();
 
-            List<string> lines = TextToEmbed
+            List<string> lines = textToEmbed
                 .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
 
@@ -71,18 +93,18 @@
 
             var response = await apiClient.PostAsync<EmbeddingTextLRequestDto, EmbeddingTextResponseDto>("api/embedding/embedlines", request);
 
-            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(EmbeddText)}: Received embedding vectors...");
+            executionSteps = AddUiStepperStep("BlazorUi", $"{nameof(EmbeddText)}: Received embedding vectors...");
 
             if (!response.IsSuccess)
             {
-                executionLog = response.ErrorMessage ?? "Unknown API error.";
+                executionSteps = response.ErrorMessage ?? "Unknown API error.";
                 return;
 
             }
 
             if (response.Value == null)
             {
-                executionLog = "API error: response value is null.";
+                executionSteps = "API error: response value is null.";
                 return;
             }
 
@@ -93,7 +115,7 @@
         catch (Exception ex)
         {
 
-            executionLog = ex.Message;
+            executionSteps = ex.Message;
             throw;
         }
         finally
@@ -102,7 +124,7 @@
         }
 
     }
-    
+
     private static string TextToEmbedDefault = @"Cats are playful pets
 Dogs are loyal animals
 Pizza is delicious

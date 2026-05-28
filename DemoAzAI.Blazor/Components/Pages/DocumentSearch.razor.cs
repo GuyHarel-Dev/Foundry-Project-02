@@ -46,7 +46,7 @@ public partial class DocumentSearch
             isBusy = true;
 
             StateContainer.Statistics = string.Empty;
-            StateContainer.ExecutionLog = string.Empty;
+            StateContainer.ExecutionSteps = string.Empty;
 
             executionLog = AddUiStepperStep("BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}", clearSteps: true);
 
@@ -65,7 +65,7 @@ public partial class DocumentSearch
 
             if (!result.IsSuccess)
             {
-                StateContainer.ExecutionLog = result.ErrorMessage ?? "Unknown API error.";
+                StateContainer.ExecutionSteps = result.ErrorMessage ?? "Unknown API error.";
                 return;
             }
 
@@ -75,13 +75,13 @@ public partial class DocumentSearch
 
             if (responseDto == null)
             {
-                StateContainer.ExecutionLog = "API returned no data.";
+                StateContainer.ExecutionSteps = "API returned no data.";
                 return;
             }
 
             ExtractDocumentsContent(responseDto);
 
-            StateContainer.ExecutionLog = StepTracer.GetSteps();
+            StateContainer.ExecutionSteps = StepTracer.GetSteps();
             StateContainer.Statistics = ExtractStatistics(result.Value);
             statistics = StateContainer.Statistics;
 
@@ -89,7 +89,7 @@ public partial class DocumentSearch
         catch (Exception ex)
         {
 
-            StateContainer.ExecutionLog = ex.Message;
+            StateContainer.ExecutionSteps = ex.Message;
             throw;
         }
         finally
