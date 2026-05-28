@@ -1,18 +1,17 @@
-﻿using DemoAzAI.Contracts.Dtos;
-using System.Text;
+﻿using System.Text;
 
-namespace DemoAzAI.Common
+namespace DemoAzAI.Application
 {
-    public static class StepTracer
+    public class StepTracer : IStepTracer
     {
-        private static readonly List<StepTracerStep> Steps = new();
+        private readonly List<StepTracerStep> Steps = new();
 
-        public static void ClearSteps()
+        public void ClearSteps()
         {
             Steps.Clear();
         }   
 
-        public static void AddStep(string source, string title, bool clearSteps = false)
+        public void AddStep(string source, string title, bool clearSteps = false)
         {
             if (clearSteps)
             {
@@ -27,7 +26,7 @@ namespace DemoAzAI.Common
             });
 
         }
-        public static string GetSteps()
+        public string GetSteps()
         {
             if (Steps.Count == 0)
             {
@@ -47,7 +46,7 @@ namespace DemoAzAI.Common
             return builder.ToString();
         }
 
-        public static string GetTotalTime()
+        public  string GetTotalTime()
         {
             var orderedSteps = Steps
                 .Where(x => x.StepDateTime.HasValue)

@@ -1,6 +1,4 @@
 ﻿using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Common;
-using DemoAzAI.Contracts.Dtos;
 using DemoAzAI.Contracts.Requests;
 using DemoAzAI.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;

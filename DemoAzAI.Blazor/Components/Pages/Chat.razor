@@ -6,9 +6,10 @@
 @using Contracts.Responses
 @using DemoAzAI.Blazor.Components.Fragments
 @using DemoAzAI.Blazor.Services.Api
-@using DemoAzAI.Common
+@using DemoAzAI.Application
 
 @inject FoundryApiClient apiClient
+@inject IStepTracer StepTracer
 
 <div class="mt-3">
 
@@ -66,7 +67,7 @@
         {
             isBusy = true;
 
-            executionSteps = AddUiStepperStep("BlazorUi", $"{nameof(SendQuestion)}: Sending question to chat model", clearSteps: true);
+            executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SendQuestion)}: Sending question to chat model", clearSteps: true);
 
             executionSteps = StepTracer.GetSteps();
             await RefreshUI();
@@ -90,7 +91,7 @@
                 return;
             }
 
-            executionSteps = AddUiStepperStep("BlazorUi", $"{nameof(SendQuestion)}: Received answer for question: {question}");
+            executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SendQuestion)}: Received answer for question: {question}");
 
             var responseDto = result.Value;
 
@@ -114,11 +115,5 @@
 
     }
 
-    private async Task RefreshUI()
-    {
-
-        await InvokeAsync(StateHasChanged);
-        await Task.Yield();
-    }
 
 }

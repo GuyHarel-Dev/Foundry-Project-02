@@ -7,6 +7,7 @@ namespace WebApi.Services.Store
     public class EmbeddingStoreService : IEmbeddingStoreService
     {
         public List<TextEmbeddingDto> Embeddings { get; set; } = new List<TextEmbeddingDto>();
+        IReadOnlyCollection<TextEmbeddingDto> IEmbeddingStoreService.Embeddings { get => Embeddings; set => throw new NotImplementedException(); }
 
         public void AddEmbeddings(IEnumerable<TextEmbeddingDto> storedEmbedding)
         {

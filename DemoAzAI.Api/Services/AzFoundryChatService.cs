@@ -1,12 +1,9 @@
-﻿using Azure;
-using Azure.AI.Extensions.OpenAI;
+﻿using Azure.AI.Extensions.OpenAI;
 using Azure.AI.Projects;
 using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Common;
 using DemoAzAI.Contracts.Dtos;
 using DemoAzAI.Contracts.Requests;
 using DemoAzAI.Contracts.Responses;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OpenAI.Responses;
 using System.ClientModel;
 
@@ -42,11 +39,7 @@ namespace DemoAzAI.Api.Services
             ClientResult<ResponseResult> result = await client.CreateResponseAsync(
                 options, cancellationToken);
 
-            //_traceStepper.AddStep(StepTracerTraceTypeEnum.WebApi, "Received response from Azure AI Foundry");
-
             var response = new ChatResponseDto();
-
-            StepTracer.AddStep($"{nameof(AzFoundryChatService)}", "Sending system prompt and user prompt");
 
             response.ChatResponse = result.Value.GetOutputText();
 
@@ -59,7 +52,6 @@ namespace DemoAzAI.Api.Services
                 AnswerLength = response.ChatResponse.Length
             };
 
-            StepTracer.AddStep($"{nameof(AzFoundryChatService)}", "Received model answer");
 
             return response;
         }

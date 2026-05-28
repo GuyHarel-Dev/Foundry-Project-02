@@ -1,6 +1,6 @@
-﻿using DemoAzAI.Blazor.Services.Api;
+﻿using DemoAzAI.Application;
+using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Blazor.Services.UI;
-using DemoAzAI.Common;
 using DemoAzAI.Contracts.Requests;
 using DemoAzAI.Contracts.Responses;
 using Microsoft.AspNetCore.Components;
@@ -14,6 +14,9 @@ public partial class DocumentSearch
 
     [Inject]
     private FoundryApiClient apiClient { get; set; } = default!;
+
+    [Inject]
+    private IStepTracer StepTracer { get; set; } = default!;
 
     [Inject] 
     private DocumentSearchStateContainer StateContainer { get; set; } = default!;
@@ -48,7 +51,7 @@ public partial class DocumentSearch
             StateContainer.Statistics = string.Empty;
             StateContainer.ExecutionSteps = string.Empty;
 
-            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}", clearSteps: true);
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}", clearSteps: true);
 
             await RefreshUI();
 
@@ -69,7 +72,7 @@ public partial class DocumentSearch
                 return;
             }
 
-            executionLog = AddUiStepperStep("BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {StateContainer.PdfUrl} with model: {SelectedModel}");
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {StateContainer.PdfUrl} with model: {SelectedModel}");
 
             var responseDto = result.Value;
 

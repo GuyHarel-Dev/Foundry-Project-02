@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DemoAzAI.Common\DemoAzAI.Common.csproj" />
+    <ProjectReference Include="..\DemoAzAI.Application\DemoAzAI.Application.csproj" />
+    <ProjectReference Include="..\DemoAzAI.Common\DemoAzAI.Application.csproj" />
     <ProjectReference Include="..\DemoAzAI.Contracts\DemoAzAI.Contracts.csproj" />
   </ItemGroup>
 

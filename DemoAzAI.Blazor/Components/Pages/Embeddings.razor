@@ -6,13 +6,15 @@
 @using DemoAzAI.Blazor.Services.Api
 @using DemoAzAI.Contracts.Requests
 @using DemoAzAI.Contracts.Responses
+@using DemoAzAI.Application
 
 @inject FoundryApiClient apiClient
+@inject IStepTracer StepTracer
 
 <label for="TextToEmbed">Text to embed:</label>
 <textarea @bind="textToEmbed"></textarea>
 
-<form @onsubmit="EmbeddText">
+<form @onsubmit="EmbedText">
     <button type="submit">Generate Embeddings</button>
     <!-- call wait panel -->
     @if (isBusy)
@@ -57,18 +59,36 @@
     private string executionSteps = string.Empty;
     private string searchSteps = string.Empty;
 
-    private string semanticQuestion = "What animal likes humans?";
+    private string semanticQuestion = string.Empty;
 
     private async Task SemanticSearch()
     {
-        searchSteps = AddUiStepperStep("BlazorUi", $"{nameof(SemanticSearch)}: Embedding the semantic search question...", clearSteps: true);
-        searchSteps = AddUiStepperStep("BlazorUi", $"{nameof(SemanticSearch)}: Searching embedding store...");
-        searchSteps = AddUiStepperStep("BlazorUi", $"{nameof(SemanticSearch)}: Displaying best answers...");
+        if (string.IsNullOrWhiteSpace(semanticQuestion))
+        {
+            semanticQuestion = "Please enter a semantic question...";
+            return;
+        };
+
+        var request = new EmbeddingTextRequestDto
+        {
+            TextLines = semanticQuestion
+                .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                .ToList()
+        };
+
+        searchSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SemanticSearch)}: Embedding the semantic search question...", clearSteps: true);
+
+        var (postStatus, postResult) = await PostEmbeddingApiRequest(request);
+
+        searchSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SemanticSearch)}: Searching embedding store...");
+
+
+        searchSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SemanticSearch)}: Displaying best answers...");
 
         await RefreshUI();
     }
 
-    private async Task EmbeddText()
+    private async Task EmbedText()
     {
 
         try
@@ -78,7 +98,7 @@
             embeddedText = string.Empty;
             executionSteps = string.Empty;
 
-            executionSteps = AddUiStepperStep("BlazorUi", $"{nameof(EmbeddText)}: Starting embedding text...", clearSteps: true);
+            executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(EmbedText)}: Starting embedding text...", clearSteps: true);
 
             await RefreshUI();
 
@@ -86,37 +106,26 @@
                 .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
 
-            var request = new EmbeddingTextLRequestDto
+            var request = new EmbeddingTextRequestDto
             {
                 TextLines = lines
             };
 
-            var response = await apiClient.PostAsync<EmbeddingTextLRequestDto, EmbeddingTextResponseDto>("api/embedding/embedlines", request);
+            var (postStatus, postResult) = await PostEmbeddingApiRequest(request);
 
-            executionSteps = AddUiStepperStep("BlazorUi", $"{nameof(EmbeddText)}: Received embedding vectors...");
+            executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(EmbedText)}: Received embedding vectors...");
 
-            if (!response.IsSuccess)
+            if (!postStatus || postResult == null)
             {
-                executionSteps = response.ErrorMessage ?? "Unknown API error.";
+                executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(EmbedText)}: Failed to get embedding vectors.");
                 return;
-
-            }
-
-            if (response.Value == null)
-            {
-                executionSteps = "API error: response value is null.";
-                return;
-            }
-
-            EmbeddingTextResponseDto result = response.Value;
-
-            embeddedText = result.GetSummary();
+            };
+            
+            embeddedText = postResult.GetSummary();
         }
         catch (Exception ex)
         {
-
             executionSteps = ex.Message;
-            throw;
         }
         finally
         {
@@ -124,6 +133,40 @@
         }
 
     }
+
+    private async Task<(bool Success, EmbeddingTextResponseDto?)> PostEmbeddingApiRequest(EmbeddingTextRequestDto request)
+    {
+        if (request == null)
+        {
+            executionSteps = "Embedding request is null.";
+            return (false, null);
+        }
+
+        var response = await apiClient.PostAsync<EmbeddingTextRequestDto, EmbeddingTextResponseDto>("api/embedding/embedlines", request);
+
+        if (response == null)
+        {
+            executionSteps = "API error: no response received.";
+            return (false, null);
+        }
+
+        if (!response.IsSuccess)
+        {
+            executionSteps = response.ErrorMessage ?? "Unknown API error.";
+            return (false, null);
+
+        }
+
+        if (response.Value == null)
+        {
+            executionSteps = "API error: response value is null.";
+            return (false, null);
+        }
+
+        return (true, response.Value);
+    }
+
+    
 
     private static string TextToEmbedDefault = @"Cats are playful pets
 Dogs are loyal animals

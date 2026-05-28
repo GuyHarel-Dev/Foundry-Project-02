@@ -18,7 +18,7 @@ namespace DemoAzAI.Api.Services
 
     {
 
-        public async Task<EmbeddingTextResponseDto> EmbeddTextLinesAsync(EmbeddingTextLRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<EmbeddingTextResponseDto> EmbeddTextLinesAsync(EmbeddingTextRequestDto request, CancellationToken cancellationToken = default)
         {
             var client = CreateEmbeddingClient();
             _embeddingStoreService.ClearEmbeddings();

@@ -1,12 +1,9 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
-using Azure.Core;
 using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Common;
 using DemoAzAI.Contracts.Dtos;
 using DemoAzAI.Contracts.Requests;
 using DemoAzAI.Contracts.Responses;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace DemoAzAI.Api.Services
 {
@@ -32,8 +29,6 @@ namespace DemoAzAI.Api.Services
 
             var response = new AnalyzeDocumentResponseDto();
 
-            StepTracer.AddStep($"{nameof(AzAiDocIntelligenceService)}", "Start analyzing document");
-
             var options = CreateDocumentOptions(request);
 
             var operation =
@@ -47,7 +42,6 @@ namespace DemoAzAI.Api.Services
             ExtractBaseInformation(operation.Value, response);
             ExtractDocumentsFields(result, response);
 
-            StepTracer.AddStep($"{nameof(AzAiDocIntelligenceService)}", "End of analyzing document");
 
             return response;
         }

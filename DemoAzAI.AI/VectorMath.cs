@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DemoAzAI.Common
+namespace DemoAzAI.AI
 {
-    public class AiMathFuntions
+    public static class VectorMath
     {
         public static float CosineSimilarity(
             IReadOnlyList<float> a,

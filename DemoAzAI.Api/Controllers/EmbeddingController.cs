@@ -20,7 +20,7 @@ namespace DemoAzAI.Api.Controllers
         }
 
         [HttpPost("embedlines")]
-        public async Task<ActionResult> EmbedLines([FromBody] EmbeddingTextLRequestDto request)
+        public async Task<ActionResult> EmbedLines([FromBody] EmbeddingTextRequestDto request)
         {
             if (request.TextLines == null || !request.TextLines.Any())
             {

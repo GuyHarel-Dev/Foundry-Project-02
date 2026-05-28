@@ -4,7 +4,6 @@ using Azure.AI.Projects;
 using Azure.Identity;
 using DemoAzAI.Api.Services;
 using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Common;
 using WebApi.Services.Interfaces;
 using WebApi.Services.Store;
 

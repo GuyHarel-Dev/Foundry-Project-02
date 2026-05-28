@@ -4,7 +4,7 @@ namespace WebApi.Services.Store
 {
     public interface IEmbeddingStoreService
     {
-        List<TextEmbeddingDto> Embeddings { get; set; }
+        IReadOnlyCollection<TextEmbeddingDto> Embeddings { get; set; }
         void AddEmbedding(TextEmbeddingDto storedEmbedding);
         void AddEmbeddings(IEnumerable<TextEmbeddingDto> storedEmbedding);
         void ClearEmbeddings();

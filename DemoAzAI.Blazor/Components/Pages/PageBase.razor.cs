@@ -1,21 +1,22 @@
-﻿using DemoAzAI.Common;
+﻿using DemoAzAI.Application;
 using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
     public abstract class BasePage : ComponentBase
     {
+       
         protected override async Task OnInitializedAsync()
         {
         }
 
-        protected string AddUiStepperStep(string source, string title, bool clearSteps = false)
+        protected string AddUiStepperStep(IStepTracer stepTracer, string source, string title, bool clearSteps = false)
         {
-            if(clearSteps) StepTracer.ClearSteps();
+            if(clearSteps) stepTracer.ClearSteps();
 
-            StepTracer.AddStep(source, title);
+            stepTracer.AddStep(source, title);
 
-            return StepTracer.GetSteps();
+            return stepTracer.GetSteps();
 
         }
         protected async Task RefreshUI()
