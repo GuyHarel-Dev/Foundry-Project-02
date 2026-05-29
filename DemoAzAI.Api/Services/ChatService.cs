@@ -11,16 +11,16 @@ using System.ClientModel;
 
 namespace DemoAzAI.Api.Services
 {
-    public class AzFoundryChatService : IAzFoundryChatService
+    public class ChatService : IChatService
     {
         private readonly IConfiguration _config;
         private readonly AIProjectClient _projectClient;
-        private readonly ILogger<AzFoundryChatService> _logger;
+        private readonly ILogger<ChatService> _logger;
 
-        public AzFoundryChatService(
+        public ChatService(
             IConfiguration config,
             AIProjectClient projectClient,
-            ILogger<AzFoundryChatService> logger)
+            ILogger<ChatService> logger)
        {
             _config = config;
             _projectClient = projectClient;

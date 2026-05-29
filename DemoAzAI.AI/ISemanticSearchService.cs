@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DemoAzAI.Infrastructure.ExternalServices.Stores;
 
 namespace DemoAzAI.AI
 {
     public interface ISemanticSearchService
     {
-        void TestSemanticSearch();
+        void Search(IEmbeddingStoreService embeddingStore, string question);
     }
 }

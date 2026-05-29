@@ -5,7 +5,7 @@ namespace DemoAzAI.Api.Contracts.Responses
 {
     public class EmbeddingTextResponseDto
     {
-        public List<TextEmbedding> TextEmbeddings { get; set; } = new List<TextEmbedding>();
+        public List<EmbeddedChunk> TextEmbeddings { get; set; } = new List<EmbeddedChunk>();
         public string GetSummary()
         {
             var sb = new StringBuilder();

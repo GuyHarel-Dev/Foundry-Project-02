@@ -7,16 +7,16 @@ using DemoAzAI.Domain;
 
 namespace DemoAzAI.Api.Services
 {
-    public class AzAiDocIntelligenceService : IAzAiDocIntelligenceService
+    public class DocumentIntelligenceService : IDocumentIntelligenceService
     {
         private readonly IConfiguration _config;
         private readonly DocumentIntelligenceClient _client;
-        private readonly ILogger<AzAiDocIntelligenceService> _logger;
+        private readonly ILogger<DocumentIntelligenceService> _logger;
 
-        public AzAiDocIntelligenceService(
+        public DocumentIntelligenceService(
             DocumentIntelligenceClient client,
             IConfiguration config,
-            ILogger<AzAiDocIntelligenceService> logger)
+            ILogger<DocumentIntelligenceService> logger)
         {
             _client = client;
             _config = config;

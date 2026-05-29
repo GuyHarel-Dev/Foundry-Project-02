@@ -11,11 +11,11 @@ namespace DemoAzAI.Api.Controllers
     public class ChatAiController : ControllerBase
     {
         private readonly IConfiguration _config; 
-        private readonly IAzFoundryChatService _azFoundryChatService;
+        private readonly IChatService _azFoundryChatService;
 
         public ChatAiController(
                 IConfiguration config, 
-                IAzFoundryChatService azFoundryService)
+                IChatService azFoundryService)
         {
             _config = config;
             _azFoundryChatService = azFoundryService;

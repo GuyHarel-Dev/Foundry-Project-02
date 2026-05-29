@@ -2,9 +2,10 @@
 using Azure.AI.DocumentIntelligence;
 using Azure.AI.Projects;
 using Azure.Identity;
+using DemoAzAI.AI;
 using DemoAzAI.Api.Services;
 using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Infrastructure.Stores;
+using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using WebApi.Services.Interfaces;
 
 public static class BuilderServicesExtensions
@@ -12,7 +13,7 @@ public static class BuilderServicesExtensions
 
     public static IServiceCollection AddAzFoundryService(this IServiceCollection services)
     {
-        services.AddScoped<IAzFoundryChatService, AzFoundryChatService>();
+        services.AddScoped<IChatService, ChatService>();
 
         return services;
     }
@@ -60,14 +61,14 @@ public static class BuilderServicesExtensions
 
     public static IServiceCollection AddAzAiDocIntelligenceService(this IServiceCollection services)
     {
-        services.AddScoped<IAzAiDocIntelligenceService, AzAiDocIntelligenceService>();
+        services.AddScoped<IDocumentIntelligenceService, DocumentIntelligenceService>();
 
         return services;
     }
 
     public static IServiceCollection AddAzFoundryEmbeddingService(this IServiceCollection services)
     {
-        services.AddScoped<IAzFoundryEmbeddingService, AzFoundryEmbeddingService>();
+        services.AddScoped<IEmbeddingService, EmbeddingService>();
 
         return services;
     }
@@ -78,5 +79,13 @@ public static class BuilderServicesExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddSemanticSearchService(this IServiceCollection services)
+    {
+        services.AddScoped<ISemanticSearchService, SemanticSearchService>();
+
+        return services;
+    }
+    
 
 }

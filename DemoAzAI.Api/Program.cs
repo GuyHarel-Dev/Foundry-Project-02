@@ -18,6 +18,7 @@ builder.Services.AddAzDocIntelligenceClient();
 builder.Services.AddAzAiDocIntelligenceService();
 builder.Services.AddAzFoundryEmbeddingService();
 builder.Services.AddEmbeddingStoreService();
+builder.Services.AddSemanticSearchService();
 
 var app = builder.Build();
 

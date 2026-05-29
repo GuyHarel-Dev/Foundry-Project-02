@@ -1,6 +1,6 @@
 ﻿namespace DemoAzAI.Domain
 {
-    public record TextEmbedding
+    public record EmbeddedChunk
     (
         Guid Guid,
         string Text,

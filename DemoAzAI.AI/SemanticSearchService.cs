@@ -1,10 +1,13 @@
-﻿namespace DemoAzAI.AI
+﻿using DemoAzAI.Domain;
+using DemoAzAI.Infrastructure.ExternalServices.Stores;
+
+namespace DemoAzAI.AI
 {
     public class SemanticSearchService : ISemanticSearchService
     {
-        public void TestSemanticSearch()
+        public void Search(IEmbeddingStoreService embeddingStore, string question)
         {
-            throw new NotImplementedException();
+            var test = 123;
         }
     }
 }

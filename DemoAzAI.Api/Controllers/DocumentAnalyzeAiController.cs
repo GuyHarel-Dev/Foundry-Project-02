@@ -9,9 +9,9 @@ namespace DemoAzAI.Api.Controllers
     [ApiController]
     public class DocumentAnalyzeAiController : ControllerBase
     {
-        private readonly IAzAiDocIntelligenceService _documentIntelligence;
+        private readonly IDocumentIntelligenceService _documentIntelligence;
 
-        public DocumentAnalyzeAiController(IAzAiDocIntelligenceService documentIntelligence)
+        public DocumentAnalyzeAiController(IDocumentIntelligenceService documentIntelligence)
         {
             _documentIntelligence = documentIntelligence;
         }

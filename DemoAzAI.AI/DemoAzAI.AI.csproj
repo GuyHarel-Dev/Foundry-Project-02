@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DemoAzAI.Domain\DemoAzAI.Domain.csproj" />
+    <ProjectReference Include="..\DemoAzAI.Infrastructure\DemoAzAI.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -2,7 +2,7 @@
 using DemoAzAI.Api.Contracts.Requests;
 using DemoAzAI.Api.Contracts.Responses;
 using DemoAzAI.Domain;
-using DemoAzAI.Infrastructure.Stores;
+using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using OpenAI.Embeddings;
 using WebApi.Services.Interfaces;
 
@@ -10,28 +10,30 @@ using WebApi.Services.Interfaces;
 
 namespace DemoAzAI.Api.Services
 {
-    public class AzFoundryEmbeddingService(
+    public class EmbeddingService(
         IConfiguration _config,
         AIProjectClient _projectClient,
-        ILogger<AzFoundryEmbeddingService> _logger,
-        IEmbeddingStoreService _embeddingStoreService) : IAzFoundryEmbeddingService
+        ILogger<EmbeddingService> _logger,
+        IEmbeddingStoreService _embeddingStoreService) : IEmbeddingService
 
     {
 
-        public async Task<EmbeddingTextResponseDto> EmbeddTextLinesAsync(EmbeddingTextRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<EmbeddingTextResponseDto> EmbeddTextLinesAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation("Starting embedding generation for {Count} text lines.", request.Chunks.Count);
+
             var client = CreateEmbeddingClient();
             _embeddingStoreService.ClearEmbeddings();
 
-            OpenAIEmbeddingCollection result = await client.GenerateEmbeddingsAsync(request.TextLines.ToArray(), cancellationToken: cancellationToken);
+            OpenAIEmbeddingCollection result = await client.GenerateEmbeddingsAsync(request.Chunks.ToArray(), cancellationToken: cancellationToken);
 
-            var storedEmbeddings =  new List<TextEmbedding>();
+            var storedEmbeddings =  new List<EmbeddedChunk>();
 
             foreach (var embedding in result)
             {
-                var storedEmbedding = new TextEmbedding(
+                var storedEmbedding = new EmbeddedChunk(
                     Guid.NewGuid(),
-                    request.TextLines[embedding.Index],
+                    request.Chunks[embedding.Index],
                     embedding.ToFloats().ToArray()
                 );
 

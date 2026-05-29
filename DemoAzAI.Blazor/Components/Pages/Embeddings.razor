@@ -1,17 +1,16 @@
-﻿@page "/embeddings"
+﻿
+@page "/embeddings"
 @inherits BasePage
 @rendermode InteractiveServer
 
-@using DemoAzAI.Blazor.Components.Fragments
-@using DemoAzAI.Blazor.Services.Api
 @using DemoAzAI.Api.Contracts.Requests
 @using DemoAzAI.Api.Contracts.Responses
 @using DemoAzAI.Application
-@using DemoAzAI.Infrastructure.Stores
+@using DemoAzAI.Blazor.Components.Fragments
+@using DemoAzAI.Blazor.Services.Api
 
 @inject FoundryApiClient apiClient
 @inject IStepTracer StepTracer
-@inject IEmbeddingStoreService EmbeddingStoreService
 
 <label for="TextToEmbed">Text to embed:</label>
 <textarea @bind="textToEmbed"></textarea>
@@ -65,17 +64,15 @@
 
     private async Task SemanticSearch()
     {
-        var test = EmbeddingStoreService.Embeddings.Count();
-
         if (string.IsNullOrWhiteSpace(semanticQuestion))
         {
             semanticQuestion = "Please enter a semantic question...";
             return;
         };
 
-        var request = new EmbeddingTextRequestDto
+        var request = new EmbeddingRequestDto
         {
-            TextLines = semanticQuestion
+            Chunks = semanticQuestion
                 .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList()
         };
@@ -110,9 +107,9 @@
                 .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
 
-            var request = new EmbeddingTextRequestDto
+            var request = new EmbeddingRequestDto
             {
-                TextLines = lines
+                Chunks = lines
             };
 
             var (postStatus, postResult) = await PostEmbeddingApiRequest(request);
@@ -138,7 +135,7 @@
 
     }
 
-    private async Task<(bool Success, EmbeddingTextResponseDto?)> PostEmbeddingApiRequest(EmbeddingTextRequestDto request)
+    private async Task<(bool Success, EmbeddingTextResponseDto?)> PostEmbeddingApiRequest(EmbeddingRequestDto request)
     {
         if (request == null)
         {
@@ -146,7 +143,7 @@
             return (false, null);
         }
 
-        var response = await apiClient.PostAsync<EmbeddingTextRequestDto, EmbeddingTextResponseDto>("api/embedding/embedlines", request);
+        var response = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingTextResponseDto>("api/embedding/embedtext", request);
 
         if (response == null)
         {
