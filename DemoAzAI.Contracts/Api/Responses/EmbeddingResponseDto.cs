@@ -1,9 +1,9 @@
 ﻿using DemoAzAI.Domain;
 using System.Text;
 
-namespace DemoAzAI.Api.Contracts.Responses
+namespace DemoAzAI.Contracts.Api.Responses
 {
-    public class EmbeddingTextResponseDto
+    public class EmbeddingResponseDto
     {
         public List<EmbeddedChunk> TextEmbeddings { get; set; } = new List<EmbeddedChunk>();
         public string GetSummary()
@@ -15,7 +15,7 @@ namespace DemoAzAI.Api.Contracts.Responses
             foreach (var embedding in TextEmbeddings)
             {
                 sb.AppendLine($"{embedding.Text}");
-                sb.AppendLine($"[{string.Join(", ", embedding.Vector.Take(5))}...]");
+                sb.AppendLine($"[{string.Join(", ", embedding.EmbeddingVector.Take(5))}...]");
                 sb.AppendLine();
 
             }

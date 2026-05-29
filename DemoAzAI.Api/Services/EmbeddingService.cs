@@ -1,6 +1,7 @@
 ﻿using Azure.AI.Projects;
-using DemoAzAI.Api.Contracts.Requests;
-using DemoAzAI.Api.Contracts.Responses;
+using DemoAzAI.AI;
+using DemoAzAI.Contracts.Api.Requests;
+using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain;
 using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using OpenAI.Embeddings;
@@ -11,19 +12,38 @@ using WebApi.Services.Interfaces;
 namespace DemoAzAI.Api.Services
 {
     public class EmbeddingService(
-        IConfiguration _config,
-        AIProjectClient _projectClient,
-        ILogger<EmbeddingService> _logger,
-        IEmbeddingStoreService _embeddingStoreService) : IEmbeddingService
+        IConfiguration config,
+        AIProjectClient projectClient,
+        ILogger<EmbeddingService> logger,
+        IEmbeddingStoreService embeddingStoreService,
+        ISemanticSearchService semanticSearchService) : IEmbeddingService
 
     {
 
-        public async Task<EmbeddingTextResponseDto> EmbeddTextLinesAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
+        public async Task SearchEmbedding(string? question)
         {
-            _logger.LogInformation("Starting embedding generation for {Count} text lines.", request.Chunks.Count);
+            // Embed the question first
+            var request = new EmbeddingRequestDto
+            {
+                Chunks = new List<string> { question }
+            };
+
+            var response = await EmbeddTextAsync(request);
+
+            // Retrieve the embedding vector for the question
+            var questionEmbedding = response.TextEmbeddings.FirstOrDefault()?.EmbeddingVector;
+
+
+            semanticSearchService.Search(embeddingStoreService, "question");
+
+
+        }
+
+        public async Task<EmbeddingResponseDto> EmbeddTextAsync(EmbeddingRequestDto request, bool storeEmbeddings = false, CancellationToken cancellationToken = default)
+        {
+            logger.LogInformation("Starting embedding generation for {Count} text lines.", request.Chunks.Count);
 
             var client = CreateEmbeddingClient();
-            _embeddingStoreService.ClearEmbeddings();
 
             OpenAIEmbeddingCollection result = await client.GenerateEmbeddingsAsync(request.Chunks.ToArray(), cancellationToken: cancellationToken);
 
@@ -41,9 +61,10 @@ namespace DemoAzAI.Api.Services
 
             }
 
-            _embeddingStoreService.AddEmbeddings(storedEmbeddings);
+            if ( storeEmbeddings )
+                embeddingStoreService.AddEmbeddings(storedEmbeddings);
 
-            return new EmbeddingTextResponseDto
+            return new EmbeddingResponseDto
             {
                 TextEmbeddings = storedEmbeddings
             };
@@ -53,10 +74,10 @@ namespace DemoAzAI.Api.Services
         private EmbeddingClient CreateEmbeddingClient()
         {
 
-            var modelName = _config["FoundryPrj01:Model:TextEmbedding"]
+            var modelName = config["FoundryPrj01:Model:TextEmbedding"]
                 ?? throw new InvalidOperationException("ModelName not configured");
 
-            return _projectClient
+            return projectClient
                 .ProjectOpenAIClient
                 .GetEmbeddingClient(modelName);
         }

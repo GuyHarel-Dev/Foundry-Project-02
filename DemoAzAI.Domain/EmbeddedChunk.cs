@@ -4,6 +4,6 @@
     (
         Guid Guid,
         string Text,
-        float[] Vector
+        float[] EmbeddingVector
     );
 }

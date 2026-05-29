@@ -1,6 +1,6 @@
 ﻿using DemoAzAI.Domain;
 
-namespace DemoAzAI.Api.Contracts.Responses
+namespace DemoAzAI.Contracts.Api.Responses
 {
     public class ChatResponseDto
     {

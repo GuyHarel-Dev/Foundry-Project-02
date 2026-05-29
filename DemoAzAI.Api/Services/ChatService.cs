@@ -1,11 +1,11 @@
 ﻿using Azure.AI.Extensions.OpenAI;
 using Azure.AI.Projects;
-using DemoAzAI.Api.Contracts.Requests;
-using DemoAzAI.Api.Contracts.Responses;
 using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Domain;
 using OpenAI.Responses;
 using System.ClientModel;
+using DemoAzAI.Contracts.Api.Requests;
+using DemoAzAI.Contracts.Api.Responses;
 
 #pragma warning disable OPENAI001 // pour using OpenAI.Responses;
 
@@ -17,7 +17,7 @@ namespace DemoAzAI.Api.Services
         private readonly AIProjectClient _projectClient;
         private readonly ILogger<ChatService> _logger;
 
-        public ChatService(
+        public ChatService( 
             IConfiguration config,
             AIProjectClient projectClient,
             ILogger<ChatService> logger)

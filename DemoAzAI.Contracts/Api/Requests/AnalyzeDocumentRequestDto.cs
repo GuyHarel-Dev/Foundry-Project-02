@@ -1,6 +1,4 @@
-﻿
-
-namespace DemoAzAI.Api.Contracts.Requests
+﻿namespace DemoAzAI.Contracts.Api.Requests
 {
     public class AnalyzeDocumentRequestDto
     {

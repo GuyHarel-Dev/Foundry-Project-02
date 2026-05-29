@@ -1,9 +1,9 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
-using DemoAzAI.Api.Contracts.Requests;
-using DemoAzAI.Api.Contracts.Responses;
 using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Domain;
+using DemoAzAI.Contracts.Api.Requests;
+using DemoAzAI.Contracts.Api.Responses;
 
 namespace DemoAzAI.Api.Services
 {

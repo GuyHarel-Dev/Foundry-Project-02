@@ -135,7 +135,7 @@
 
     }
 
-    private async Task<(bool Success, EmbeddingTextResponseDto?)> PostEmbeddingApiRequest(EmbeddingRequestDto request)
+    private async Task<(bool Success, EmbeddingResponseDto?)> PostEmbeddingApiRequest(EmbeddingRequestDto request)
     {
         if (request == null)
         {
@@ -143,7 +143,7 @@
             return (false, null);
         }
 
-        var response = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingTextResponseDto>("api/embedding/embedtext", request);
+        var response = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed", request);
 
         if (response == null)
         {
