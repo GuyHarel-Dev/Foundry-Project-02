@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using DemoAzAI.AI;
+﻿using DemoAzAI.Application.AI;
 using DemoAzAI.Contracts.Api.Requests;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Services.Interfaces;

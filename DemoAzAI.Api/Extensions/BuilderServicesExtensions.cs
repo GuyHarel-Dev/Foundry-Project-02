@@ -5,6 +5,7 @@ using Azure.Identity;
 using DemoAzAI.AI;
 using DemoAzAI.Api.Services;
 using DemoAzAI.Api.Services.Interfaces;
+using DemoAzAI.Application.AI;
 using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using WebApi.Services.Interfaces;
 

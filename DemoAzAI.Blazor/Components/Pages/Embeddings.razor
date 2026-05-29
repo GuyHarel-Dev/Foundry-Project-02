@@ -3,8 +3,8 @@
 @inherits BasePage
 @rendermode InteractiveServer
 
-@using DemoAzAI.Api.Contracts.Requests
-@using DemoAzAI.Api.Contracts.Responses
+@using DemoAzAI.Contracts.Api.Requests
+@using DemoAzAI.Contracts.Api.Responses
 @using DemoAzAI.Application
 @using DemoAzAI.Blazor.Components.Fragments
 @using DemoAzAI.Blazor.Services.Api
@@ -72,6 +72,7 @@
 
         var request = new EmbeddingRequestDto
         {
+            StoreEmbeddings = false,
             Chunks = semanticQuestion
                 .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList()
@@ -109,6 +110,7 @@
 
             var request = new EmbeddingRequestDto
             {
+                StoreEmbeddings = true,
                 Chunks = lines
             };
 

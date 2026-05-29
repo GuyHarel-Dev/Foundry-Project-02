@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\DemoAzAI.AI\DemoAzAI.AI.csproj" />
+	  <ProjectReference Include="..\DemoAzAI.Application\DemoAzAI.Application.csproj" />
 	  <ProjectReference Include="..\DemoAzAI.Contracts\DemoAzAI.Contracts.csproj" />
 	  <ProjectReference Include="..\DemoAzAI.Infrastructure\DemoAzAI.Infrastructure.csproj" />
 	</ItemGroup>

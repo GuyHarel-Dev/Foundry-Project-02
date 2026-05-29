@@ -1,5 +1,6 @@
 ﻿using Azure.AI.Projects;
 using DemoAzAI.AI;
+using DemoAzAI.Application.AI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain;
@@ -22,24 +23,28 @@ namespace DemoAzAI.Api.Services
 
         public async Task SearchEmbedding(string? question)
         {
+            logger.LogInformation($"Starting embedding search for question: {question}") ;
+
             // Embed the question first
             var request = new EmbeddingRequestDto
             {
+                StoreEmbeddings = false,
                 Chunks = new List<string> { question }
             };
 
             var response = await EmbeddTextAsync(request);
 
             // Retrieve the embedding vector for the question
-            var questionEmbedding = response.TextEmbeddings.FirstOrDefault()?.EmbeddingVector;
+            var embeddedQuestion = response.TextEmbeddings.FirstOrDefault();
 
 
-            semanticSearchService.Search(embeddingStoreService, "question");
+            // Search the stored embeddings for relevant chunks
+            var results =  semanticSearchService.Search(embeddingStoreService, embeddedQuestion);
 
 
         }
 
-        public async Task<EmbeddingResponseDto> EmbeddTextAsync(EmbeddingRequestDto request, bool storeEmbeddings = false, CancellationToken cancellationToken = default)
+        public async Task<EmbeddingResponseDto> EmbeddTextAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
         {
             logger.LogInformation("Starting embedding generation for {Count} text lines.", request.Chunks.Count);
 
@@ -61,7 +66,7 @@ namespace DemoAzAI.Api.Services
 
             }
 
-            if ( storeEmbeddings )
+            if (request.StoreEmbeddings)
                 embeddingStoreService.AddEmbeddings(storedEmbeddings);
 
             return new EmbeddingResponseDto

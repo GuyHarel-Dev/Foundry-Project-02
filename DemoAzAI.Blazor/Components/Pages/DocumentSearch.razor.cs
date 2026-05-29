@@ -1,8 +1,8 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Blazor.Services.UI;
-using DemoAzAI.Api.Contracts.Requests;
-using DemoAzAI.Api.Contracts.Responses;
+using DemoAzAI.Contracts.Api.Requests;
+using DemoAzAI.Contracts.Api.Responses;
 using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages;
