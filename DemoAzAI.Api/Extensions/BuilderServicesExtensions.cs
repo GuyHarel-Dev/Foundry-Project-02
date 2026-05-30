@@ -1,8 +1,6 @@
 ﻿using Azure;
-using Azure.AI.DocumentIntelligence;
 using Azure.AI.Projects;
 using Azure.Identity;
-using DemoAzAI.AI;
 using DemoAzAI.Api.Services;
 using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Application.AI;
@@ -12,62 +10,94 @@ using WebApi.Services.Interfaces;
 public static class BuilderServicesExtensions
 {
 
-    public static IServiceCollection AddAzFoundryService(this IServiceCollection services)
+    public static IServiceCollection AddAzureChatFoundryService(this IServiceCollection services)
     {
         services.AddScoped<IChatService, ChatService>();
 
         return services;
     }
 
-    public static IServiceCollection AddAzFoundryHttpClient(this IServiceCollection services)
+    public static IServiceCollection AddAzureOpenAiProjectResponsesClient(this IServiceCollection services, IConfiguration config)
     {
+
+        var endpoint = config["FoundryPrj01:Endpoint"]
+            ?? throw new InvalidOperationException("config: FoundryPrj01:Endpoint not configured");
+
+        var modelName = config["FoundryPrj01:Model:OpenAiChat"]
+            ?? throw new InvalidOperationException("config: FoundryPrj01:Model:OpenAiChat");
+
         services.AddSingleton(sp =>
         {
-            var config = sp.GetRequiredService<IConfiguration>();
+            var httpClient = new AIProjectClient(
+            endpoint: new Uri(endpoint),
+            tokenProvider: new DefaultAzureCredential());
 
-            var endpoint = config["FoundryPrj01:Endpoint"]
-                ?? throw new InvalidOperationException("FoundryPrj01 Endpoint not configured");
+            Azure.AI.Extensions.OpenAI.
+                ProjectResponsesClient responseClient = httpClient.ProjectOpenAIClient
+                .GetProjectResponsesClientForModel(modelName);
 
-            return new AIProjectClient(
-                endpoint: new Uri(endpoint),
-                tokenProvider: new DefaultAzureCredential());
+            return responseClient;
         });
-
 
         return services;
     }
 
-    public static IServiceCollection AddAzDocIntelligenceClient(this IServiceCollection services)
+    public static IServiceCollection AddAzureDocIntelligenceClient(this IServiceCollection services)
     {
         services.AddSingleton(sp =>
         {
             var config = sp.GetRequiredService<IConfiguration>();
 
             var endpoint = config["AzAiDocIntelligenceService:Endpoint"]
-                ?? throw new InvalidOperationException("AzureDocIntelligence Endpoint not configured");
+                ?? throw new InvalidOperationException("config: AzAiDocIntelligenceService:Endpoint");
 
             var key = config["AzAiDocIntelligenceService:Key1"]
-                ?? throw new InvalidOperationException("AzureDocIntelligence Key1 not configured");
+                ?? throw new InvalidOperationException("config: AzAiDocIntelligenceService:Key1");
 
             AzureKeyCredential credential = new AzureKeyCredential(key);
 
-            return new DocumentIntelligenceClient(
-                endpoint: new Uri(endpoint),
-                credential: credential);
+            return new Azure.AI.DocumentIntelligence
+                .DocumentIntelligenceClient(
+                    endpoint: new Uri(endpoint),
+                    credential: credential);
         });
 
 
         return services;
     }
 
-    public static IServiceCollection AddAzAiDocIntelligenceService(this IServiceCollection services)
+    public static IServiceCollection AddAzureOpenAiEmbeddingClient(this IServiceCollection services, IConfiguration config)
+    {
+
+        var endpoint = config["FoundryPrj01:Endpoint"]
+            ?? throw new InvalidOperationException("config: FoundryPrj01:Endpoint not configured");
+
+        var modelName = config["FoundryPrj01:Model:TextEmbedding"]
+            ?? throw new InvalidOperationException("config: FoundryPrj01:Model:TextEmbedding\" not configured");
+
+        services.AddSingleton(sp =>
+        {
+            var httpClient = new AIProjectClient(
+            endpoint: new Uri(endpoint),
+            tokenProvider: new DefaultAzureCredential());
+
+            OpenAI.Embeddings.EmbeddingClient  responseClient = httpClient.ProjectOpenAIClient
+                .GetEmbeddingClient(modelName);
+
+            return responseClient;
+        });
+
+        return services;
+
+    }
+    public static IServiceCollection AddDocIntelligenceService(this IServiceCollection services)
     {
         services.AddScoped<IDocumentIntelligenceService, DocumentIntelligenceService>();
 
         return services;
     }
 
-    public static IServiceCollection AddAzFoundryEmbeddingService(this IServiceCollection services)
+    public static IServiceCollection AddEmbeddingService(this IServiceCollection services)
     {
         services.AddScoped<IEmbeddingService, EmbeddingService>();
 

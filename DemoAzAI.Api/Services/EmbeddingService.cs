@@ -13,20 +13,20 @@ using WebApi.Services.Interfaces;
 namespace DemoAzAI.Api.Services
 {
     public class EmbeddingService(
-        IConfiguration config,
-        AIProjectClient projectClient,
-        ILogger<EmbeddingService> logger,
-        IEmbeddingStoreService embeddingStoreService,
-        ISemanticSearchService semanticSearchService) : IEmbeddingService
+            EmbeddingClient embeddingClient,
+            ILogger<EmbeddingService> logger,
+            IEmbeddingStoreService embeddingStoreService,
+            ISemanticSearchService semanticSearchService) 
+        : IEmbeddingService
 
     {
         public int EmbeddingStoreCount { get; } = embeddingStoreService.Count;
 
-        public async Task SearchEmbedding(string? question)
+        public async Task<List<SemanticSearchResult>> SearchEmbedding(string? question)
         {
             logger.LogInformation($"Starting embedding search for question: {question}") ;
 
-            // Embed the question first
+              // Embed the question first
             var request = new EmbeddingRequestDto
             {
                 AddEmbeddingsToStore = false,
@@ -38,9 +38,11 @@ namespace DemoAzAI.Api.Services
             // Retrieve the embedding vector for the question
             var embeddedQuestion = response.TextEmbeddings.FirstOrDefault();
 
+            //if (embeddedQuestion is null)
+            //    return result;
 
             // Search the stored embeddings for relevant chunks
-            //var results =  semanticSearchService.Search(embeddingStoreService, embeddedQuestion);
+            return new List<SemanticSearchResult>();  //semanticSearchService.Search(embeddingStoreService, embeddedQuestion);
 
 
         }
@@ -49,9 +51,7 @@ namespace DemoAzAI.Api.Services
         {
             logger.LogInformation("Starting embedding generation for {Count} text lines.", request.Chunks.Count);
 
-            var client = CreateEmbeddingClient();
-
-            OpenAIEmbeddingCollection result = await client.GenerateEmbeddingsAsync(request.Chunks.ToArray(), cancellationToken: cancellationToken);
+            OpenAIEmbeddingCollection result = await embeddingClient.GenerateEmbeddingsAsync(request.Chunks.ToArray(), cancellationToken: cancellationToken);
 
             var storedEmbeddings =  new List<EmbeddedChunk>();
 
@@ -86,17 +86,6 @@ namespace DemoAzAI.Api.Services
                 embeddingStoreService.AddEmbedding(embedding);
             }
         }
-        private EmbeddingClient CreateEmbeddingClient()
-        {
-
-            var modelName = config["FoundryPrj01:Model:TextEmbedding"]
-                ?? throw new InvalidOperationException("ModelName not configured");
-
-            return projectClient
-                .ProjectOpenAIClient
-                .GetEmbeddingClient(modelName);
-        }
-
     }
 }
 

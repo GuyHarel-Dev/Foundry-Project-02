@@ -12,11 +12,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerDocumentation();
 
-builder.Services.AddAzFoundryService();
-builder.Services.AddAzFoundryHttpClient();
-builder.Services.AddAzDocIntelligenceClient();
-builder.Services.AddAzAiDocIntelligenceService();
-builder.Services.AddAzFoundryEmbeddingService();
+// Azure clients
+builder.Services.AddAzureOpenAiProjectResponsesClient(builder.Configuration);
+builder.Services.AddAzureDocIntelligenceClient();
+builder.Services.AddAzureOpenAiEmbeddingClient(builder.Configuration);
+
+// Azure services
+builder.Services.AddDocIntelligenceService();
+builder.Services.AddAzureChatFoundryService();
+builder.Services.AddEmbeddingService();
 builder.Services.AddEmbeddingStoreService();
 builder.Services.AddSemanticSearchService();
 

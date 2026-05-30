@@ -11,32 +11,19 @@ using DemoAzAI.Contracts.Api.Responses;
 
 namespace DemoAzAI.Api.Services
 {
-    public class ChatService : IChatService
-    {
-        private readonly IConfiguration _config;
-        private readonly AIProjectClient _projectClient;
-        private readonly ILogger<ChatService> _logger;
-
-        public ChatService( 
+    public class ChatService(
             IConfiguration config,
-            AIProjectClient projectClient,
-            ILogger<ChatService> logger)
-       {
-            _config = config;
-            _projectClient = projectClient;
-            _logger = logger;
-
-
-        }
-
+            ProjectResponsesClient projectClient,
+            ILogger<ChatService> logger) 
+        : IChatService
+    {
         public async Task<ChatResponseDto> GetPromptResponseAsync(ChatRequestDto request, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Sending prompt to Azure AI Foundry");
+            logger.LogInformation("Sending prompt to Azure AI Foundry");
 
             CreateResponseOptions options = CreateResponseOptions(request);
-            ProjectResponsesClient client = CreateResponseClient();
 
-            ClientResult<ResponseResult> result = await client.CreateResponseAsync(
+            ClientResult<ResponseResult> result = await projectClient.CreateResponseAsync(
                 options, cancellationToken);
 
             var response = new ChatResponseDto();
@@ -56,20 +43,9 @@ namespace DemoAzAI.Api.Services
             return response;
         }
 
-        private ProjectResponsesClient CreateResponseClient()
-        {
-
-            var modelName = _config["FoundryPrj01:Model:OpenAiChat"]
-                ?? throw new InvalidOperationException("ModelName not configured");
-
-            return _projectClient
-                .ProjectOpenAIClient
-                .GetProjectResponsesClientForModel(modelName);
-        }
-
         private CreateResponseOptions CreateResponseOptions(ChatRequestDto request)
         {
-            var systemPrompt = _config["FoundryPrj01:SystemPrompt"] ?? string.Empty;
+            var systemPrompt = config["FoundryPrj01:SystemPrompt"] ?? string.Empty;
 
             var options = new CreateResponseOptions
             {

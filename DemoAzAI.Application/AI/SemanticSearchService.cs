@@ -5,9 +5,12 @@ namespace DemoAzAI.Application.AI
 {
     public class SemanticSearchService : ISemanticSearchService
     {
-        public List<SemanticSearchResult> Search(IEmbeddingStoreService embeddingStore, EmbeddedChunk embeddedQuestion)
+        public List<SemanticSearchResult> Search(IEmbeddingStoreService embeddingStore, EmbeddedChunk? embeddedQuestion)
         {
             var results = new List<SemanticSearchResult>();
+
+            if (embeddedQuestion is null)
+                return results;
 
             foreach (var embed in embeddingStore.Embeddings)
             {

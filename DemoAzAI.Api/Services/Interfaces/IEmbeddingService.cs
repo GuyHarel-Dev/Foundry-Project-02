@@ -1,5 +1,6 @@
 ﻿using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
+using DemoAzAI.Domain;
 
 namespace WebApi.Services.Interfaces
 {
@@ -7,7 +8,7 @@ namespace WebApi.Services.Interfaces
     {
         int EmbeddingStoreCount { get; }
 
-        Task SearchEmbedding(string? question);
+        Task<List<SemanticSearchResult>> SearchEmbedding(string? question);
         Task<EmbeddingResponseDto> EmbeddTextAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default);
     }
 }

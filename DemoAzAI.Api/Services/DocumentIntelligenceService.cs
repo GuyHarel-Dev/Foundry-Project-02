@@ -7,32 +7,22 @@ using DemoAzAI.Contracts.Api.Responses;
 
 namespace DemoAzAI.Api.Services
 {
-    public class DocumentIntelligenceService : IDocumentIntelligenceService
-    {
-        private readonly IConfiguration _config;
-        private readonly DocumentIntelligenceClient _client;
-        private readonly ILogger<DocumentIntelligenceService> _logger;
-
-        public DocumentIntelligenceService(
+    public class DocumentIntelligenceService(
             DocumentIntelligenceClient client,
-            IConfiguration config,
-            ILogger<DocumentIntelligenceService> logger)
-        {
-            _client = client;
-            _config = config;
-            _logger = logger;
-        }
+            ILogger<DocumentIntelligenceService> logger) 
+        : IDocumentIntelligenceService
+    {
 
         public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument(AnalyzeDocumentRequestDto request, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Sending document to Azure AI Foundry");
+            logger.LogInformation("Sending document to Azure AI Foundry");
 
             var response = new AnalyzeDocumentResponseDto();
 
             var options = CreateDocumentOptions(request);
 
             var operation =
-                await _client.AnalyzeDocumentAsync(
+                await client.AnalyzeDocumentAsync(
                     WaitUntil.Completed,
                     options,
                     cancellationToken);
