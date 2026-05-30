@@ -1,5 +1,7 @@
 ﻿using DemoAzAI.Application.AI;
 using DemoAzAI.Contracts.Api.Requests;
+using DemoAzAI.Contracts.Api.Responses;
+using DemoAzAI.Domain;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Services.Interfaces;
 
@@ -13,20 +15,26 @@ namespace DemoAzAI.Api.Controllers
         : ControllerBase
     {
 
-        [HttpPost("embed")]
-        public async Task<ActionResult> EmbedText([FromBody] EmbeddingRequestDto request)
+        [HttpPost("embed/chunks")]
+        public async Task<ActionResult<EmbeddingResponseDto>> EmbedChunks([FromBody] EmbeddingRequestDto request)
         {
-            if (request.Chunks == null || !request.Chunks.Any())
+            if (request.Chunks == null || !request.Chunks.Any() || request.Chunks.Any(string.IsNullOrWhiteSpace))
             {
-                return BadRequest("TextLines cannot be null or empty.");
+                return BadRequest("Chunks cannot be null or empty.");
             }
             var response = await embeddingService.EmbeddTextAsync(request);
 
-            return Ok(response);
+            if (response == null || response.Any() == false)
+                throw new InvalidOperationException(
+                    "The embedding provider returned no embeddings.");
+
+            var test = new EmbeddingResponseDto();
+
+            return Ok(test);
         }
 
-        [HttpGet("search")]
-        public async Task<ActionResult> Search([FromQuery] string? question)
+        [HttpGet("search/store")]
+        public async Task<ActionResult> SearchEmbeddings([FromQuery] string? question)
         {
             if (string.IsNullOrEmpty(question))
             {

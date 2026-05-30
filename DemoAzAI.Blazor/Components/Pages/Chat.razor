@@ -79,17 +79,18 @@
 
             var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request);
 
+            if (result == null || result.Value is null)
+            {
+                executionSteps = "API returned no data.";
+                return;
+
+            }
             if (!result.IsSuccess)
             {
                 executionSteps = result.ErrorMessage ?? "Unknown API error.";
                 return;
             }
 
-            if (result == null || result.Value is null)
-            {
-                executionSteps = "API returned no data.";
-                return;
-            }
 
             executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SendQuestion)}: Received answer for question: {question}");
 

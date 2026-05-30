@@ -5,20 +5,21 @@ namespace DemoAzAI.Contracts.Api.Responses
 {
     public class EmbeddingResponseDto
     {
-        public List<EmbeddedChunkDto> TextEmbeddings { get; set; } = new List<EmbeddedChunkDto>();
+        public string RequestId { get; set; }
+        //public List<EmbeddedChunkDto> TextEmbeddings { get; set; } = new List<EmbeddedChunkDto>();
 
-        public EmbeddingResponseDto(List<EmbeddedChunk> embeddedChunks)
-        {
-            foreach(var chunk in embeddedChunks)
-            {
-                TextEmbeddings.Add(new EmbeddedChunkDto
-                {
-                    Guid = chunk.Guid,
-                    Text = chunk.Text,
-                    EmbeddingVectorView = $"[{string.Join(", ", chunk.EmbeddingVector.Take(5))}...]"
-                });
-            }
-        }
+        //public EmbeddingResponseDto(List<EmbeddedChunk> embeddedChunks)
+        //{
+        //    foreach(var chunk in embeddedChunks)
+        //    {
+        //        TextEmbeddings.Add(new EmbeddedChunkDto
+        //        {
+        //            Guid = chunk.Guid,
+        //            Text = chunk.Text,
+        //            EmbeddingVectorView = $"[{string.Join(", ", chunk.EmbeddingVector.Take(5))}...]"
+        //        });
+        //    }
+        //}
         //public string GetSummary()
         //{
         //    var sb = new StringBuilder();

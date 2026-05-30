@@ -1,5 +1,4 @@
-﻿
-@page "/embeddings"
+﻿@page "/embeddings"
 @inherits BasePage
 @rendermode InteractiveServer
 
@@ -11,11 +10,12 @@
 
 @inject FoundryApiClient apiClient
 @inject IStepTracer StepTracer
+@inject ILogger<Embeddings> Logger
 
 <label for="TextToEmbed">Text to embed:</label>
 <textarea @bind="textToEmbed"></textarea>
 
-<form @onsubmit="EmbedText">
+<form @onsubmit="EmbedTextLines">
     <button type="submit">Generate Embeddings</button>
     <!-- call wait panel -->
     @if (isBusy)
@@ -68,7 +68,11 @@
         {
             semanticQuestion = "Please enter a semantic question...";
             return;
-        };
+        }
+        ;
+
+
+        searchSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SemanticSearch)}: Searching embedding store...");
 
         var request = new EmbeddingRequestDto
         {
@@ -78,19 +82,13 @@
                 .ToList()
         };
 
-        searchSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SemanticSearch)}: Embedding the semantic search question...", clearSteps: true);
+        // api/embedding/search/store
 
-        var (postStatus, postResult) = await PostEmbeddingApiRequest(request);
-
-        searchSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SemanticSearch)}: Searching embedding store...");
-
-
-        searchSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SemanticSearch)}: Displaying best answers...");
 
         await RefreshUI();
     }
 
-    private async Task EmbedText()
+    private async Task EmbedTextLines()
     {
 
         try
@@ -100,7 +98,7 @@
             embeddedText = string.Empty;
             executionSteps = string.Empty;
 
-            executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(EmbedText)}: Starting embedding text...", clearSteps: true);
+            executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(EmbedTextLines)}: Starting embedding text...", clearSteps: true);
 
             await RefreshUI();
 
@@ -114,21 +112,20 @@
                 Chunks = lines
             };
 
-            var (postStatus, postResult) = await PostEmbeddingApiRequest(request);
+            var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed/chunks", request);
 
-            executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(EmbedText)}: Received embedding vectors...");
-
-            if (!postStatus || postResult == null)
+            if (!result.IsSuccess)
             {
-                executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(EmbedText)}: Failed to get embedding vectors.");
+                executionSteps = "API returned no data.";
+                Logger.LogInformation(result.ErrorMessage);
                 return;
-            };
-            
-            // embeddedText = postResult.GetSummary();
+
+            }
+
         }
         catch (Exception ex)
         {
-            executionSteps = ex.Message;
+            Logger.LogError(ex, "Error while embedding text lines.");
         }
         finally
         {
@@ -137,37 +134,7 @@
 
     }
 
-    private async Task<(bool Success, EmbeddingResponseDto?)> PostEmbeddingApiRequest(EmbeddingRequestDto request)
-    {
-        if (request == null)
-        {
-            executionSteps = "Embedding request is null.";
-            return (false, null);
-        }
 
-        var response = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed", request);
-
-        if (response == null)
-        {
-            executionSteps = "API error: no response received.";
-            return (false, null);
-        }
-
-        if (!response.IsSuccess)
-        {
-            executionSteps = response.ErrorMessage ?? "Unknown API error.";
-            return (false, null);
-
-        }
-
-        if (response.Value == null)
-        {
-            executionSteps = "API error: response value is null.";
-            return (false, null);
-        }
-
-        return (true, response.Value);
-    }
 
     
 
