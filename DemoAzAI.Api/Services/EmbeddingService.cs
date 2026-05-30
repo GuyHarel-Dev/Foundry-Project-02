@@ -20,6 +20,7 @@ namespace DemoAzAI.Api.Services
         ISemanticSearchService semanticSearchService) : IEmbeddingService
 
     {
+        public int EmbeddingStoreCount { get; } = embeddingStoreService.Count;
 
         public async Task SearchEmbedding(string? question)
         {
@@ -28,7 +29,7 @@ namespace DemoAzAI.Api.Services
             // Embed the question first
             var request = new EmbeddingRequestDto
             {
-                StoreEmbeddings = false,
+                AddEmbeddingsToStore = false,
                 Chunks = new List<string> { question }
             };
 
@@ -39,7 +40,7 @@ namespace DemoAzAI.Api.Services
 
 
             // Search the stored embeddings for relevant chunks
-            var results =  semanticSearchService.Search(embeddingStoreService, embeddedQuestion);
+            //var results =  semanticSearchService.Search(embeddingStoreService, embeddedQuestion);
 
 
         }
@@ -66,16 +67,25 @@ namespace DemoAzAI.Api.Services
 
             }
 
-            if (request.StoreEmbeddings)
-                embeddingStoreService.AddEmbeddings(storedEmbeddings);
+            if (request.AddEmbeddingsToStore)
+                AddNewEmbeddingsToStore(storedEmbeddings);
 
-            return new EmbeddingResponseDto
-            {
-                TextEmbeddings = storedEmbeddings
-            };
+            return new EmbeddingResponseDto(storedEmbeddings);
 
         }
 
+        private void AddNewEmbeddingsToStore(IEnumerable<EmbeddedChunk> newEmbeddings)
+        {
+            foreach (var embedding in newEmbeddings)
+            {
+                if (embeddingStoreService.Embeddings.Contains(embedding))
+                {
+                    logger.LogInformation($"Embedding for text '{embedding.Text}' already exists in the store. Skipping.");
+                    continue;
+                }   
+                embeddingStoreService.AddEmbedding(embedding);
+            }
+        }
         private EmbeddingClient CreateEmbeddingClient()
         {
 

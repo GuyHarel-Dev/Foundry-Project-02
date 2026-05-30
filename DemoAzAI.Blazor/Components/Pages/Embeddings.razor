@@ -72,7 +72,7 @@
 
         var request = new EmbeddingRequestDto
         {
-            StoreEmbeddings = false,
+            AddEmbeddingsToStore = false,
             Chunks = semanticQuestion
                 .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList()
@@ -110,7 +110,7 @@
 
             var request = new EmbeddingRequestDto
             {
-                StoreEmbeddings = true,
+                AddEmbeddingsToStore = true,
                 Chunks = lines
             };
 
@@ -124,7 +124,7 @@
                 return;
             };
             
-            embeddedText = postResult.GetSummary();
+            // embeddedText = postResult.GetSummary();
         }
         catch (Exception ex)
         {

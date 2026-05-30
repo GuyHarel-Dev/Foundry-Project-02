@@ -5,21 +5,34 @@ namespace DemoAzAI.Contracts.Api.Responses
 {
     public class EmbeddingResponseDto
     {
-        public List<EmbeddedChunk> TextEmbeddings { get; set; } = new List<EmbeddedChunk>();
-        public string GetSummary()
+        public List<EmbeddedChunkDto> TextEmbeddings { get; set; } = new List<EmbeddedChunkDto>();
+
+        public EmbeddingResponseDto(List<EmbeddedChunk> embeddedChunks)
         {
-            var sb = new StringBuilder();
-            sb.AppendLine($"Received {TextEmbeddings.Count} embeddings:");
-            sb.AppendLine();
-
-            foreach (var embedding in TextEmbeddings)
+            foreach(var chunk in embeddedChunks)
             {
-                sb.AppendLine($"{embedding.Text}");
-                sb.AppendLine($"[{string.Join(", ", embedding.EmbeddingVector.Take(5))}...]");
-                sb.AppendLine();
-
+                TextEmbeddings.Add(new EmbeddedChunkDto
+                {
+                    Guid = chunk.Guid,
+                    Text = chunk.Text,
+                    EmbeddingVectorView = $"[{string.Join(", ", chunk.EmbeddingVector.Take(5))}...]"
+                });
             }
-            return sb.ToString();
         }
+        //public string GetSummary()
+        //{
+        //    var sb = new StringBuilder();
+        //    sb.AppendLine($"Received {TextEmbeddings.Count} embeddings:");
+        //    sb.AppendLine();
+
+        //    foreach (var embedding in TextEmbeddings)
+        //    {
+        //        sb.AppendLine($"{embedding.Text}");
+        //        sb.AppendLine($"[{string.Join(", ", embedding..Take(5))}...]");
+        //        sb.AppendLine();
+
+        //    }
+        //    return sb.ToString();
+        //}
     }
 }
