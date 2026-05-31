@@ -1,11 +1,14 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 
-<PageTitle>Demo Azure AI</PageTitle>
+@using DemoAzAI.Blazor.Components.Fragments
 
+<PageTitle>Azure AI Demo</PageTitle>
 
-Welcome to Demo Azure AI.
-
+<PageDescription Title="Azure AI Demo"
+                 Model=".NET technologies: Razor, Web API, Azure AI, OpenAI"
+                 Description="Description: This demonstration showcases how Razor applications and Web APIs can be enhanced with AI-powered capabilities, including document understanding, semantic analysis, and conversational question answering.">
+</PageDescription>
 
 @code {
 

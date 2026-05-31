@@ -11,12 +11,16 @@
 @inject FoundryApiClient apiClient
 @inject IStepTracer StepTracer
 
+<PageTitle>Language processing</PageTitle>
+
+<PageDescription Title="Language processing"
+                 Model="AI Model:OpenAI gpt-4.1-mini"
+                 Description="Description: A language and semantic processing system capable of generating text using knowledge and patterns learned from large-scale textual data.">
+</PageDescription>
+
 <div class="mt-3">
 
-    <PageDescription Title="Language processing"
-                     Model="Model:OpenAI gpt-4.1-mini"
-                     Description="Description: A language and semantic processing system capable of generating text using knowledge and patterns learned from large-scale textual data.">
-    </PageDescription>
+
 
     <!-- ask button -->
     <form @onsubmit="SendQuestion">
