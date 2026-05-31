@@ -5,7 +5,7 @@ namespace DemoAzAI.Application.AI
 {
     public class SemanticSearchService : ISemanticSearchService
     {
-        public List<SemanticSearchResult> Search(IEmbeddingStoreService embeddingStore, EmbeddedChunk? embeddedQuestion)
+        public List<SemanticSearchResult> GetSemanticalySimilarEmbeddings(IEmbeddingStoreService embeddingStore, EmbeddedChunk? embeddedQuestion)
         {
             var results = new List<SemanticSearchResult>();
 

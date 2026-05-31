@@ -1,6 +1,4 @@
-﻿using Azure.AI.Projects;
-using DemoAzAI.AI;
-using DemoAzAI.Application.AI;
+﻿using DemoAzAI.Application.AI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain;
@@ -23,41 +21,39 @@ namespace DemoAzAI.Api.Services
     {
         public int EmbeddingStoreCount { get; } = embeddingStoreService.Count;
 
-        public async Task<List<SemanticSearchResult>?> SearchEmbedding(string? question)
+        public async Task<List<SemanticSearchResult>> SearchEmbeddingStoreForSimilarTextLinesAsync(string? question)
         {
-            logger.LogInformation($"Starting embedding search for question: {question}");
+            var embeddedQuestion = await EmbeddTextAsync(question ?? string.Empty);
 
-            if (question == null) 
-                throw new ArgumentNullException(nameof(question));
+            var result = semanticSearchService.GetSemanticalySimilarEmbeddings(embeddingStoreService, embeddedQuestion);
 
-            // Embed the question first
-            var request = new EmbeddingRequestDto
-            {
-                AddEmbeddingsToStore = false,
-                Chunks = new List<string> { question }
-            };
-
-            var response = await EmbeddTextAsync(request);
-
-            //// Retrieve the embedding vector for the question
-            //var embeddedQuestion = response.TextEmbeddings.First();
-
-            //if (embeddedQuestion is null)  return null;
-
-            // Search the stored embeddings for relevant chunks
-            return new List<SemanticSearchResult>();  //semanticSearchService.Search(embeddingStoreService, embeddedQuestion);
-
-
+            return result;
         }
 
-        public async Task<EmbeddingResponseDto> EmbeddTextAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
-        {
-            logger.LogInformation("Starting embedding generation for {Count} text lines.", request.Chunks.Count);
 
-            var chunkArray = request.Chunks.ToArray();
+        private async Task<EmbeddedChunk> EmbeddTextAsync(string text, CancellationToken cancellationToken = default)
+        {
+            logger.LogInformation("Starting embedding generation for text: {text}", text);
+
+            ClientResult<OpenAIEmbedding> result = await embeddingClient
+                .GenerateEmbeddingAsync(text, cancellationToken: cancellationToken);
+
+            return new EmbeddedChunk
+            (
+                Guid.NewGuid(),
+                text,
+                result.Value.ToFloats().ToArray()
+            );
+        }
+
+        public async Task<EmbeddingResponseDto> EmbeddTextLinesAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
+        {
+            var textLines = request.TextLines.ToArray();
+
+            logger.LogInformation("Starting embedding generation for {Count} text lines.", textLines.Length);
 
             ClientResult<OpenAIEmbeddingCollection> result = await embeddingClient
-                .GenerateEmbeddingsAsync(chunkArray, cancellationToken: cancellationToken);
+                .GenerateEmbeddingsAsync(textLines, cancellationToken: cancellationToken);
 
             EmbeddingResponseDto response = new();
 
@@ -65,12 +61,15 @@ namespace DemoAzAI.Api.Services
             {
                 EmbeddedChunk embeddedChunk = new EmbeddedChunk(
                     Guid.NewGuid(),
-                    chunkArray[embedding.Index],
+                    textLines[embedding.Index],
                     embedding.ToFloats().ToArray()
                 );
 
                 response.TextEmbeddings.Add(embeddedChunk);
             }
+
+            if (request.AddEmbeddingsToStore)
+                AddNewEmbeddingsToStore(response.TextEmbeddings);
 
             return response;
 
@@ -83,40 +82,13 @@ namespace DemoAzAI.Api.Services
             {
                 var storedEmbedding = new EmbeddedChunk(
                     Guid.NewGuid(),
-                    request.Chunks[embedding.Index],
+                    request.TextLines[embedding.Index],
                     embedding.ToFloats().ToArray()
                 );
                 storedEmbeddings.Add(storedEmbedding);
             }
             AddNewEmbeddingsToStore(storedEmbeddings);
         }
-
-        //public async Task<EmbeddingResponseDto> EmbeddTextAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
-        //{
-        //    logger.LogInformation("Starting embedding generation for {Count} text lines.", request.Chunks.Count);
-
-        //    OpenAIEmbeddingCollection result = await embeddingClient.GenerateEmbeddingsAsync(request.Chunks.ToArray(), cancellationToken: cancellationToken);
-
-        //    var storedEmbeddings = new List<EmbeddedChunk>();
-
-        //    foreach (var embedding in result)
-        //    {
-        //        var storedEmbedding = new EmbeddedChunk(
-        //            Guid.NewGuid(),
-        //            request.Chunks[embedding.Index],
-        //            embedding.ToFloats().ToArray()
-        //        );
-
-        //        storedEmbeddings.Add(storedEmbedding);
-
-        //    }
-
-        //    if (request.AddEmbeddingsToStore)
-        //        AddNewEmbeddingsToStore(storedEmbeddings);
-
-        //    return new EmbeddingResponseDto(storedEmbeddings);
-
-        //}
 
         private void AddNewEmbeddingsToStore(IEnumerable<EmbeddedChunk> newEmbeddings)
         {
@@ -130,6 +102,8 @@ namespace DemoAzAI.Api.Services
                 embeddingStoreService.AddEmbedding(embedding);
             }
         }
+
+
     }
 }
 

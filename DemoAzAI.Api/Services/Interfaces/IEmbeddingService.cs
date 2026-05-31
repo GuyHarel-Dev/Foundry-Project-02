@@ -8,8 +8,7 @@ namespace WebApi.Services.Interfaces
     public interface IEmbeddingService
     {
         int EmbeddingStoreCount { get; }
-
-        Task<List<SemanticSearchResult>?> SearchEmbedding(string? question);
-        Task<EmbeddingResponseDto> EmbeddTextAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default);
+        Task<List<SemanticSearchResult>> SearchEmbeddingStoreForSimilarTextLinesAsync(string? question);
+        Task<EmbeddingResponseDto> EmbeddTextLinesAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default);
     }
 }

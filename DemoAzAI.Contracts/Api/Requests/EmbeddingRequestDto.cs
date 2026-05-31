@@ -9,7 +9,7 @@ namespace DemoAzAI.Contracts.Api.Requests
     public class EmbeddingRequestDto
     {
         public bool AddEmbeddingsToStore { get; set; } = false;
-        public List<string> Chunks { get; set; } = [];
+        public List<string> TextLines { get; set; } = [];
 
     }
 }

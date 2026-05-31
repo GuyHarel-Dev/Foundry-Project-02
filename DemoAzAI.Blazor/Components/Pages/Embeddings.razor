@@ -77,7 +77,7 @@
         var request = new EmbeddingRequestDto
         {
             AddEmbeddingsToStore = false,
-            Chunks = semanticQuestion
+            TextLines = semanticQuestion
                 .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList()
         };
@@ -109,7 +109,7 @@
             var request = new EmbeddingRequestDto
             {
                 AddEmbeddingsToStore = true,
-                Chunks = lines
+                TextLines = lines
             };
 
             var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed/chunks", request);

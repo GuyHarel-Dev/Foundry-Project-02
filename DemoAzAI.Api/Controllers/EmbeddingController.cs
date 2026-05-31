@@ -1,6 +1,7 @@
 ﻿using DemoAzAI.Application.AI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
+using DemoAzAI.Domain;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Services.Interfaces;
 
@@ -14,14 +15,14 @@ namespace DemoAzAI.Api.Controllers
         : ControllerBase
     {
 
-        [HttpPost("embed/chunks")]
-        public async Task<ActionResult<string>> EmbedChunks([FromBody] EmbeddingRequestDto request)
+        [HttpPost("embed/textlines")]
+        public async Task<ActionResult<string>> EmbedTextLines([FromBody] EmbeddingRequestDto request)
         {
-            if (request.Chunks == null || !request.Chunks.Any() || request.Chunks.Any(string.IsNullOrWhiteSpace))
+            if (request.TextLines == null || !request.TextLines.Any() || request.TextLines.Any(string.IsNullOrWhiteSpace))
             {
-                return BadRequest("Chunks cannot be null or empty.");
+                return BadRequest("TextLines cannot be null or empty.");
             }
-            var response = await embeddingService.EmbeddTextAsync(request);
+            var response = await embeddingService.EmbeddTextLinesAsync(request);
 
             if (response == null || response.TextEmbeddings.Any() == false)
                 throw new InvalidOperationException(
@@ -33,7 +34,7 @@ namespace DemoAzAI.Api.Controllers
         }
 
         [HttpGet("search/store")]
-        public async Task<ActionResult> SearchEmbeddings([FromQuery] string? question)
+        public async Task<ActionResult<List<SemanticSearchResult>>> SearchEmbeddingStoreForSimilarTextLinesAsync([FromQuery] string? question)
         {
             if (string.IsNullOrEmpty(question))
             {
@@ -44,10 +45,9 @@ namespace DemoAzAI.Api.Controllers
                 return BadRequest("No embeddings stored yet. Please embed some text before searching.");
             };
 
-            await embeddingService.SearchEmbedding(question);
+            var result = await embeddingService.SearchEmbeddingStoreForSimilarTextLinesAsync(question);
 
-            // Implement search logic here, e.g., using the stored embeddings to find relevant chunks based on the query.
-            return Ok("Search functionality not implemented yet.");
+            return Ok(result);
         }
     }
 }
