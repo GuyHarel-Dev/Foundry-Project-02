@@ -1,0 +1,16 @@
+﻿<label>@Title: </label>
+<div class="description_area">
+    <p>
+        @Model <br />
+        @Description
+    </p>
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Title";
+    [Parameter]
+    public string Model { get; set; } = "Model";
+    [Parameter]
+    public string Description { get; set; } = "Description";
+}

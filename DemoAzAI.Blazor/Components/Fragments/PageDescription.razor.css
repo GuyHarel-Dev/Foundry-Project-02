@@ -1,0 +1,8 @@
+﻿.description_area {
+    background-color: #2d2d30;
+}
+
+    .description_area p {
+        padding: 10px;
+        font-size: 14px;
+    }

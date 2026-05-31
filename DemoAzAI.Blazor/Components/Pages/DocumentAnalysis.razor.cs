@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages;
 
-public partial class DocumentSearch
+public partial class DocumentAnalysis
 {
     [Inject]
     private IWebHostEnvironment Env { get; set; } = default!;
