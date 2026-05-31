@@ -1,4 +1,4 @@
-﻿@page "/embeddings"
+﻿@page "/semantic-analysis"
 @inherits BasePage
 @rendermode InteractiveServer
 
@@ -10,7 +10,12 @@
 
 @inject FoundryApiClient apiClient
 @inject IStepTracer StepTracer
-@inject ILogger<Embeddings> Logger
+@inject ILogger<SemanticAnalysis> Logger
+
+<PageDescription Title="Semantic Analysis"
+                 Model="Model: OpenAI text-embedding-3-small"
+                 Description="Description: Generates semantic representations used for knowledge retrieval, similarity matching, and intelligent search.">
+</PageDescription>
 
 <label for="TextToEmbed">Text to embed:</label>
 <textarea @bind="textToEmbed"></textarea>
