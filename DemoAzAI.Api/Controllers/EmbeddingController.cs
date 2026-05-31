@@ -1,7 +1,6 @@
 ﻿using DemoAzAI.Application.AI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Services.Interfaces;
 
@@ -16,7 +15,7 @@ namespace DemoAzAI.Api.Controllers
     {
 
         [HttpPost("embed/chunks")]
-        public async Task<ActionResult<EmbeddingResponseDto>> EmbedChunks([FromBody] EmbeddingRequestDto request)
+        public async Task<ActionResult<string>> EmbedChunks([FromBody] EmbeddingRequestDto request)
         {
             if (request.Chunks == null || !request.Chunks.Any() || request.Chunks.Any(string.IsNullOrWhiteSpace))
             {
@@ -24,13 +23,13 @@ namespace DemoAzAI.Api.Controllers
             }
             var response = await embeddingService.EmbeddTextAsync(request);
 
-            if (response == null || response.Any() == false)
+            if (response == null || response.TextEmbeddings.Any() == false)
                 throw new InvalidOperationException(
                     "The embedding provider returned no embeddings.");
 
-            var test = new EmbeddingResponseDto();
+            var summary = response.GetSummary();
 
-            return Ok(test);
+            return Ok(summary);
         }
 
         [HttpGet("search/store")]

@@ -6,6 +6,7 @@ using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain;
 using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using OpenAI.Embeddings;
+using System.ClientModel;
 using WebApi.Services.Interfaces;
 
 #pragma warning disable OPENAI001 // pour using OpenAI.Responses;
@@ -49,13 +50,29 @@ namespace DemoAzAI.Api.Services
 
         }
 
-        public async Task<OpenAIEmbeddingCollection> EmbeddTextAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<EmbeddingResponseDto> EmbeddTextAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
         {
             logger.LogInformation("Starting embedding generation for {Count} text lines.", request.Chunks.Count);
 
-            OpenAIEmbeddingCollection result = await embeddingClient.GenerateEmbeddingsAsync(request.Chunks.ToArray(), cancellationToken: cancellationToken);
+            var chunkArray = request.Chunks.ToArray();
 
-            return result;
+            ClientResult<OpenAIEmbeddingCollection> result = await embeddingClient
+                .GenerateEmbeddingsAsync(chunkArray, cancellationToken: cancellationToken);
+
+            EmbeddingResponseDto response = new();
+
+            foreach (OpenAIEmbedding embedding in result.Value)
+            {
+                EmbeddedChunk embeddedChunk = new EmbeddedChunk(
+                    Guid.NewGuid(),
+                    chunkArray[embedding.Index],
+                    embedding.ToFloats().ToArray()
+                );
+
+                response.TextEmbeddings.Add(embeddedChunk);
+            }
+
+            return response;
 
         }
 

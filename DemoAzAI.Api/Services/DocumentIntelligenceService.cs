@@ -21,7 +21,7 @@ namespace DemoAzAI.Api.Services
 
             var options = CreateDocumentOptions(request);
 
-            var operation =
+            Operation<AnalyzeResult> operation =
                 await client.AnalyzeDocumentAsync(
                     WaitUntil.Completed,
                     options,

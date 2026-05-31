@@ -10,6 +10,6 @@ namespace WebApi.Services.Interfaces
         int EmbeddingStoreCount { get; }
 
         Task<List<SemanticSearchResult>?> SearchEmbedding(string? question);
-        Task<OpenAIEmbeddingCollection> EmbeddTextAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default);
+        Task<EmbeddingResponseDto> EmbeddTextAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default);
     }
 }
