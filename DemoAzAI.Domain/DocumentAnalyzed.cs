@@ -14,7 +14,5 @@ namespace DemoAzAI.Domain
 
         public List<DocumentAnalyzedFields> DocumentFields { get; set; } = new();
 
-
-
     }
 }

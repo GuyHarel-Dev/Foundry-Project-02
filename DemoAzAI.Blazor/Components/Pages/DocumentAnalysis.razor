@@ -17,15 +17,15 @@
 <div class="pdf-model-selection-area">
     <div class="pdf-selection-area">
         <p>Select a PDF document to analyse:</p>
-        <button @onclick='() => StateContainer.PdfUrl = "/Pdf/fake-occular-center.pdf"'>
+        <button @onclick='() => pdfUrl = "/Pdf/fake-occular-center.pdf"'>
             fake-occular-center
         </button>
 
-        <button @onclick='() => StateContainer.PdfUrl = "/Pdf/fake-lamp-receit.pdf"'>
+        <button @onclick='() => pdfUrl = "/Pdf/fake-lamp-receit.pdf"'>
             fake-lamp-receit
         </button>
 
-        <button @onclick='() => StateContainer.PdfUrl = "/Pdf/fake-kayak-certificate.pdf"'>
+        <button @onclick='() => pdfUrl = "/Pdf/fake-kayak-certificate.pdf"'>
             fake-kayak-certificate
         </button>
 
@@ -79,18 +79,19 @@
 <div class="doc_view_result_area">
 
     <div class="doc_view_area">
-        <iframe src="@($"{StateContainer.PdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
+        @* <iframe src="@($"{StateContainer.PdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe> *@
+        <iframe src="@($"{pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
     </div>
 
     <div class="doc_result_area">
 
-            <label for="docContent">Document content:</label>
-            <textarea readonly value="@StateContainer.DocContent"></textarea>
-            <label for="docFields">Document fields:</label>
-            <textarea readonly value="@StateContainer.DocFields"></textarea>
+            <label for="docContent">Document text:</label>
+            <textarea readonly value="@documentText"></textarea>
+            <label for="docFields">Document content:</label>
+            <textarea readonly value="@documentContent"></textarea>
 
-        <ExecutionStepsPanel executionSteps="@StateContainer.ExecutionSteps"></ExecutionStepsPanel>
-        <StatisticsPanel Statistics="@StateContainer.Statistics"></StatisticsPanel>
+        <ExecutionStepsPanel executionSteps="@executionLog"></ExecutionStepsPanel>
+        <StatisticsPanel Statistics="@statistics"></StatisticsPanel>
 
     </div>
 </div>
@@ -99,5 +100,18 @@
 
 @code {
 
+    private string ReadModel = "prebuilt-read";
+    private string LayoutModel = "prebuilt-layout";
+    private string InvoiceModel = "prebuilt-invoice";
+    private string ReceiptModel = "prebuilt-receipt";
 
+    private string SelectedModel = "prebuilt-read";
+
+    private string pdfUrl = "Pdf/empty-pdf.pdf";
+
+    private string executionLog = string.Empty;
+    private string statistics = string.Empty;
+
+    private string documentText = string.Empty;
+    private string documentContent = string.Empty;
 }

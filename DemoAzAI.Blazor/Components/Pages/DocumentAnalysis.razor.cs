@@ -4,6 +4,7 @@ using DemoAzAI.Blazor.Services.UI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using Microsoft.AspNetCore.Components;
+using System.Text;
 
 namespace DemoAzAI.Blazor.Components.Pages;
 
@@ -18,25 +19,17 @@ public partial class DocumentAnalysis
     [Inject]
     private IStepTracer StepTracer { get; set; } = default!;
 
-    [Inject] 
-    private DocumentSearchStateContainer StateContainer { get; set; } = default!;
+    //[Inject] 
+    //private DocumentSearchStateContainer StateContainer { get; set; } = default!;
 
     private bool isBusy;
 
-    private string ReadModel = "prebuilt-read";
-    private string LayoutModel = "prebuilt-layout";
-    private string InvoiceModel = "prebuilt-invoice";
-    private string ReceiptModel = "prebuilt-receipt";
 
-    private string SelectedModel = "prebuilt-read";
-
-    private string executionLog = string.Empty;
-    private string statistics = string.Empty;
 
     private void OnModelRadioChange(ChangeEventArgs e)
     {
         SelectedModel = e.Value?.ToString() ?? "prebuilt-read";
-        StateContainer.AiModel = SelectedModel;
+        //StateContainer.AiModel = SelectedModel;
     }
 
     protected string StatusMessage = "Ready";
@@ -47,18 +40,19 @@ public partial class DocumentAnalysis
         {
             isBusy = true;
 
-            StateContainer.Statistics = string.Empty;
-            StateContainer.ExecutionSteps = string.Empty;
+            //StateContainer.Statistics = string.Empty;
+            //StateContainer.ExecutionSteps = string.Empty;
 
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}", clearSteps: true);
+            //executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}", clearSteps: true);
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {pdfUrl} with model: {SelectedModel}", clearSteps: true);
 
             await RefreshUI();
 
             var request = new DocumentAnalysisRequestDto()
             {
                 ModelName = SelectedModel,
-                FileName = Path.GetFileName(StateContainer.PdfUrl),
-                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, StateContainer.PdfUrl.TrimStart('/')))
+                FileName = Path.GetFileName(pdfUrl), // Path.GetFileName(StateContainer.PdfUrl),
+                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, pdfUrl.TrimStart('/')))
 
             };
 
@@ -70,21 +64,15 @@ public partial class DocumentAnalysis
                 throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
             }
 
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {StateContainer.PdfUrl} with model: {SelectedModel}");
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {pdfUrl} with model: {SelectedModel}");
 
             var responseDto = result.Value;
 
-            if (responseDto == null)
-            {
-                StateContainer.ExecutionSteps = "API returned no data.";
-                return;
-            }
+            DisplayDocument(responseDto);
 
-            ExtractDocumentsContent(responseDto);
-
-            StateContainer.ExecutionSteps = StepTracer.GetSteps();
-            StateContainer.Statistics = ExtractStatistics(result.Value);
-            statistics = StateContainer.Statistics;
+            executionLog = StepTracer.GetSteps();// StateContainer.ExecutionSteps = StepTracer.GetSteps();
+            statistics = ExtractStatistics(responseDto);  //StateContainer.Statistics = ExtractStatistics(result.Value);
+            //statistics = StateContainer.Statistics;
 
         }
         catch (Exception ex)
@@ -98,35 +86,51 @@ public partial class DocumentAnalysis
 
     }
 
-    private void ExtractDocumentsContent(DocumentAnalysisResponseDto? response)
+    private void DisplayDocument(DocumentAnalysisResponseDto? response)
     {
-        if (response == null)
+        if (response == null || response.DocumentAnalysisResult == null)
         {
-            StateContainer.DocContent = "No response documents or fields to extract.";
+            documentText = "Document analysis returned no data.";// StateContainer.DocContent = "Document analysis returned no data.";
             return;
         }
 
-        StateContainer.DocContent = response.DocumentAnalysisResult?.DocContent ?? "No document content extracted.";
+        var result = response.DocumentAnalysisResult;
 
+        documentText = result.DocContent;  //StateContainer.DocContent = result.DocContent;
 
-        var contentBuilder = new System.Text.StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        //foreach (var doc in response.Documents)
+        sb.AppendLine($"Document Format: {result.DocFormat}");
+        sb.AppendLine($"Pages: {result.PageCount}");
+        sb.AppendLine($"Paragraphs: {result.ParagraphCount}");
+        sb.AppendLine($"Sections: {result.SectionCount}");
+        sb.AppendLine($"Tables: {result.TableCount}");
+        sb.AppendLine($"Figures: {result.FigureCount}");
+        sb.AppendLine($"Languages: {result.LanguagesCount}");
+        sb.AppendLine("");
+
+        sb.AppendLine("Documents:");
+        foreach (var doc in result.Documents)
+        {
+            sb.AppendLine($"  Document type: {doc.DocumentType}");
+            sb.AppendLine($"  Document type confidence: {doc.DocumentTypeConfidence}");
+
+            sb.AppendLine("    Document Fields:");
+            foreach (var fields in doc.DocumentFields)
+            {
+                sb.AppendLine($"      Field name: {fields.Name}");
+                sb.AppendLine($"      Field value: {fields.Value}");
+                sb.AppendLine($"      Field type: {fields.FieldType}");
+                sb.AppendLine($"      Field type confidence: {fields.FieldTypeConfidence}");
+            }
+        }
+
+        documentContent = sb.ToString();
+
+        //documentContent = System.Text.Json.JsonSerializer.Serialize(result, new System.Text.Json.JsonSerializerOptions()
         //{
-        //    contentBuilder.AppendLine($"Document Type: {doc.DocumentType}");
-
-        //    foreach (var field in doc.Fields)
-        //    {
-        //        contentBuilder.AppendLine();
-        //        contentBuilder.AppendLine($"  Field Name: {field.Name}");
-        //        contentBuilder.AppendLine($"  Field Value: {field.Value}");
-        //        contentBuilder.AppendLine($"  Field Confidence: {field.Confidence}");
-        //        contentBuilder.AppendLine($"  Field FieldType: {field.FieldType}");
-        //    }
-        //}
-
-        StateContainer.DocFields = contentBuilder.ToString();
-
+        //    WriteIndented = true
+        //});
     }
 
     private string ExtractStatistics(DocumentAnalysisResponseDto? response)
