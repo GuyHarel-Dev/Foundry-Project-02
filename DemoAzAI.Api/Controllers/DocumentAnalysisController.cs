@@ -18,7 +18,7 @@ namespace DemoAzAI.Api.Controllers
 
         [HttpPost("analyse")]
         public async Task<ActionResult<DocumentAnalysisResponseDto>> AnalyzeDocument(
-            [FromBody] DocumenteAnalysisRequestDto request)
+            [FromBody] DocumentAnalysisRequestDto request)
         {
 
             var response = await _documentIntelligence.AnalyzeDocument(request);

@@ -15,9 +15,11 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Stores
             throw new NotImplementedException();
         }
 
+
         public Task SaveAsync(string hash, DocumentAnalysisResult result)
         {
             throw new NotImplementedException();
         }
+
     }
 }

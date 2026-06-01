@@ -54,7 +54,7 @@ public partial class DocumentAnalysis
 
             await RefreshUI();
 
-            var request = new DocumenteAnalysisRequestDto()
+            var request = new DocumentAnalysisRequestDto()
             {
                 ModelName = SelectedModel,
                 FileName = Path.GetFileName(StateContainer.PdfUrl),
@@ -62,7 +62,7 @@ public partial class DocumentAnalysis
 
             };
 
-            var result = await apiClient.PostAsync<DocumenteAnalysisRequestDto,
+            var result = await apiClient.PostAsync<DocumentAnalysisRequestDto,
                 DocumentAnalysisResponseDto>("api/document/analyse", request);
 
             if (!result.IsSuccess)
@@ -106,32 +106,24 @@ public partial class DocumentAnalysis
             return;
         }
 
-        StateContainer.DocContent = response.DocContent ?? "No document content extracted.";
-
-        // Fields extraction
-
-        if (response.Documents is null)
-        {
-            StateContainer.DocFields = "No documents fields found in the response.";
-            return;
-        }
+        StateContainer.DocContent = response.DocumentAnalysisResult?.DocContent ?? "No document content extracted.";
 
 
         var contentBuilder = new System.Text.StringBuilder();
 
-        foreach (var doc in response.Documents)
-        {
-            contentBuilder.AppendLine($"Document Type: {doc.DocumentType}");
+        //foreach (var doc in response.Documents)
+        //{
+        //    contentBuilder.AppendLine($"Document Type: {doc.DocumentType}");
 
-            foreach (var field in doc.Fields)
-            {
-                contentBuilder.AppendLine();
-                contentBuilder.AppendLine($"  Field Name: {field.Name}");
-                contentBuilder.AppendLine($"  Field Value: {field.Value}");
-                contentBuilder.AppendLine($"  Field Confidence: {field.Confidence}");
-                contentBuilder.AppendLine($"  Field FieldType: {field.FieldType}");
-            }
-        }
+        //    foreach (var field in doc.Fields)
+        //    {
+        //        contentBuilder.AppendLine();
+        //        contentBuilder.AppendLine($"  Field Name: {field.Name}");
+        //        contentBuilder.AppendLine($"  Field Value: {field.Value}");
+        //        contentBuilder.AppendLine($"  Field Confidence: {field.Confidence}");
+        //        contentBuilder.AppendLine($"  Field FieldType: {field.FieldType}");
+        //    }
+        //}
 
         StateContainer.DocFields = contentBuilder.ToString();
 
@@ -144,17 +136,17 @@ public partial class DocumentAnalysis
 
         string str = "";
 
-        str += $"PageCount: {response.PageCount}\n";
-        str += $"ParagraphCount: {response.ParagraphCount}\n";
-        str += $"TableCount: {response.TableCount}\n";
-        str += $"FigureCount: {response.FigureCount}\n";
-        str += $"SectionCount: {response.SectionCount}\n";
-        str += $"LanguagesCount: {response.LanguagesCount}\n";
-        str += $"LanguagesCount: {response.LanguagesCount}\n";
+        //str += $"PageCount: {response.PageCount}\n";
+        //str += $"ParagraphCount: {response.ParagraphCount}\n";
+        //str += $"TableCount: {response.TableCount}\n";
+        //str += $"FigureCount: {response.FigureCount}\n";
+        //str += $"SectionCount: {response.SectionCount}\n";
+        //str += $"LanguagesCount: {response.LanguagesCount}\n";
+        //str += $"LanguagesCount: {response.LanguagesCount}\n";
 
-        // Derived statistics
-        str += $"CharacterCount : {response.DocContent.Length}\n";
-        str += $"WordCount : {response.DocContent.Split(' ').Length}\n";
+        //// Derived statistics
+        //str += $"CharacterCount : {response.DocContent.Length}\n";
+        //str += $"WordCount : {response.DocContent.Split(' ').Length}\n";
 
         return str;
 

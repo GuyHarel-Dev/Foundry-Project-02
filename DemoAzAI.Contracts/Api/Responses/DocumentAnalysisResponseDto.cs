@@ -1,26 +1,12 @@
-﻿using Azure.AI.DocumentIntelligence;
-using DemoAzAI.Domain;
+﻿using DemoAzAI.Domain;
+
 
 namespace DemoAzAI.Contracts.Api.Responses
 {
     public class DocumentAnalysisResponseDto
     {
-        public string DocumentHash { get; set; } = string.Empty;
+        public DocumentAnalysisResult? DocumentAnalysisResult { get; set; }
 
-        public string DocContent { get; set; } = string.Empty;
-
-        public DocumentContentFormat? DocFormat { get; set; }
-
-        public int PageCount { get; set; }
-
-        public int ParagraphCount { get; set; }
-
-        public int TableCount { get; set; }
-
-        public int FigureCount { get; set; }
-        public int SectionCount { get; set; }
-        public int LanguagesCount { get; set; }
-
-        public List<DocumentAnalysisResult> Documents { get; set; } = [];
+ 
     }
 }

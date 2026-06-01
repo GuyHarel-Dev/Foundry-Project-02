@@ -1,6 +1,6 @@
 ﻿namespace DemoAzAI.Contracts.Api.Requests
 {
-    public class DocumenteAnalysisRequestDto
+    public class DocumentAnalysisRequestDto
     {
         public bool AddDocumentToStore { get; set; } = false;
 

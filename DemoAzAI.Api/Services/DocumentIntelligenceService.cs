@@ -1,7 +1,7 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
+using DemoAzAI.Abstractions;
 using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Application.Extensions;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain;
@@ -11,15 +11,16 @@ namespace DemoAzAI.Api.Services
 {
     public class DocumentIntelligenceService(
             DocumentIntelligenceClient client,
+            IDocumentAnalysisStoreService documentAnalysisStoreService,
             ILogger<DocumentIntelligenceService> logger) 
         : IDocumentIntelligenceService
     {
 
-        public async Task<DocumentAnalysisResponseDto> AnalyzeDocument(DocumenteAnalysisRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<DocumentAnalysisResponseDto> AnalyzeDocument(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)
         {
             logger.LogInformationWithUtc("Sending document to Azure AI Foundry");
 
-            var options = CreateDocumentOptions(request);
+            var options = CreateDocumentAnalysisOptions(request);
 
             Operation<AnalyzeResult> operation =
                 await client.AnalyzeDocumentAsync(
@@ -27,30 +28,22 @@ namespace DemoAzAI.Api.Services
                     options,
                     cancellationToken);
 
-            DocumentAnalysisResponseDto response = new();
+            var docAnalysisResult = Map(operation.Value);
 
-            ExtractBaseInformation(operation.Value, response);
-            ExtractDocumentsFields(operation.Value, response);
-
-            if (request.AddDocumentToStore)
-                AddDocumentToStore(request, response);
+            //if (request.AddDocumentToStore)
+            //    AddDocumentToStore(request, response);
 
             logger.LogInformationWithUtc("Returning response");
 
-            return response;
+            return new DocumentAnalysisResponseDto { DocumentAnalysisResult = docAnalysisResult };
         }
 
-        private string AddDocumentToStore(DocumenteAnalysisRequestDto request, DocumentAnalysisResponseDto response)
-        {
-            var hash = request.Bytes.ComputeHash();
-            // store document
+        //private string AddDocumentToStore(DocumenteAnalysisResult result)
+        //{
+        //    return "abc"; // documentAnalysisStoreService.SaveAsync(request.Bytes, doc);
+        //}
 
-            response.DocumentHash = hash;
-
-            return hash;
-        }
-
-        private AnalyzeDocumentOptions CreateDocumentOptions(DocumenteAnalysisRequestDto doc)
+        private AnalyzeDocumentOptions CreateDocumentAnalysisOptions(DocumentAnalysisRequestDto doc)
         {
             var modelName = doc.ModelName;
             var stream = new MemoryStream(doc.Bytes);
@@ -61,46 +54,50 @@ namespace DemoAzAI.Api.Services
                 bytes);
         }
 
-        private void ExtractBaseInformation(AnalyzeResult result, DocumentAnalysisResponseDto response)
+        private DocumentAnalysisResult Map(AnalyzeResult azureAnalysisResult)
         {
-            response.DocContent = result.Content;
-            response.DocFormat = result.ContentFormat;
-            response.PageCount = result.Pages.Count;
-            response.ParagraphCount = result.Paragraphs?.Count ?? 0;
-            response.SectionCount = result.Sections?.Count ?? 0;
-            response.TableCount = result.Tables?.Count ?? 0;
-            response.FigureCount = result.Figures?.Count ?? 0;
-            response.LanguagesCount = result.Languages?.Count ?? 0;
-        }
+            DocumentAnalysisResult result = new();
 
-        private static void ExtractDocumentsFields(AnalyzeResult result, DocumentAnalysisResponseDto response)
-        {
-            if (result.Documents != null)
+            result.DocContent = azureAnalysisResult.Content;
+            result.DocFormat = azureAnalysisResult.ContentFormat.ToString() ?? "unknown";
+
+            result.PageCount = azureAnalysisResult.Pages.Count;
+            result.ParagraphCount = azureAnalysisResult.Paragraphs?.Count ?? 0;
+            result.SectionCount = azureAnalysisResult.Sections?.Count ?? 0;
+            result.TableCount = azureAnalysisResult.Tables?.Count ?? 0;
+            result.FigureCount = azureAnalysisResult.Figures?.Count ?? 0;
+            result.LanguagesCount = azureAnalysisResult.Languages?.Count ?? 0;
+
+
+            if (azureAnalysisResult.Documents != null)
             {
-                foreach (var document in result.Documents)
+                foreach(var document in azureAnalysisResult.Documents)
                 {
-                    var docDto = new DocumentAnalysisResult
-					{
+                    DocumentAnalyzed doc = new()
+                    {
                         DocumentType = document.DocumentType,
-                        Confidence = document.Confidence
+                        DocumentTypeConfidence = document.Confidence
+
                     };
 
-                    foreach (var field in document.Fields)
+                    foreach (var fields in document.Fields)
                     {
-                        docDto.Fields.Add(new DocumentAnalysisResultField
-                        (
-                            field.Key,
-                            field.Value.Content,
-							 field.Value.FieldType.ToString(),
-							field.Value.Confidence ?? 0
-                        ));
+                        doc.DocumentFields.Add(new DocumentAnalyzedFields
+                        {
+                            Name = fields.Key,
+                            Value = fields.Value.Content,
+                            FieldType = fields.Value.FieldType.ToString(),
+                            FieldTypeConfidence = fields.Value.Confidence
+                           
+                        });
+                    }
 
-					}
-
-                    response.Documents.Add(docDto);
+                    result.Documents.Add(doc);
                 }
 
             }
+            return result;
         }
+
     }
 }
