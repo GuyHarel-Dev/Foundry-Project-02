@@ -1,5 +1,6 @@
 using DemoAzAI.Api.Extensions;
 using DemoAzAI.Api.MiddleWares;
+using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,16 +14,11 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerDocumentation();
 
 // Azure clients
-builder.Services.AddAzureOpenAiProjectResponsesClient(builder.Configuration);
-builder.Services.AddAzureDocIntelligenceClient();
-builder.Services.AddAzureOpenAiEmbeddingClient(builder.Configuration);
+builder.Services.AddAzureAiServices(builder.Configuration);
 
-// Azure services
-builder.Services.AddDocIntelligenceService();
-builder.Services.AddAzureChatFoundryService();
-builder.Services.AddEmbeddingService();
-builder.Services.AddEmbeddingStoreService();
-builder.Services.AddSemanticSearchService();
+// Api services
+builder.Services.AddApplicationServices();
+
 
 var app = builder.Build();
 

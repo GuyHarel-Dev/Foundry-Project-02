@@ -8,18 +8,10 @@ namespace DemoAzAI.Api.Controllers
 {
     [Route("api/chat")]
     [ApiController]
-    public class ChatController : ControllerBase
+    public class ChatController(
+        IChatService azFoundryChatService
+        ) : ControllerBase
     {
-        private readonly IConfiguration _config; 
-        private readonly IChatService _azFoundryChatService;
-
-        public ChatController(
-                IConfiguration config, 
-                IChatService azFoundryService)
-        {
-            _config = config;
-            _azFoundryChatService = azFoundryService;
-        }
 
         [HttpPost("sendprompt")]
         public async Task<ActionResult<ChatResponseDto>> SendPrompt([FromBody] ChatRequestDto request)
@@ -28,7 +20,7 @@ namespace DemoAzAI.Api.Controllers
             {
                 return BadRequest("Prompt text cannot be empty.");
             }
-            var response = await _azFoundryChatService.GetPromptResponseAsync(request);
+            var response = await azFoundryChatService.GetPromptResponseAsync(request);
 
             return Ok(response);
         }

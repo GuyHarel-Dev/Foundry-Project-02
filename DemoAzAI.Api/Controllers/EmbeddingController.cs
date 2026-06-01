@@ -10,8 +10,8 @@ namespace DemoAzAI.Api.Controllers
     [Route("api/embedding")]
     [ApiController]
     public class EmbeddingController(
-                IEmbeddingService embeddingService,
-                ISemanticSearchService semanticSearchService) 
+                IEmbeddingService embeddingService
+                /*ISemanticSearchService semanticSearchService*/) 
         : ControllerBase
     {
 

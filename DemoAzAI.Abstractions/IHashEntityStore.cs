@@ -1,6 +1,6 @@
 ﻿namespace DemoAzAI.Abstractions
 {
-    public interface IDocumentAnalysisStoreService<TEntity>
+    public interface IHashEntityStore<TEntity>
     {
         Task<TEntity?> GetByHashAsync(string hash);
 
