@@ -1,11 +1,11 @@
 ﻿using Azure.AI.Extensions.OpenAI;
-using Azure.AI.Projects;
 using DemoAzAI.Api.Services.Interfaces;
+using DemoAzAI.Contracts.Api.Requests;
+using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain;
 using OpenAI.Responses;
 using System.ClientModel;
-using DemoAzAI.Contracts.Api.Requests;
-using DemoAzAI.Contracts.Api.Responses;
+using WebApi.Extensions;
 
 #pragma warning disable OPENAI001 // pour using OpenAI.Responses;
 
@@ -19,7 +19,7 @@ namespace DemoAzAI.Api.Services
     {
         public async Task<ChatResponseDto> GetPromptResponseAsync(ChatRequestDto request, CancellationToken cancellationToken = default)
         {
-            logger.LogInformation("Sending prompt to Azure AI Foundry");
+            logger.LogInformationWithUtc("Sending prompt to Azure AI Foundry");
 
             CreateResponseOptions options = CreateResponseOptions(request);
 
@@ -39,6 +39,7 @@ namespace DemoAzAI.Api.Services
                 response.ChatResponse.Length
             );
 
+            logger.LogInformationWithUtc("returning response");
 
             return response;
         }

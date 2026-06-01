@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 namespace DemoAzAI.Infrastructure.Persistence
 {
     public class SqliteDocumentAnalysisStore
-    : IHashEntityStore<DocumentAnalysisResult>
+    : IDocumentAnalysisStoreService
     {
         public SqliteDocumentAnalysisStore()
         {

@@ -1,6 +1,5 @@
 ﻿using DemoAzAI.Api.Services;
 using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Application.AI;
 using WebApi.Services.Interfaces;
 
 namespace WebApi.Extensions

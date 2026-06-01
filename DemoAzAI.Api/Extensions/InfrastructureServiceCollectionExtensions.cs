@@ -1,17 +1,14 @@
 ﻿using DemoAzAI.Abstractions;
-using DemoAzAI.Domain;
-using DemoAzAI.Infrastructure.Persistence;
+using DemoAzAI.Infrastructure.ExternalServices.Stores;
 
 namespace WebApi.Extensions
 {
     public static class InfrastructureServiceCollectionExtensions
     {
-        public static IServiceCollection AddPersistence(
+        public static IServiceCollection AddStoreServices(
             this IServiceCollection services)
         {
-            services.AddScoped<
-                IHashEntityStore<DocumentAnalysisResult>,
-                SqliteDocumentAnalysisStore>();
+            services.AddSingleton<IDocumentAnalysisStoreService, DocumentAnalysisStoreService>();
 
             return services;
         }
