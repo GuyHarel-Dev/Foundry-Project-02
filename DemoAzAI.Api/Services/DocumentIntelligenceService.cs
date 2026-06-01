@@ -1,9 +1,11 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
 using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Domain;
+using DemoAzAI.Application.Extensions;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
+using DemoAzAI.Domain;
+using WebApi.Extensions;
 
 namespace DemoAzAI.Api.Services
 {
@@ -15,9 +17,7 @@ namespace DemoAzAI.Api.Services
 
         public async Task<DocumentAnalysisResponseDto> AnalyzeDocument(DocumenteAnalysisRequestDto request, CancellationToken cancellationToken = default)
         {
-            logger.LogInformation("Sending document to Azure AI Foundry");
-
-            var response = new DocumentAnalysisResponseDto();
+            logger.LogInformationWithUtc("Sending document to Azure AI Foundry");
 
             var options = CreateDocumentOptions(request);
 
@@ -27,13 +27,27 @@ namespace DemoAzAI.Api.Services
                     options,
                     cancellationToken);
 
-            AnalyzeResult result = operation.Value;
+            DocumentAnalysisResponseDto response = new();
 
             ExtractBaseInformation(operation.Value, response);
-            ExtractDocumentsFields(result, response);
+            ExtractDocumentsFields(operation.Value, response);
 
+            if (request.AddDocumentToStore)
+                AddDocumentToStore(request, response);
+
+            logger.LogInformationWithUtc("Returning response");
 
             return response;
+        }
+
+        private string AddDocumentToStore(DocumenteAnalysisRequestDto request, DocumentAnalysisResponseDto response)
+        {
+            var hash = request.Bytes.ComputeHash();
+            // store document
+
+            response.DocumentHash = hash;
+
+            return hash;
         }
 
         private AnalyzeDocumentOptions CreateDocumentOptions(DocumenteAnalysisRequestDto doc)

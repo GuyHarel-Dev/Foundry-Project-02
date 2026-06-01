@@ -1,18 +1,22 @@
 ﻿using DemoAzAI.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Services.Interfaces;
 
 namespace WebApi.Controllers
 {
     [Route("api/store")]
     [ApiController]
-    public class StoreController : ControllerBase
+    public class StoreController (
+        IStoreService storeService
+        ) : ControllerBase
     {
 
         [HttpPost("document/analysis")]
         public IActionResult StoreDocument([FromBody] DocumentAnalysisResult document)
         {
-            // Simulate a create operation
+            storeService.StoreDocumentAnalysisResult(document);
+
             return Ok();
         }
 

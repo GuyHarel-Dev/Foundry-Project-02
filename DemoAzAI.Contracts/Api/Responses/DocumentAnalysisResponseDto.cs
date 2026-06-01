@@ -5,8 +5,7 @@ namespace DemoAzAI.Contracts.Api.Responses
 {
     public class DocumentAnalysisResponseDto
     {
-
-        public string? ModelId { get; set; }
+        public string DocumentHash { get; set; } = string.Empty;
 
         public string DocContent { get; set; } = string.Empty;
 

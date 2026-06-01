@@ -20,8 +20,6 @@ namespace DemoAzAI.Api.Controllers
         public async Task<ActionResult<DocumentAnalysisResponseDto>> AnalyzeDocument(
             [FromBody] DocumenteAnalysisRequestDto request)
         {
-            var modelName = request.ModelName;
-            await using var stream = new MemoryStream(request.Bytes);
 
             var response = await _documentIntelligence.AnalyzeDocument(request);
 
