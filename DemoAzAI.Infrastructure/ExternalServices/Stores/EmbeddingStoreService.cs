@@ -1,4 +1,5 @@
 ﻿using DemoAzAI.Domain;
+using DemoAzAI.Abstractions;
 using System.Collections.Concurrent;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Stores

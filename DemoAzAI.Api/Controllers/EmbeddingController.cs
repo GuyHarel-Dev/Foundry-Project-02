@@ -40,10 +40,10 @@ namespace DemoAzAI.Api.Controllers
             {
                 return BadRequest("Search question cannot be null or empty");
             }
-            if (embeddingService.EmbeddingStoreCount == 0)
-            {
-                return BadRequest("No embeddings stored yet. Please embed some text before searching.");
-            };
+            //if (embeddingService.EmbeddingStoreCount == 0)
+            //{
+            //    return BadRequest("No embeddings stored yet. Please embed some text before searching.");
+            //};
 
             var result = await embeddingService.SearchEmbeddingStoreForSimilarTextLinesAsync(question);
 

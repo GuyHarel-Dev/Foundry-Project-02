@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Azure.AI.Projects;
 using Azure.Identity;
+using DemoAzAI.Abstractions;
 using DemoAzAI.Api.Services;
 using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Application.AI;

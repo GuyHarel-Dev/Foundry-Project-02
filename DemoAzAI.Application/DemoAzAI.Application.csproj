@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DemoAzAI.Abstractions\DemoAzAI.Abstractions.csproj" />
     <ProjectReference Include="..\DemoAzAI.Domain\DemoAzAI.Domain.csproj" />
-    <ProjectReference Include="..\DemoAzAI.Infrastructure\DemoAzAI.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

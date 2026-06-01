@@ -1,4 +1,5 @@
-﻿using DemoAzAI.Application;
+﻿using DemoAzAI.Abstractions;
+using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Blazor.Services.UI;
 using DemoAzAI.Infrastructure.ExternalServices.Stores;
@@ -37,11 +38,5 @@ namespace UI.Extensions
             return services;
         }
 
-        public static IServiceCollection AddEmbeddingStoreService(this IServiceCollection services)
-        {
-            services.AddScoped<IEmbeddingStoreService, EmbeddingStoreService>();
-
-            return services;
-        }
     }
 }

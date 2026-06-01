@@ -1,5 +1,5 @@
 ﻿using DemoAzAI.Domain;
-using DemoAzAI.Infrastructure.ExternalServices.Stores;
+using DemoAzAI.Abstractions;
 
 namespace DemoAzAI.Application.AI
 {
@@ -12,16 +12,16 @@ namespace DemoAzAI.Application.AI
             if (embeddedQuestion is null)
                 return results;
 
-            foreach (var embed in embeddingStore.Embeddings)
-            {
-                var score = VectorMath.CosineSimilarity(embeddedQuestion.EmbeddingVector, embed.EmbeddingVector);
-                results.Add(new SemanticSearchResult
-                {
-                    Content = embed.Text,
-                    Score = score
-                });
+            //foreach (var embed in embeddingStore.Embeddings)
+            //{
+            //    var score = VectorMath.CosineSimilarity(embeddedQuestion.EmbeddingVector, embed.EmbeddingVector);
+            //    results.Add(new SemanticSearchResult
+            //    {
+            //        Content = embed.Text,
+            //        Score = score
+            //    });
 
-            }
+            //}
 
             return results;
         }

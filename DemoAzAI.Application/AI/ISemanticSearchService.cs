@@ -1,5 +1,5 @@
-﻿using DemoAzAI.Domain;
-using DemoAzAI.Infrastructure.ExternalServices.Stores;
+﻿using DemoAzAI.Abstractions;
+using DemoAzAI.Domain;
 
 namespace DemoAzAI.Application.AI
 {

@@ -2,7 +2,7 @@
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain;
-using DemoAzAI.Infrastructure.ExternalServices.Stores;
+using DemoAzAI.Abstractions;
 using OpenAI.Embeddings;
 using System.ClientModel;
 using WebApi.Services.Interfaces;
@@ -19,7 +19,7 @@ namespace DemoAzAI.Api.Services
         : IEmbeddingService
 
     {
-        public int EmbeddingStoreCount { get; } = embeddingStoreService.Count;
+        //public int EmbeddingStoreCount { get; } = embeddingStoreService.Count;
 
         public async Task<List<SemanticSearchResult>> SearchEmbeddingStoreForSimilarTextLinesAsync(string? question)
         {
@@ -94,12 +94,12 @@ namespace DemoAzAI.Api.Services
         {
             foreach (var embedding in newEmbeddings)
             {
-                if (embeddingStoreService.Embeddings.Contains(embedding))
-                {
-                    logger.LogInformation($"Embedding for text '{embedding.Text}' already exists in the store. Skipping.");
-                    continue;
-                }
-                embeddingStoreService.AddEmbedding(embedding);
+                //if (embeddingStoreService.Embeddings.Contains(embedding))
+                //{
+                //    logger.LogInformation($"Embedding for text '{embedding.Text}' already exists in the store. Skipping.");
+                //    continue;
+                //}
+                //embeddingStoreService.AddEmbedding(embedding);
             }
         }
 
