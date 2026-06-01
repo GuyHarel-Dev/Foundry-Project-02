@@ -7,16 +7,16 @@ namespace DemoAzAI.Api.Controllers
 {
     [Route("api/document")]
     [ApiController]
-    public class DocumentAnalyzeAiController : ControllerBase
+    public class DocumentAnalysisController : ControllerBase
     {
         private readonly IDocumentIntelligenceService _documentIntelligence;
 
-        public DocumentAnalyzeAiController(IDocumentIntelligenceService documentIntelligence)
+        public DocumentAnalysisController(IDocumentIntelligenceService documentIntelligence)
         {
             _documentIntelligence = documentIntelligence;
         }
 
-        [HttpPost("analyze")]
+        [HttpPost("analyse")]
         public async Task<ActionResult<DocumentAnalysisResponseDto>> AnalyzeDocument(
             [FromBody] DocumenteAnalysisRequestDto request)
         {

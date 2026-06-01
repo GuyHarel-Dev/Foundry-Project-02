@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DemoAzAI.Application\DemoAzAI.Application.csproj" />
-    <ProjectReference Include="..\DemoAzAI.Common\DemoAzAI.Application.csproj" />
     <ProjectReference Include="..\DemoAzAI.Contracts\DemoAzAI.Contracts.csproj" />
     <ProjectReference Include="..\DemoAzAI.Infrastructure\DemoAzAI.Infrastructure.csproj" />
   </ItemGroup>

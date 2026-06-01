@@ -8,12 +8,12 @@ namespace DemoAzAI.Api.Controllers
 {
     [Route("api/chat")]
     [ApiController]
-    public class ChatAiController : ControllerBase
+    public class ChatController : ControllerBase
     {
         private readonly IConfiguration _config; 
         private readonly IChatService _azFoundryChatService;
 
-        public ChatAiController(
+        public ChatController(
                 IConfiguration config, 
                 IChatService azFoundryService)
         {

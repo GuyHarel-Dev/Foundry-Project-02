@@ -33,7 +33,6 @@ public partial class DocumentAnalysis
     private string executionLog = string.Empty;
     private string statistics = string.Empty;
 
-
     private void OnModelRadioChange(ChangeEventArgs e)
     {
         SelectedModel = e.Value?.ToString() ?? "prebuilt-read";
@@ -64,12 +63,11 @@ public partial class DocumentAnalysis
             };
 
             var result = await apiClient.PostAsync<DocumenteAnalysisRequestDto,
-                DocumentAnalysisResponseDto>("api/document/analyze", request);
+                DocumentAnalysisResponseDto>("api/document/analyse", request);
 
             if (!result.IsSuccess)
             {
-                StateContainer.ExecutionSteps = result.ErrorMessage ?? "Unknown API error.";
-                return;
+                throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
             }
 
             executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {StateContainer.PdfUrl} with model: {SelectedModel}");
@@ -91,9 +89,7 @@ public partial class DocumentAnalysis
         }
         catch (Exception ex)
         {
-
-            StateContainer.ExecutionSteps = ex.Message;
-            throw;
+            Logger.LogError(ex, "Error while processing document for analysis.");
         }
         finally
         {
