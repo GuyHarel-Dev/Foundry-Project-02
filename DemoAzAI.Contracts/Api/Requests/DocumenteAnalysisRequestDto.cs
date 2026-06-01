@@ -1,6 +1,6 @@
 ﻿namespace DemoAzAI.Contracts.Api.Requests
 {
-    public class AnalyzeDocumentRequestDto
+    public class DocumenteAnalysisRequestDto
     {
         public string ModelName { get; set; } = string.Empty;
 

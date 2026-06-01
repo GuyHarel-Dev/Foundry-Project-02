@@ -3,7 +3,7 @@ using DemoAzAI.Domain;
 
 namespace DemoAzAI.Contracts.Api.Responses
 {
-    public class AnalyzeDocumentResponseDto
+    public class DocumentAnalysisResponseDto
     {
 
         public string? ModelId { get; set; }

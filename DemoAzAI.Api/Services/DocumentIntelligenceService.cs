@@ -13,11 +13,11 @@ namespace DemoAzAI.Api.Services
         : IDocumentIntelligenceService
     {
 
-        public async Task<AnalyzeDocumentResponseDto> AnalyzeDocument(AnalyzeDocumentRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<DocumentAnalysisResponseDto> AnalyzeDocument(DocumenteAnalysisRequestDto request, CancellationToken cancellationToken = default)
         {
             logger.LogInformation("Sending document to Azure AI Foundry");
 
-            var response = new AnalyzeDocumentResponseDto();
+            var response = new DocumentAnalysisResponseDto();
 
             var options = CreateDocumentOptions(request);
 
@@ -36,7 +36,7 @@ namespace DemoAzAI.Api.Services
             return response;
         }
 
-        private AnalyzeDocumentOptions CreateDocumentOptions(AnalyzeDocumentRequestDto doc)
+        private AnalyzeDocumentOptions CreateDocumentOptions(DocumenteAnalysisRequestDto doc)
         {
             var modelName = doc.ModelName;
             var stream = new MemoryStream(doc.Bytes);
@@ -47,7 +47,7 @@ namespace DemoAzAI.Api.Services
                 bytes);
         }
 
-        private void ExtractBaseInformation(AnalyzeResult result, AnalyzeDocumentResponseDto response)
+        private void ExtractBaseInformation(AnalyzeResult result, DocumentAnalysisResponseDto response)
         {
             response.DocContent = result.Content;
             response.DocFormat = result.ContentFormat;
@@ -59,7 +59,7 @@ namespace DemoAzAI.Api.Services
             response.LanguagesCount = result.Languages?.Count ?? 0;
         }
 
-        private static void ExtractDocumentsFields(AnalyzeResult result, AnalyzeDocumentResponseDto response)
+        private static void ExtractDocumentsFields(AnalyzeResult result, DocumentAnalysisResponseDto response)
         {
             if (result.Documents != null)
             {

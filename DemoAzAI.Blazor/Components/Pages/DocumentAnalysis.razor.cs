@@ -55,7 +55,7 @@ public partial class DocumentAnalysis
 
             await RefreshUI();
 
-            var request = new AnalyzeDocumentRequestDto()
+            var request = new DocumenteAnalysisRequestDto()
             {
                 ModelName = SelectedModel,
                 FileName = Path.GetFileName(StateContainer.PdfUrl),
@@ -63,8 +63,8 @@ public partial class DocumentAnalysis
 
             };
 
-            var result = await apiClient.PostAsync<AnalyzeDocumentRequestDto,
-                AnalyzeDocumentResponseDto>("api/document/analyze", request);
+            var result = await apiClient.PostAsync<DocumenteAnalysisRequestDto,
+                DocumentAnalysisResponseDto>("api/document/analyze", request);
 
             if (!result.IsSuccess)
             {
@@ -102,7 +102,7 @@ public partial class DocumentAnalysis
 
     }
 
-    private void ExtractDocumentsContent(AnalyzeDocumentResponseDto? response)
+    private void ExtractDocumentsContent(DocumentAnalysisResponseDto? response)
     {
         if (response == null)
         {
@@ -141,7 +141,7 @@ public partial class DocumentAnalysis
 
     }
 
-    private string ExtractStatistics(AnalyzeDocumentResponseDto? response)
+    private string ExtractStatistics(DocumentAnalysisResponseDto? response)
     {
         if (response == null)
             return "No response data to extract statistics.";

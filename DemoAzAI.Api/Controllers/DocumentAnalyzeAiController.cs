@@ -17,8 +17,8 @@ namespace DemoAzAI.Api.Controllers
         }
 
         [HttpPost("analyze")]
-        public async Task<ActionResult<AnalyzeDocumentResponseDto>> AnalyzeDocument(
-            [FromBody] AnalyzeDocumentRequestDto request)
+        public async Task<ActionResult<DocumentAnalysisResponseDto>> AnalyzeDocument(
+            [FromBody] DocumenteAnalysisRequestDto request)
         {
             var modelName = request.ModelName;
             await using var stream = new MemoryStream(request.Bytes);

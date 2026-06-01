@@ -5,6 +5,6 @@ namespace DemoAzAI.Api.Services.Interfaces
 {
     public interface IDocumentIntelligenceService
     {
-        Task<AnalyzeDocumentResponseDto> AnalyzeDocument(AnalyzeDocumentRequestDto doc, CancellationToken cancellationToken = default);
+        Task<DocumentAnalysisResponseDto> AnalyzeDocument(DocumenteAnalysisRequestDto doc, CancellationToken cancellationToken = default);
     }
 }
