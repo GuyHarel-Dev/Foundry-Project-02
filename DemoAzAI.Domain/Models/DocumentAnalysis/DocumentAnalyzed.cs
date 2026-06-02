@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DemoAzAI.Domain
+namespace DemoAzAI.Domain.Models.DocumentAnalysis
 {
     public class DocumentAnalyzed
     {

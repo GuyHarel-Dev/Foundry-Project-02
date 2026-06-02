@@ -4,7 +4,7 @@ using DemoAzAI.Abstractions;
 using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain;
+using DemoAzAI.Domain.Models.DocumentAnalysis;
 using WebApi.Extensions;
 
 namespace DemoAzAI.Api.Services
@@ -31,16 +31,16 @@ namespace DemoAzAI.Api.Services
             var docAnalysisResult = Map(operation.Value);
 
             if (request.AddDocumentToStore)
-                AddDocumentToStore(request, docAnalysisResult);
+                await AddDocumentToStore(request, docAnalysisResult);
 
             logger.LogInformationWithUtc("Returning response");
 
             return new DocumentAnalysisResponseDto { DocumentAnalysisResult = docAnalysisResult };
         }
 
-        private string AddDocumentToStore(DocumentAnalysisRequestDto request, DocumentAnalysisResult result)
+        private async Task<string> AddDocumentToStore(DocumentAnalysisRequestDto request, DocumentAnalysisResult result)
         {
-            documentAnalysisStoreService.SaveAsync(request.BytesHash, result);
+            await documentAnalysisStoreService.SaveAsync(request.BytesHash, result);
             return "abc"; // documentAnalysisStoreService.SaveAsync(request.Bytes, doc);
         }
 

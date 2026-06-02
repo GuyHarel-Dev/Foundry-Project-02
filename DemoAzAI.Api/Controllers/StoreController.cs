@@ -1,5 +1,5 @@
 ﻿using DemoAzAI.Abstractions;
-using DemoAzAI.Domain;
+using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Services.Interfaces;
 
@@ -13,12 +13,18 @@ namespace WebApi.Controllers
     {
 
         [HttpPost("document/analysis")]
-        public IActionResult StoreDocument([FromBody] DocumentAnalysisResult document)
+        public async Task<IActionResult> StoreDocument([FromBody] DocumentAnalysisResult document)
         {
-            //storeService.SaveAsync(document);
+            await storeService.SaveAsync("hash", document);
 
             return Ok();
         }
 
+        [HttpGet("document/analysis/history")]
+        public async Task<ActionResult<DocumentAnalysisHistoryItem>> GetDocumentAnalysisHistory()
+        {
+            var history = await storeService.GetAllAsync();
+            return Ok(history);
+        }
     }
 }

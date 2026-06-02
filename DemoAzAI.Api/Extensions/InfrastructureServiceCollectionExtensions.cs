@@ -1,7 +1,5 @@
 ﻿using DemoAzAI.Abstractions;
 using DemoAzAI.Infrastructure.Persistence;
-using WebApi.Services;
-using WebApi.Services.Interfaces;
 
 namespace WebApi.Extensions
 {
