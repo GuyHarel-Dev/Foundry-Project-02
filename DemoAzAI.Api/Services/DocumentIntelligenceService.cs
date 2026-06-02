@@ -30,18 +30,19 @@ namespace DemoAzAI.Api.Services
 
             var docAnalysisResult = Map(operation.Value);
 
-            //if (request.AddDocumentToStore)
-            //    AddDocumentToStore(request, response);
+            if (request.AddDocumentToStore)
+                AddDocumentToStore(request, docAnalysisResult);
 
             logger.LogInformationWithUtc("Returning response");
 
             return new DocumentAnalysisResponseDto { DocumentAnalysisResult = docAnalysisResult };
         }
 
-        //private string AddDocumentToStore(DocumenteAnalysisResult result)
-        //{
-        //    return "abc"; // documentAnalysisStoreService.SaveAsync(request.Bytes, doc);
-        //}
+        private string AddDocumentToStore(DocumentAnalysisRequestDto request, DocumentAnalysisResult result)
+        {
+            documentAnalysisStoreService.SaveAsync(request.BytesHash, result);
+            return "abc"; // documentAnalysisStoreService.SaveAsync(request.Bytes, doc);
+        }
 
         private AnalyzeDocumentOptions CreateDocumentAnalysisOptions(DocumentAnalysisRequestDto doc)
         {

@@ -1,8 +1,5 @@
-﻿using DemoAzAI.Abstractions;
-using DemoAzAI.Application;
+﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
-using DemoAzAI.Blazor.Services.UI;
-using DemoAzAI.Infrastructure.ExternalServices.Stores;
 
 namespace UI.Extensions
 {

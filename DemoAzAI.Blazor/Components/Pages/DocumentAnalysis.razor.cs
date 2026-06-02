@@ -25,7 +25,6 @@ public partial class DocumentAnalysis
     private bool isBusy;
 
 
-
     private void OnModelRadioChange(ChangeEventArgs e)
     {
         SelectedModel = e.Value?.ToString() ?? "prebuilt-read";
@@ -51,8 +50,9 @@ public partial class DocumentAnalysis
             var request = new DocumentAnalysisRequestDto()
             {
                 ModelName = SelectedModel,
-                FileName = Path.GetFileName(pdfUrl), // Path.GetFileName(StateContainer.PdfUrl),
-                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, pdfUrl.TrimStart('/')))
+                FileName = Path.GetFileName(pdfUrl),
+                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, pdfUrl.TrimStart('/'))),
+                AddDocumentToStore = true
 
             };
 
