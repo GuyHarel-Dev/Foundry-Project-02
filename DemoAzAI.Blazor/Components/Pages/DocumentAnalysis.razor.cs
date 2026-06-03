@@ -42,15 +42,15 @@ public partial class DocumentAnalysis
             //StateContainer.ExecutionSteps = string.Empty;
 
             //executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}", clearSteps: true);
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {pdfUrl} with model: {SelectedModel}", clearSteps: true);
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {SelectedDemoDocument} with model: {SelectedModel}", clearSteps: true);
 
             await RefreshUI();
 
             var request = new DocumentAnalysisRequestDto()
             {
                 ModelName = SelectedModel,
-                FileName = Path.GetFileName(pdfUrl),
-                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, pdfUrl.TrimStart('/'))),
+                FileName = Path.GetFileName(SelectedDemoDocument),
+                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDemoDocument.TrimStart('/'))),
                 AddDocumentToStore = true
 
             };
@@ -63,7 +63,7 @@ public partial class DocumentAnalysis
                 throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
             }
 
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {pdfUrl} with model: {SelectedModel}");
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {SelectedDemoDocument} with model: {SelectedModel}");
 
             var responseDto = result.Value;
 
@@ -82,6 +82,11 @@ public partial class DocumentAnalysis
         {
             isBusy = false;
         }
+
+    }
+
+    private void UploadDocument()
+    {
 
     }
 

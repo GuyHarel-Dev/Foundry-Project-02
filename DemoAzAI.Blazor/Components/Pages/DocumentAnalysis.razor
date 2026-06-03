@@ -18,6 +18,8 @@
     <div class="model-selection-area">
         <p>Select a model for the analysis:</p>
 
+        <label for="@SelectedModel">Available models:</label>
+
         <select class="model-select"
                 @bind="SelectedModel">
             <option value="@_readModel">@_readModel</option>
@@ -40,40 +42,31 @@
     </div>
 
     <div class="document-selection-area">
-        <div
-            >
-            <p>Select a PDF document to analyse:</p>
-            <button @onclick='() => pdfUrl = "/Pdf/fake-occular-center.pdf"'>
-                fake-occular-center
+        <p>Select a document for the analysis:</p>
+        <label for="@SelectedDemoDocument">Demo documents:</label>
+        <select class="model-select"
+                @bind="SelectedDemoDocument">
+            <option value="@_demoDocumentOccularCenter">@_demoDocumentOccularCenter</option>
+            <option value="@_demoDocumentLampReceit">@_demoDocumentLampReceit</option>
+            <option value="@_demoDocumentfKayakCertificate">@_demoDocumentfKayakCertificate</option>
+        </select>
+
+        <form @onsubmit="UploadDocument">
+
+            <button type="submit" class="ask-button">
+                <span>Upload document</span>
             </button>
 
-            <button @onclick='() => pdfUrl = "/Pdf/fake-lamp-receit.pdf"'>
-                fake-lamp-receit
-            </button>
-
-            <button @onclick='() => pdfUrl = "/Pdf/fake-kayak-certificate.pdf"'>
-                fake-kayak-certificate
-            </button>
-
-        </div>
+        </form>
     </div>
 </div>
 
-<div class="ai-model-selection-area">
-  
-</div>
-
-<div class="pdf-model-selection-area">
-
-
- 
-</div>
 
 <div class="doc_view_result_area">
 
     <div class="doc_view_area">
         @* <iframe src="@($"{StateContainer.PdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe> *@
-        <iframe src="@($"{pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
+        <iframe src="@($"{SelectedDemoDocument}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
     </div>
 
     <div class="doc_result_area">
@@ -93,14 +86,17 @@
 
 @code {
 
+    public string SelectedModel { get; set; } = _readModel;
+    public string SelectedDemoDocument { get; set; } = _demoDocumentOccularCenter;
+
     private static string _readModel = "prebuilt-read";
     private static string _layoutModel = "prebuilt-layout";
     private static string _invoiceModel = "prebuilt-invoice";
     private static string _receiptModel = "prebuilt-receipt";
 
-    public string SelectedModel { get; set; } = _readModel;
-
-    private string pdfUrl = "Pdf/empty-pdf.pdf";
+    private static string _demoDocumentOccularCenter = "/Pdf/fake-occular-center.pdf";
+    private static string _demoDocumentLampReceit = "/Pdf/fake-lamp-receit.pdf";
+    private static string _demoDocumentfKayakCertificate = "/Pdf/fake-kayak-certificate.pdf";
 
     private string executionLog = string.Empty;
     private string statistics = string.Empty;

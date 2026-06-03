@@ -3,27 +3,8 @@
     flex-wrap: wrap;
 }
 
-    .model-document-selection-area .model-selection-area {
-        background-color: darkslategrey;
-        border: 1px solid #d0d0d0;
-        border-radius: 6px;
-        padding: 16px;
-        color: white;
-    }
 
-        .model-document-selection-area .model-selection-area label {
-            margin-right: 20px;
-        }
-
-        .model-document-selection-area .model-selection-area button {
-            background-color: #5f7f7f;
-            border: 1px solid #4f6a6a;
-            color: white;
-            margin-top: 10px;
-        }
-
-
-
+    .model-document-selection-area .model-selection-area,
     .model-document-selection-area .document-selection-area {
         background-color: darkslategrey;
         border: 1px solid #d0d0d0;
@@ -32,10 +13,12 @@
         color: white;
     }
 
+        .model-document-selection-area .model-selection-area label,
         .model-document-selection-area .document-selection-area label {
             margin-right: 20px;
         }
 
+        .model-document-selection-area .model-selection-area button,
         .model-document-selection-area .document-selection-area button {
             background-color: #5f7f7f;
             border: 1px solid #4f6a6a;
