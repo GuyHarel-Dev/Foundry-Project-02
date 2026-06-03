@@ -14,6 +14,30 @@
                  Description="Description: Intelligent document analysis service.">
 </PageDescription>
 
+<div class="ai-model-selection-area">
+    <p>Select a model for the analysis:</p>
+
+    <select class="model-select"
+            @bind="SelectedModel">
+        <option value="@_readModel">@_readModel</option>
+        <option value="@_layoutModel">@_layoutModel</option>
+        <option value="@_invoiceModel">@_invoiceModel</option>
+        <option value="@_receiptModel">@_receiptModel</option>
+    </select>
+
+    <form @onsubmit="AnalyzeDocument">
+
+        <button type="submit" class="ask-button" disabled="@isBusy">
+            <span>Analyse document</span>
+        </button>
+
+        @if (isBusy)
+        {
+            <LoadingPanel Message="Sending document to ai document analysis model..." />
+        }
+    </form>
+</div>
+
 <div class="pdf-model-selection-area">
     <div class="pdf-selection-area">
         <p>Select a PDF document to analyse:</p>
@@ -31,49 +55,7 @@
 
     </div>
 
-    <div class="ai-model-selection-area">
-        <p>Select a model for the analysis:</p>
-        <label>
-            <input name="model" type="radio"
-                   value="@ReadModel"
-                   @onchange="e => OnModelRadioChange(e)" />
-            @ReadModel
-        </label>
-
-        <label>
-            <input name="model" type="radio"
-                   value="@LayoutModel"
-                   @onchange="e => OnModelRadioChange(e)" />
-            @LayoutModel
-        </label>
-
-        <label>
-            <input name="model" type="radio"
-                   value="@InvoiceModel"
-                   @onchange="e => OnModelRadioChange(e)" />
-            @InvoiceModel
-        </label>
-
-        <label>
-            <input name="model" type="radio"
-                   value="@ReceiptModel"
-                   @onchange="e => OnModelRadioChange(e)" />
-            @ReceiptModel
-        </label>
-
-        <form @onsubmit="AnalyzeDocument">
-      
-            <button type="submit" class="ask-button" disabled="@isBusy">
-                <span>Send document to model for analysis</span>
-            </button>
-
-            <!-- call wait panel -->
-            @if (isBusy)
-            {
-                <LoadingPanel Message="Sending document to ai document analysis model..."></LoadingPanel>
-            }
-        </form>
-    </div>
+ 
 </div>
 
 <div class="doc_view_result_area">
@@ -85,10 +67,10 @@
 
     <div class="doc_result_area">
 
-            <label for="docContent">Document text:</label>
-            <textarea readonly value="@documentText"></textarea>
-            <label for="docFields">Document content:</label>
-            <textarea readonly value="@documentContent"></textarea>
+        <label for="docContent">Document text:</label>
+        <textarea readonly value="@documentText"></textarea>
+        <label for="docFields">Document content:</label>
+        <textarea readonly value="@documentContent"></textarea>
 
         <ExecutionStepsPanel executionSteps="@executionLog"></ExecutionStepsPanel>
         <StatisticsPanel Statistics="@statistics"></StatisticsPanel>
@@ -100,12 +82,12 @@
 
 @code {
 
-    private string ReadModel = "prebuilt-read";
-    private string LayoutModel = "prebuilt-layout";
-    private string InvoiceModel = "prebuilt-invoice";
-    private string ReceiptModel = "prebuilt-receipt";
+    private static string _readModel = "prebuilt-read";
+    private static string _layoutModel = "prebuilt-layout";
+    private static string _invoiceModel = "prebuilt-invoice";
+    private static string _receiptModel = "prebuilt-receipt";
 
-    private string SelectedModel = "prebuilt-read";
+    public string SelectedModel { get; set; } = _readModel;
 
     private string pdfUrl = "Pdf/empty-pdf.pdf";
 

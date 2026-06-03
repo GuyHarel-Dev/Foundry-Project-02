@@ -1,6 +1,5 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
-using DemoAzAI.Blazor.Services.UI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using Microsoft.AspNetCore.Components;
@@ -25,11 +24,11 @@ public partial class DocumentAnalysis
     private bool isBusy;
 
 
-    private void OnModelRadioChange(ChangeEventArgs e)
-    {
-        SelectedModel = e.Value?.ToString() ?? "prebuilt-read";
-        //StateContainer.AiModel = SelectedModel;
-    }
+    //private void OnModelRadioChange(ChangeEventArgs e)
+    //{
+    //    SelectedModel = e.Value?.ToString() ?? "prebuilt-read";
+    //    //StateContainer.AiModel = SelectedModel;
+    //}
 
     protected string StatusMessage = "Ready";
 

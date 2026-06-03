@@ -4,10 +4,22 @@
 }
 
 .ai-model-selection-area {
-    margin-left: 20px;
+    background-color: darkslategrey;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    padding: 16px;
+    color: white;
 }
+
     .ai-model-selection-area label {
         margin-right: 20px;
+    }
+
+    .ai-model-selection-area button {
+        background-color: #5f7f7f;
+        border: 1px solid #4f6a6a;
+        color: white;
+        margin-top:10px;
     }
 
 .doc_view_result_area {
@@ -15,15 +27,15 @@
     width: 100%;
 }
 
-.doc_view_result_area .doc_view_area {
-    width:50%;
-}
-
-    .doc_view_result_area .doc_view_area iframe {
-        width:100%;
-        height:85vh;
-
+    .doc_view_result_area .doc_view_area {
+        width: 50%;
     }
+
+        .doc_view_result_area .doc_view_area iframe {
+            width: 100%;
+            height: 85vh;
+        }
+
     .doc_view_result_area .doc_result_area {
         width: 50%;
     }

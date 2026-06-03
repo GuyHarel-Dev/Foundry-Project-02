@@ -15,6 +15,35 @@ namespace DemoAzAI.Api.Services
             ILogger<DocumentIntelligenceService> logger)
         : IDocumentIntelligenceService
     {
+        public async Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)
+        {
+            var documentHash = request.BytesHash;
+
+            if (await DocumentExistsInStore(documentHash))
+                return DocumentExistsResponse();
+
+            logger.LogInformation("Sending document to analysis model");
+
+            var result = await SendAnalyseDocumentRequestAsync(request, cancellationToken);
+
+            if (request.AddDocumentToStore)
+                return await StoreDocumentAsync(documentHash, result);
+
+            logger.LogInformation("Returning response");
+
+            return result;
+        }
+
+        private AnalyzeDocumentOptions CreateAnalyzeDocumentOptions(DocumentAnalysisRequestDto doc)
+        {
+            var modelName = doc.ModelName;
+            var stream = new MemoryStream(doc.Bytes);
+            var bytes = BinaryData.FromStream(stream);
+
+            return new AnalyzeDocumentOptions(
+                modelName,
+                bytes);
+        }
 
         private async Task<bool> DocumentExistsInStore(string documentHash)
         {
@@ -43,7 +72,7 @@ namespace DemoAzAI.Api.Services
 
             var docAnalysisResult = Map(request.ModelName, operation.Value);
 
-            var response =  new DocumentAnalysisResponseDto
+            var response = new DocumentAnalysisResponseDto
             {
                 DocumentAnalysisResult = docAnalysisResult
             };
@@ -63,48 +92,12 @@ namespace DemoAzAI.Api.Services
                 return response;
             }
 
-            var status =  await documentAnalysisStoreService.SaveAsync(documentHash, response.DocumentAnalysisResult);
+            var status = await documentAnalysisStoreService.SaveAsync(documentHash, response.DocumentAnalysisResult);
 
             response.Status = "Document added to store";
             logger.LogWarning($"{response.Status}");
 
             return response;
-        }
-
-        public async Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)
-        {
-            logger.LogInformation("Sending document to Azure AI Foundry");
-
-            var documentHash = request.BytesHash;
-
-            if (await DocumentExistsInStore(documentHash))
-                return DocumentExistsResponse();
-
-            var result = await SendAnalyseDocumentRequestAsync(request, cancellationToken);
-
-            if (request.AddDocumentToStore)
-                return await StoreDocumentAsync(documentHash, result);
-
-            logger.LogInformation("Returning response");
-
-            return result;
-        }
-
-        private async Task<bool> AddDocumentToStoreAsync(DocumentAnalysisRequestDto request, DocumentAnalysisResult result)
-        {
-            return await documentAnalysisStoreService.SaveAsync(request.BytesHash, result);
-
-        }
-
-        private AnalyzeDocumentOptions CreateAnalyzeDocumentOptions(DocumentAnalysisRequestDto doc)
-        {
-            var modelName = doc.ModelName;
-            var stream = new MemoryStream(doc.Bytes);
-            var bytes = BinaryData.FromStream(stream);
-
-            return new AnalyzeDocumentOptions(
-                modelName,
-                bytes);
         }
 
         private DocumentAnalysisResult Map(string modelName, AnalyzeResult azureAnalysisResult)
