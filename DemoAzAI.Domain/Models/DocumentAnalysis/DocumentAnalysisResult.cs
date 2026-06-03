@@ -2,6 +2,7 @@
 {
     public class DocumentAnalysisResult
     {
+        public string FileName { get; set; } = string.Empty;
         public string ModelName { get; set; } = string.Empty;
         public string ApiVersion { get; set; } = string.Empty;
         public string DocContent { get; set; } = string.Empty;

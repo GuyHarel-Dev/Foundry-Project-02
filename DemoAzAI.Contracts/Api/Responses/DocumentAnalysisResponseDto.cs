@@ -5,6 +5,7 @@ namespace DemoAzAI.Contracts.Api.Responses
 {
     public class DocumentAnalysisResponseDto
     {
+        public string FileName { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public DocumentAnalysisResult? DocumentAnalysisResult { get; set; }
 

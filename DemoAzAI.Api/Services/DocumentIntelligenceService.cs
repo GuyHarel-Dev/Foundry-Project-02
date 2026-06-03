@@ -20,16 +20,16 @@ namespace DemoAzAI.Api.Services
             var documentHash = request.BytesHash;
 
             if (await DocumentExistsInStore(documentHash))
-                return DocumentExistsResponse();
+                return DocumentExistsResponse(request.FileName);
 
-            logger.LogInformation("Sending document to analysis model");
+            logger.LogInformation($"Sending document {request.FileName} to analysis model");
 
             var result = await SendAnalyseDocumentRequestAsync(request, cancellationToken);
 
             if (request.AddDocumentToStore)
-                return await StoreDocumentAsync(documentHash, result);
+                return await StoreDocumentAsync(request.FileName, documentHash, result);
 
-            logger.LogInformation("Returning response");
+            logger.LogInformation($"Returning response");
 
             return result;
         }
@@ -50,11 +50,11 @@ namespace DemoAzAI.Api.Services
             return documentAnalysisStoreService.ExistsAsync(documentHash).GetAwaiter().GetResult();
         }
 
-        private DocumentAnalysisResponseDto DocumentExistsResponse()
+        private DocumentAnalysisResponseDto DocumentExistsResponse(string fileName)
         {
             var response = new DocumentAnalysisResponseDto
             {
-                Status = "Document already exists in store"
+                Status = $"Document {fileName} already exists in the store"
             };
             logger.LogWarning(response.Status);
             return response;
@@ -74,6 +74,7 @@ namespace DemoAzAI.Api.Services
 
             var response = new DocumentAnalysisResponseDto
             {
+                FileName = request.FileName,
                 DocumentAnalysisResult = docAnalysisResult
             };
 
@@ -83,7 +84,7 @@ namespace DemoAzAI.Api.Services
             return response;
         }
 
-        private async Task<DocumentAnalysisResponseDto> StoreDocumentAsync(string documentHash, DocumentAnalysisResponseDto response)
+        private async Task<DocumentAnalysisResponseDto> StoreDocumentAsync(string fileName, string documentHash, DocumentAnalysisResponseDto response)
         {
             if (response.DocumentAnalysisResult == null)
             {
@@ -92,9 +93,9 @@ namespace DemoAzAI.Api.Services
                 return response;
             }
 
-            var status = await documentAnalysisStoreService.SaveAsync(documentHash, response.DocumentAnalysisResult);
+            var status = await documentAnalysisStoreService.SaveAsync(fileName, documentHash, response.DocumentAnalysisResult);
 
-            response.Status = "Document added to store";
+            response.Status = $"Document {fileName} added to store";
             logger.LogWarning($"{response.Status}");
 
             return response;

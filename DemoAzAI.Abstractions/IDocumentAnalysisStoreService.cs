@@ -8,7 +8,7 @@ namespace DemoAzAI.Abstractions
 
         Task<DocumentAnalysisResult?> GetByHashAsync(string hash);
 
-        Task<bool> SaveAsync(string hash, DocumentAnalysisResult result);
+        Task<bool> SaveAsync(string fileName, string documentHash, DocumentAnalysisResult result);
 
         Task<bool> ExistsAsync(string hash);
     }

@@ -23,6 +23,7 @@ namespace DemoAzAI.Infrastructure.Persistence
             string sql = """
                 SELECT
                     Id,
+                    FileName,
                     Hash,
                     CreatedAt,
                     AnalysisResult
@@ -72,6 +73,7 @@ namespace DemoAzAI.Infrastructure.Persistence
             connection.Execute("""
                 CREATE TABLE IF NOT EXISTS DocumentAnalysis (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    FileName TEXT NOT NULL UNIQUE,
                     Hash TEXT NOT NULL UNIQUE,
                     AnalysisResult TEXT NOT NULL,
                     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -81,7 +83,7 @@ namespace DemoAzAI.Infrastructure.Persistence
             initialized = true;
         }
 
-        public async Task<bool> SaveAsync(string hash, DocumentAnalysisResult result)
+        public async Task<bool> SaveAsync(string fileName, string documentHash, DocumentAnalysisResult result)
         {
                 EnsureInitialized();
 
@@ -90,16 +92,17 @@ namespace DemoAzAI.Infrastructure.Persistence
 
                 string sql = """
                     INSERT INTO DocumentAnalysis
-                    (Hash, AnalysisResult, CreatedAt)
+                    (FileName, Hash, AnalysisResult, CreatedAt)
                     VALUES
-                    (@Hash, @AnalysisResult, @CreatedAt);
+                    (@FileName, @Hash, @AnalysisResult, @CreatedAt);
                     """;
 
                 var status = await connection.ExecuteAsync(
                     sql,
                     new
                     {
-                        Hash = hash,
+                        FileName = fileName,
+                        Hash = documentHash,
                         AnalysisResult = JsonSerializer.Serialize(result),
                         CreatedAt = DateTime.UtcNow
                     });
