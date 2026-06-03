@@ -12,15 +12,28 @@ namespace DemoAzAI.Api.Services
     public class DocumentIntelligenceService(
             DocumentIntelligenceClient client,
             IDocumentAnalysisStoreService documentAnalysisStoreService,
-            ILogger<DocumentIntelligenceService> logger) 
+            ILogger<DocumentIntelligenceService> logger)
         : IDocumentIntelligenceService
     {
 
-        public async Task<DocumentAnalysisResponseDto> AnalyzeDocument(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)
+        private async Task<bool> DocumentExistsInStore(string documentHash)
         {
-            logger.LogInformationWithUtc("Sending document to Azure AI Foundry");
+            return documentAnalysisStoreService.ExistsAsync(documentHash).GetAwaiter().GetResult();
+        }
 
-            var options = CreateDocumentAnalysisOptions(request);
+        private DocumentAnalysisResponseDto DocumentExistsResponse()
+        {
+            var response = new DocumentAnalysisResponseDto
+            {
+                Status = "Document already exists in store"
+            };
+            logger.LogWarning(response.Status);
+            return response;
+        }
+
+        private async Task<DocumentAnalysisResponseDto> SendAnalyseDocumentRequestAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken)
+        {
+            var options = CreateAnalyzeDocumentOptions(request);
 
             Operation<AnalyzeResult> operation =
                 await client.AnalyzeDocumentAsync(
@@ -28,23 +41,62 @@ namespace DemoAzAI.Api.Services
                     options,
                     cancellationToken);
 
-            var docAnalysisResult = Map(operation.Value);
+            var docAnalysisResult = Map(request.ModelName, operation.Value);
+
+            var response =  new DocumentAnalysisResponseDto
+            {
+                DocumentAnalysisResult = docAnalysisResult
+            };
+
+            response.Status = "Document analyzed";
+            logger.LogInformation(response.Status);
+
+            return response;
+        }
+
+        private async Task<DocumentAnalysisResponseDto> StoreDocumentAsync(string documentHash, DocumentAnalysisResponseDto response)
+        {
+            if (response.DocumentAnalysisResult == null)
+            {
+                response.Status = "No document analysis result to store";
+                logger.LogWarning($"{response.Status}");
+                return response;
+            }
+
+            var status =  await documentAnalysisStoreService.SaveAsync(documentHash, response.DocumentAnalysisResult);
+
+            response.Status = "Document added to store";
+            logger.LogWarning($"{response.Status}");
+
+            return response;
+        }
+
+        public async Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)
+        {
+            logger.LogInformation("Sending document to Azure AI Foundry");
+
+            var documentHash = request.BytesHash;
+
+            if (await DocumentExistsInStore(documentHash))
+                return DocumentExistsResponse();
+
+            var result = await SendAnalyseDocumentRequestAsync(request, cancellationToken);
 
             if (request.AddDocumentToStore)
-                await AddDocumentToStore(request, docAnalysisResult);
+                return await StoreDocumentAsync(documentHash, result);
 
-            logger.LogInformationWithUtc("Returning response");
+            logger.LogInformation("Returning response");
 
-            return new DocumentAnalysisResponseDto { DocumentAnalysisResult = docAnalysisResult };
+            return result;
         }
 
-        private async Task<string> AddDocumentToStore(DocumentAnalysisRequestDto request, DocumentAnalysisResult result)
+        private async Task<bool> AddDocumentToStoreAsync(DocumentAnalysisRequestDto request, DocumentAnalysisResult result)
         {
-            await documentAnalysisStoreService.SaveAsync(request.BytesHash, result);
-            return "abc"; // documentAnalysisStoreService.SaveAsync(request.Bytes, doc);
+            return await documentAnalysisStoreService.SaveAsync(request.BytesHash, result);
+
         }
 
-        private AnalyzeDocumentOptions CreateDocumentAnalysisOptions(DocumentAnalysisRequestDto doc)
+        private AnalyzeDocumentOptions CreateAnalyzeDocumentOptions(DocumentAnalysisRequestDto doc)
         {
             var modelName = doc.ModelName;
             var stream = new MemoryStream(doc.Bytes);
@@ -55,9 +107,12 @@ namespace DemoAzAI.Api.Services
                 bytes);
         }
 
-        private DocumentAnalysisResult Map(AnalyzeResult azureAnalysisResult)
+        private DocumentAnalysisResult Map(string modelName, AnalyzeResult azureAnalysisResult)
         {
             DocumentAnalysisResult result = new();
+
+            result.ModelName = modelName;
+            result.ApiVersion = azureAnalysisResult.ApiVersion;
 
             result.DocContent = azureAnalysisResult.Content;
             result.DocFormat = azureAnalysisResult.ContentFormat.ToString() ?? "unknown";
@@ -72,7 +127,7 @@ namespace DemoAzAI.Api.Services
 
             if (azureAnalysisResult.Documents != null)
             {
-                foreach(var document in azureAnalysisResult.Documents)
+                foreach (var document in azureAnalysisResult.Documents)
                 {
                     DocumentAnalyzed doc = new()
                     {
@@ -89,7 +144,7 @@ namespace DemoAzAI.Api.Services
                             Value = fields.Value.Content,
                             FieldType = fields.Value.FieldType.ToString(),
                             FieldTypeConfidence = fields.Value.Confidence
-                           
+
                         });
                     }
 

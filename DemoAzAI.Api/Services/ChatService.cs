@@ -19,7 +19,7 @@ namespace DemoAzAI.Api.Services
     {
         public async Task<ChatResponseDto> GetPromptResponseAsync(ChatRequestDto request, CancellationToken cancellationToken = default)
         {
-            logger.LogInformationWithUtc("Sending prompt to Azure AI Foundry");
+            logger.LogInformation("Sending prompt to Azure AI Foundry");
 
             CreateResponseOptions options = CreateResponseOptions(request);
 
@@ -39,7 +39,7 @@ namespace DemoAzAI.Api.Services
                 response.ChatResponse.Length
             );
 
-            logger.LogInformationWithUtc("returning response");
+            logger.LogInformation("returning response");
 
             return response;
         }

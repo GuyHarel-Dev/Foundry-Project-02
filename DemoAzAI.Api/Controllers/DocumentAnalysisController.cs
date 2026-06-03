@@ -21,7 +21,7 @@ namespace DemoAzAI.Api.Controllers
             [FromBody] DocumentAnalysisRequestDto request)
         {
 
-            var response = await _documentIntelligence.AnalyzeDocument(request);
+            var response = await _documentIntelligence.AnalyzeDocumentAsync(request);
 
             return Ok(response);
 

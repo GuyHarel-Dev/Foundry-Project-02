@@ -42,9 +42,23 @@ namespace DemoAzAI.Infrastructure.Persistence
             });
         }
 
-        public Task<bool> ExistsAsync(string hash)
+        public async Task<bool> ExistsAsync(string hash)
         {
-            throw new NotImplementedException();
+            EnsureInitialized();
+
+            await using var connection = new SqliteConnection(connectionString);
+
+            const string sql = """
+                SELECT COUNT(1)
+                FROM DocumentAnalysis
+                WHERE Hash = @Hash;
+                """;
+
+            var count = await connection.ExecuteScalarAsync<long>(
+                sql,
+                new { Hash = hash });
+
+            return count > 0;
         }
 
         private void EnsureInitialized()
@@ -56,18 +70,18 @@ namespace DemoAzAI.Infrastructure.Persistence
                 new SqliteConnection(connectionString);
 
             connection.Execute("""
-            CREATE TABLE IF NOT EXISTS DocumentAnalysis (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Hash TEXT NOT NULL UNIQUE,
-                AnalysisResult TEXT NOT NULL,
-                CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
-            """);
+                CREATE TABLE IF NOT EXISTS DocumentAnalysis (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Hash TEXT NOT NULL UNIQUE,
+                    AnalysisResult TEXT NOT NULL,
+                    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+                """);
 
             initialized = true;
         }
 
-        public async Task SaveAsync(string hash, DocumentAnalysisResult result)
+        public async Task<bool> SaveAsync(string hash, DocumentAnalysisResult result)
         {
                 EnsureInitialized();
 
@@ -90,8 +104,7 @@ namespace DemoAzAI.Infrastructure.Persistence
                         CreatedAt = DateTime.UtcNow
                     });
 
-                var test = 123;
-
+                return status > 0;
         }
 
 
