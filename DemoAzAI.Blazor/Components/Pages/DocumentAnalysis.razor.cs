@@ -94,6 +94,11 @@ public partial class DocumentAnalysis
 
     }
 
+    private void GetStoredResults()
+    {
+        var test = 123;
+
+    }
     private void UploadDocument()
     {
 

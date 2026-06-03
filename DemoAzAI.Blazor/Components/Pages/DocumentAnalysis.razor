@@ -59,6 +59,30 @@
 
         </form>
     </div>
+
+    <div class="document-result-from-store">
+        <p>Select a document analysis result from the store:</p>
+        <select class="model-select" @bind="SelectedStoredResult">
+            @if (!_storedResults.Any())
+            {
+                <option value="">No models available</option>
+            }
+            else
+            {
+                @foreach (var model in _storedResults)
+                {
+                    <option value="@model">@model</option>
+                }
+            }
+        </select>
+        <form @onsubmit="GetStoredResults">
+
+            <button type="submit" class="ask-button">
+                <span>Get stored results</span>
+            </button>
+
+        </form>
+    </div>
 </div>
 
 
@@ -88,6 +112,7 @@
 
     public string SelectedModel { get; set; } = _readModel;
     public string SelecteDocument { get; set; } = _demoDocumentOccularCenter;
+    public string SelectedStoredResult { get; set; } = string.Empty;
 
     private static string _readModel = "prebuilt-read";
     private static string _layoutModel = "prebuilt-layout";
@@ -97,6 +122,8 @@
     private static string _demoDocumentOccularCenter = "/Pdf/fake-occular-center.pdf";
     private static string _demoDocumentLampReceit = "/Pdf/fake-lamp-receit.pdf";
     private static string _demoDocumentfKayakCertificate = "/Pdf/fake-kayak-certificate.pdf";
+
+    private List<string> _storedResults = new List<string>  { "abc", "def", "ghi" };
 
     private string executionLog = string.Empty;
     private string statistics = string.Empty;

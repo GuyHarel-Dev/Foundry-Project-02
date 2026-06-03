@@ -5,7 +5,8 @@
 
 
     .model-document-selection-area .model-selection-area,
-    .model-document-selection-area .document-selection-area {
+    .model-document-selection-area .document-selection-area,
+    .model-document-selection-area .document-result-from-store {
         background-color: darkslategrey;
         border: 1px solid #d0d0d0;
         border-radius: 6px;
@@ -14,12 +15,14 @@
     }
 
         .model-document-selection-area .model-selection-area label,
-        .model-document-selection-area .document-selection-area label {
+        .model-document-selection-area .document-selection-area label,
+        .model-document-selection-area .document-result-from-store label {
             margin-right: 20px;
         }
 
         .model-document-selection-area .model-selection-area button,
-        .model-document-selection-area .document-selection-area button {
+        .model-document-selection-area .document-selection-area button,
+        .model-document-selection-area .document-result-from-store button {
             background-color: #5f7f7f;
             border: 1px solid #4f6a6a;
             color: white;
