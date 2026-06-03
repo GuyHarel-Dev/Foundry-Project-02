@@ -42,15 +42,15 @@ public partial class DocumentAnalysis
             //StateContainer.ExecutionSteps = string.Empty;
 
             //executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}", clearSteps: true);
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {SelectedDemoDocument} with model: {SelectedModel}", clearSteps: true);
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {SelecteDocument} with model: {SelectedModel}", clearSteps: true);
 
             await RefreshUI();
 
             var request = new DocumentAnalysisRequestDto()
             {
                 ModelName = SelectedModel,
-                FileName = Path.GetFileName(SelectedDemoDocument),
-                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDemoDocument.TrimStart('/'))),
+                FileName = Path.GetFileName(SelecteDocument),
+                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelecteDocument.TrimStart('/'))),
                 AddDocumentToStore = true
 
             };
@@ -63,9 +63,18 @@ public partial class DocumentAnalysis
                 throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
             }
 
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {SelectedDemoDocument} with model: {SelectedModel}");
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {SelecteDocument} with model: {SelectedModel}");
 
             var responseDto = result.Value;
+
+            if (responseDto == null)
+            {
+                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Document analysis result status: no analyis value returned");
+            }
+            else
+            {
+                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Document analysis result status: {responseDto.Status}");
+            }
 
             DisplayDocument(responseDto);
 
