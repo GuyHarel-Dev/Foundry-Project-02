@@ -14,46 +14,57 @@
                  Description="Description: Intelligent document analysis service.">
 </PageDescription>
 
+<div class="model-document-selection-area">
+    <div class="model-selection-area">
+        <p>Select a model for the analysis:</p>
+
+        <select class="model-select"
+                @bind="SelectedModel">
+            <option value="@_readModel">@_readModel</option>
+            <option value="@_layoutModel">@_layoutModel</option>
+            <option value="@_invoiceModel">@_invoiceModel</option>
+            <option value="@_receiptModel">@_receiptModel</option>
+        </select>
+
+        <form @onsubmit="AnalyzeDocument">
+
+            <button type="submit" class="ask-button" disabled="@isBusy">
+                <span>Analyse document</span>
+            </button>
+
+            @if (isBusy)
+            {
+                <LoadingPanel Message="Sending document to ai document analysis model..." />
+            }
+        </form>
+    </div>
+
+    <div class="document-selection-area">
+        <div
+            >
+            <p>Select a PDF document to analyse:</p>
+            <button @onclick='() => pdfUrl = "/Pdf/fake-occular-center.pdf"'>
+                fake-occular-center
+            </button>
+
+            <button @onclick='() => pdfUrl = "/Pdf/fake-lamp-receit.pdf"'>
+                fake-lamp-receit
+            </button>
+
+            <button @onclick='() => pdfUrl = "/Pdf/fake-kayak-certificate.pdf"'>
+                fake-kayak-certificate
+            </button>
+
+        </div>
+    </div>
+</div>
+
 <div class="ai-model-selection-area">
-    <p>Select a model for the analysis:</p>
-
-    <select class="model-select"
-            @bind="SelectedModel">
-        <option value="@_readModel">@_readModel</option>
-        <option value="@_layoutModel">@_layoutModel</option>
-        <option value="@_invoiceModel">@_invoiceModel</option>
-        <option value="@_receiptModel">@_receiptModel</option>
-    </select>
-
-    <form @onsubmit="AnalyzeDocument">
-
-        <button type="submit" class="ask-button" disabled="@isBusy">
-            <span>Analyse document</span>
-        </button>
-
-        @if (isBusy)
-        {
-            <LoadingPanel Message="Sending document to ai document analysis model..." />
-        }
-    </form>
+  
 </div>
 
 <div class="pdf-model-selection-area">
-    <div class="pdf-selection-area">
-        <p>Select a PDF document to analyse:</p>
-        <button @onclick='() => pdfUrl = "/Pdf/fake-occular-center.pdf"'>
-            fake-occular-center
-        </button>
 
-        <button @onclick='() => pdfUrl = "/Pdf/fake-lamp-receit.pdf"'>
-            fake-lamp-receit
-        </button>
-
-        <button @onclick='() => pdfUrl = "/Pdf/fake-kayak-certificate.pdf"'>
-            fake-kayak-certificate
-        </button>
-
-    </div>
 
  
 </div>
