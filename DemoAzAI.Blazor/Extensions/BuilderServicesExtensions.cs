@@ -16,7 +16,7 @@ namespace UI.Extensions
             };
 
             services.AddScoped(sp =>
-              new FoundryApiClient(httpClient));
+              new ApiClient(httpClient));
 
             return services;
         }

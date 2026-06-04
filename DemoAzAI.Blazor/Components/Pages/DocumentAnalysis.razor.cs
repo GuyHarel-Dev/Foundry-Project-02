@@ -2,6 +2,7 @@
 using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
+using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
 using System.Text;
 
@@ -13,74 +14,56 @@ public partial class DocumentAnalysis
     private IWebHostEnvironment Env { get; set; } = default!;
 
     [Inject]
-    private FoundryApiClient apiClient { get; set; } = default!;
+    private ApiClient apiClient { get; set; } = default!;
 
     [Inject]
     private IStepTracer StepTracer { get; set; } = default!;
 
-    //[Inject] 
-    //private DocumentSearchStateContainer StateContainer { get; set; } = default!;
 
-    private bool isBusy;
+    private void Test()
+    {
+        var abc = 123;
 
+    }
 
-    //private void OnModelRadioChange(ChangeEventArgs e)
-    //{
-    //    SelectedModel = e.Value?.ToString() ?? "prebuilt-read";
-    //    //StateContainer.AiModel = SelectedModel;
-    //}
+    private async Task OnDocumentSelected(ChangeEventArgs e)
+    {
+        int index = Convert.ToInt16(e.Value);
 
-    protected string StatusMessage = "Ready";
+        if (index > 0)
+        {
+            var test = 0; 
+        }
+        Console.WriteLine($"Selected document index: {index}");
+
+        //SelectedDocument = e.
+    }
 
     private async Task AnalyzeDocument()
     {
+        var nameOfMethod = nameof(AnalyzeDocument);
+
         try
         {
-            isBusy = true;
+            sendDocumentAnalysBusy = true;
 
-            //StateContainer.Statistics = string.Empty;
-            //StateContainer.ExecutionSteps = string.Empty;
-
-            //executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {StateContainer.PdfUrl} with model: {SelectedModel}", clearSteps: true);
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Starting analysis for {SelecteDocument} with model: {SelectedModel}", clearSteps: true);
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Starting analysis for {SelectedDocument} with model: {SelectedModel}", clearSteps: true);
 
             await RefreshUI();
 
-            var request = new DocumentAnalysisRequestDto()
+      
+            var result = await SendAnalyzeDocumentRequest();
+
+            if (result == null)
             {
-                ModelName = SelectedModel,
-                FileName = Path.GetFileName(SelecteDocument),
-                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelecteDocument.TrimStart('/'))),
-                AddDocumentToStore = true
-
-            };
-
-            var result = await apiClient.PostAsync<DocumentAnalysisRequestDto,
-                DocumentAnalysisResponseDto>("api/document/analyse", request);
-
-            if (!result.IsSuccess)
-            {
-                throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
+                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: No analysis result returned for {SelectedDocument} with model: {SelectedModel}");
+                return;
             }
 
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Received analysis result for {SelecteDocument} with model: {SelectedModel}");
+            DisplayDocument(result.DocumentAnalysisResult);
 
-            var responseDto = result.Value;
-
-            if (responseDto == null)
-            {
-                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Document analysis result status: no analyis value returned");
-            }
-            else
-            {
-                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(AnalyzeDocument)}: Document analysis result status: {responseDto.Status}");
-            }
-
-            DisplayDocument(responseDto);
-
-            executionLog = StepTracer.GetSteps();// StateContainer.ExecutionSteps = StepTracer.GetSteps();
-            statistics = ExtractStatistics(responseDto);  //StateContainer.Statistics = ExtractStatistics(result.Value);
-            //statistics = StateContainer.Statistics;
+            executionLog = StepTracer.GetSteps();
+            statistics = ExtractStatistics(result);
 
         }
         catch (Exception ex)
@@ -89,14 +72,96 @@ public partial class DocumentAnalysis
         }
         finally
         {
-            isBusy = false;
+            sendDocumentAnalysBusy = false;
         }
 
     }
 
-    private void GetStoredResults()
+    private async Task<DocumentAnalysisResponseDto?> SendAnalyzeDocumentRequest()
     {
-        var test = 123;
+        var nameOfMethod = nameof(SendAnalyzeDocumentRequest);
+
+        var request = new DocumentAnalysisRequestDto()
+        {
+            ModelName = SelectedModel,
+            FileName = Path.GetFileName(SelectedDocument),
+            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDocument.TrimStart('/'))),
+            AddDocumentToStore = true
+
+        };
+
+        var result = await apiClient.PostAsync<DocumentAnalysisRequestDto,
+            DocumentAnalysisResponseDto>("api/document/analyse", request);
+
+        if (!result.IsSuccess)
+        {
+            throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
+        }
+
+        executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Received analysis result for {SelectedDocument} with model: {SelectedModel}");
+
+        var responseDto = result.Value;
+
+        if (responseDto == null)
+        {
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Document analysis result status: no analyis value returned");
+        }
+        else
+        {
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Document analysis result status: {responseDto.Status}");
+        }
+
+        return result.Value;
+    }
+
+    private async Task GetStoredResults()
+    {
+        var nameOfMethod = nameof(GetStoredResults);
+        try
+        {
+            getStoredResultsBusy = true;
+
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Fetching results from store.", clearSteps: true);
+
+            await RefreshUI();
+
+            var request = new DocumentAnalysisRequestDto()
+            {
+                ModelName = SelectedModel,
+                FileName = Path.GetFileName(SelectedDocument),
+                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDocument.TrimStart('/'))),
+                AddDocumentToStore = true
+
+            };
+
+            var result = await apiClient.GetAsync<List<DocumentAnalysisStoredResult>>("api/store/document/analysis");
+
+
+            if (!result.IsSuccess)
+            {
+                throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
+            }
+
+            if ( result.Value == null || result.Value.Count == 0)
+            {
+                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: No stored results found.");
+            }
+            else
+            {
+                _storedResults = result.Value;
+                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Retrieved {result.Value.Count} stored results.");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error while extraction document results from store.");
+        }
+        finally
+        {
+            getStoredResultsBusy = false;
+        }
+
 
     }
     private void UploadDocument()
@@ -104,15 +169,9 @@ public partial class DocumentAnalysis
 
     }
 
-    private void DisplayDocument(DocumentAnalysisResponseDto? response)
+    private void DisplayDocument(DocumentAnalysisResult? result)
     {
-        if (response == null || response.DocumentAnalysisResult == null)
-        {
-            documentText = "Document analysis returned no data.";// StateContainer.DocContent = "Document analysis returned no data.";
-            return;
-        }
-
-        var result = response.DocumentAnalysisResult;
+        if (result == null) return;
 
         documentText = result.DocContent;  //StateContainer.DocContent = result.DocContent;
 
@@ -145,10 +204,6 @@ public partial class DocumentAnalysis
 
         documentContent = sb.ToString();
 
-        //documentContent = System.Text.Json.JsonSerializer.Serialize(result, new System.Text.Json.JsonSerializerOptions()
-        //{
-        //    WriteIndented = true
-        //});
     }
 
     private string ExtractStatistics(DocumentAnalysisResponseDto? response)

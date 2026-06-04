@@ -1,20 +1,20 @@
 ﻿namespace DemoAzAI.Blazor.Services.Api
 {
-    public sealed class FoundryApiClientResult<T>
+    public sealed class ApiClientResult<T>
     {
         public bool IsSuccess { get; init; }
         public T? Value { get; init; } = default(T?);
         public string? ErrorMessage { get; init; }
         public int? StatusCode { get; init; } 
 
-        public static FoundryApiClientResult<T> Success(T? value) =>
+        public static ApiClientResult<T> Success(T? value) =>
             new()
             {
                 IsSuccess = true,
                 Value = value
             };
 
-        public static FoundryApiClientResult<T> Failure(string errorMessage, int? statusCode = null) =>
+        public static ApiClientResult<T> Failure(string errorMessage, int? statusCode = null) =>
             new()
             {
                 IsSuccess = false,

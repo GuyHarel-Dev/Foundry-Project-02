@@ -12,19 +12,32 @@ namespace WebApi.Controllers
         ) : ControllerBase
     {
 
-        //[HttpPost("document/analysis")]
-        //public async Task<IActionResult> StoreDocument([FromBody] DocumentAnalysisResult document)
-        //{
-        //    await storeService.SaveAsync(document.FileName, document);
-
-        //    return Ok();
-        //}
-
-        [HttpGet("document/analysis/history")]
-        public async Task<ActionResult<DocumentAnalysisHistoryItem>> GetDocumentAnalysisHistory()
+        [HttpGet("document/analysis")]
+        public async Task<ActionResult<IEnumerable<DocumentAnalysisStoredResult>>> GetAllDocumentAnalysis()
         {
             var history = await storeService.GetAllAsync();
+
+            if (history is null || history.Any() is false)
+            {
+                return NotFound();
+            }
+
             return Ok(history);
         }
+
+
+        [HttpGet("document/analysis/{id}")]
+        public async Task<ActionResult<DocumentAnalysisStoredResult>> GetDocumentAnalysis(string id)
+        {
+            var doc = await storeService.GetByIdAsync(id);
+
+            if (doc is null)
+            {
+                return NotFound();
+            }
+            return Ok(doc);
+        }
+
+
     }
 }

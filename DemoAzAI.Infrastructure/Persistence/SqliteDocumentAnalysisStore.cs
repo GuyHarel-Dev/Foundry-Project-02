@@ -13,7 +13,43 @@ namespace DemoAzAI.Infrastructure.Persistence
 
         private bool initialized;
 
-        public async Task<IEnumerable<DocumentAnalysisHistoryItem>> GetAllAsync()
+        public async Task<DocumentAnalysisStoredResult?> GetByIdAsync(string id)
+        {
+           EnsureInitialized();
+
+            using var connection =
+                new SqliteConnection(connectionString);
+
+            string sql = """
+                SELECT
+                    Id,
+                    FileName,
+                    Hash,
+                    CreatedAt,
+                    AnalysisResultJson
+                FROM DocumentAnalysisResults
+                WHERE Id = @IdParam
+                """;
+
+            var row = await connection.QuerySingleOrDefaultAsync<DocumentAnalysisStoredResult>(
+                sql,
+                new { IdParam = id });
+
+            if (row == null)
+                return null;
+
+            return new DocumentAnalysisStoredResult
+            {
+                Id = row.Id,
+                FileName = row.FileName,
+                Hash = row.Hash,
+                CreatedAt = row.CreatedAt,
+                AnalysisResult =
+                    JsonSerializer.Deserialize<DocumentAnalysisResult>(row.AnalysisResultJson)!
+            };
+        }
+
+        public async Task<IEnumerable<DocumentAnalysisStoredResult>> GetAllAsync()
         {
             EnsureInitialized();
 
@@ -26,19 +62,21 @@ namespace DemoAzAI.Infrastructure.Persistence
                     FileName,
                     Hash,
                     CreatedAt,
-                    AnalysisResult
-                FROM DocumentAnalysis
+                    AnalysisResultJson
+                FROM DocumentAnalysisResults
                 ORDER BY Id DESC;
                 """;
 
             var rows =
                 await connection.QueryAsync<DocumentAnalysisEntity>(sql);
 
-            return rows.Select(r => new DocumentAnalysisHistoryItem
+            return rows.Select(r => new DocumentAnalysisStoredResult
             {
                 Id = r.Id,
+                FileName = r.FileName,
+                CreatedAt = r.CreatedAt,
                 Hash = r.Hash,
-                Result = JsonSerializer.Deserialize<DocumentAnalysisResult>(
+                AnalysisResult = JsonSerializer.Deserialize<DocumentAnalysisResult>(
                     r.AnalysisResult)!
             });
         }
@@ -51,7 +89,7 @@ namespace DemoAzAI.Infrastructure.Persistence
 
             const string sql = """
                 SELECT COUNT(1)
-                FROM DocumentAnalysis
+                FROM DocumentAnalysisResults
                 WHERE Hash = @Hash;
                 """;
 
@@ -71,11 +109,11 @@ namespace DemoAzAI.Infrastructure.Persistence
                 new SqliteConnection(connectionString);
 
             connection.Execute("""
-                CREATE TABLE IF NOT EXISTS DocumentAnalysis (
+                CREATE TABLE IF NOT EXISTS DocumentAnalysisResults (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     FileName TEXT NOT NULL UNIQUE,
                     Hash TEXT NOT NULL UNIQUE,
-                    AnalysisResult TEXT NOT NULL,
+                    AnalysisResultJson TEXT NOT NULL,
                     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
                 );
                 """);
@@ -91,10 +129,10 @@ namespace DemoAzAI.Infrastructure.Persistence
                     new SqliteConnection(connectionString);
 
                 string sql = """
-                    INSERT INTO DocumentAnalysis
-                    (FileName, Hash, AnalysisResult, CreatedAt)
+                    INSERT INTO DocumentAnalysisResults
+                    (FileName, Hash, AnalysisResultJson, CreatedAt)
                     VALUES
-                    (@FileName, @Hash, @AnalysisResult, @CreatedAt);
+                    (@FileName, @Hash, @AnalysisResultJson, @CreatedAt);
                     """;
 
                 var status = await connection.ExecuteAsync(
@@ -103,7 +141,7 @@ namespace DemoAzAI.Infrastructure.Persistence
                     {
                         FileName = fileName,
                         Hash = documentHash,
-                        AnalysisResult = JsonSerializer.Serialize(result),
+                        AnalysisResultJson = JsonSerializer.Serialize(result),
                         CreatedAt = DateTime.UtcNow
                     });
 
@@ -111,9 +149,11 @@ namespace DemoAzAI.Infrastructure.Persistence
         }
 
 
-        Task<DocumentAnalysisResult?> IDocumentAnalysisStoreService.GetByHashAsync(string hash)
+        Task<DocumentAnalysisStoredResult?> IDocumentAnalysisStoreService.GetByHashAsync(string hash)
         {
             throw new NotImplementedException();
         }
+
+
     }
 }

@@ -5,6 +5,7 @@
 @inject ILogger<DocumentAnalysis> Logger
 
 @using DemoAzAI.Blazor.Components.Fragments
+@using DemoAzAI.Domain.Models.DocumentAnalysis
 
 
 <PageTitle>Document Analysis</PageTitle>
@@ -30,11 +31,11 @@
 
         <form @onsubmit="AnalyzeDocument">
 
-            <button type="submit" class="ask-button" disabled="@isBusy">
+            <button type="submit" class="ask-button" disabled="@sendDocumentAnalysBusy">
                 <span>Analyse document</span>
             </button>
 
-            @if (isBusy)
+            @if (sendDocumentAnalysBusy)
             {
                 <LoadingPanel Message="Sending document to ai document analysis model..." />
             }
@@ -43,9 +44,9 @@
 
     <div class="document-selection-area">
         <p>Select a document for the analysis:</p>
-        <label for="@SelecteDocument">Demo documents:</label>
+        <label for="@SelectedDocument">Demo documents:</label>
         <select class="model-select"
-                @bind="SelecteDocument">
+                @bind="SelectedDocument">
             <option value="@_demoDocumentOccularCenter">@_demoDocumentOccularCenter</option>
             <option value="@_demoDocumentLampReceit">@_demoDocumentLampReceit</option>
             <option value="@_demoDocumentfKayakCertificate">@_demoDocumentfKayakCertificate</option>
@@ -62,16 +63,17 @@
 
     <div class="document-result-from-store">
         <p>Select a document analysis result from the store:</p>
-        <select class="model-select" @bind="SelectedStoredResult">
+        <select class="model-select" @onchange="OnDocumentSelected">
             @if (!_storedResults.Any())
             {
-                <option value="">No models available</option>
+                <option value="">No results loaded...</option>
             }
             else
             {
-                @foreach (var model in _storedResults)
+                <option value="-1">(select a document...)</option>
+                @foreach (var result in _storedResults)
                 {
-                    <option value="@model">@model</option>
+                    <option value="@result.Id">@result</option>
                 }
             }
         </select>
@@ -81,6 +83,12 @@
                 <span>Get stored results</span>
             </button>
 
+            <button @onclick="Test">Test buttont</button>
+
+            @if (getStoredResultsBusy)
+            {
+                <LoadingPanel Message="Getting document analysis results from store..." />
+            }
         </form>
     </div>
 </div>
@@ -90,7 +98,7 @@
 
     <div class="doc_view_area">
         @* <iframe src="@($"{StateContainer.PdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe> *@
-        <iframe src="@($"{SelecteDocument}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
+        <iframe src="@($"{SelectedDocument}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
     </div>
 
     <div class="doc_result_area">
@@ -109,10 +117,11 @@
 
 
 @code {
+    private bool sendDocumentAnalysBusy;
+    private bool getStoredResultsBusy;
 
     public string SelectedModel { get; set; } = _readModel;
-    public string SelecteDocument { get; set; } = _demoDocumentOccularCenter;
-    public string SelectedStoredResult { get; set; } = string.Empty;
+    public string SelectedDocument { get; set; } = _demoDocumentOccularCenter;
 
     private static string _readModel = "prebuilt-read";
     private static string _layoutModel = "prebuilt-layout";
@@ -123,7 +132,8 @@
     private static string _demoDocumentLampReceit = "/Pdf/fake-lamp-receit.pdf";
     private static string _demoDocumentfKayakCertificate = "/Pdf/fake-kayak-certificate.pdf";
 
-    private List<string> _storedResults = new List<string>  { "abc", "def", "ghi" };
+    private List<DocumentAnalysisStoredResult> _storedResults = new();
+    public string SelectedStoredResult { get; set; } = string.Empty;
 
     private string executionLog = string.Empty;
     private string statistics = string.Empty;

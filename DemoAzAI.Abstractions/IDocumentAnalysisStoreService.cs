@@ -4,9 +4,9 @@ namespace DemoAzAI.Abstractions
 {
     public interface IDocumentAnalysisStoreService
     {
-        Task<IEnumerable<DocumentAnalysisHistoryItem>> GetAllAsync();
-
-        Task<DocumentAnalysisResult?> GetByHashAsync(string hash);
+        Task<IEnumerable<DocumentAnalysisStoredResult>> GetAllAsync();
+        Task<DocumentAnalysisStoredResult?> GetByIdAsync(string id);
+        Task<DocumentAnalysisStoredResult?> GetByHashAsync(string hash);
 
         Task<bool> SaveAsync(string fileName, string documentHash, DocumentAnalysisResult result);
 
