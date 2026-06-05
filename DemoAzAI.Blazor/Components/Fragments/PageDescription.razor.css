@@ -1,8 +1,18 @@
 ﻿.description_area {
-    background-color: #2d2d30;
-}
+    background-color: #0d3451;
+    font-size: 16px;
+    padding: 10px;
 
-    .description_area p {
-        padding: 10px;
-        font-size: 14px;
+}
+    .description_area .title {
+        background-color: #3e4c57
     }
+
+    .description_area .model {
+
+    }
+
+    .description_area .description {
+
+    }
+

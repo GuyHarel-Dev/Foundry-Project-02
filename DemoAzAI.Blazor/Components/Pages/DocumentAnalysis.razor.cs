@@ -37,6 +37,7 @@ public partial class DocumentAnalysis
             executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"OnDocumentSelected: No stored results found for id {id}.");
             return;
         }
+        SelectedDocument = _demoDocumentEmpty;
         DisplayDocument(result.Value.AnalysisResult);
     }
 

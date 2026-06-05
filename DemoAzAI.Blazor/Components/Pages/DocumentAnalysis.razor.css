@@ -7,11 +7,12 @@
     .model-document-selection-area .model-selection-area,
     .model-document-selection-area .document-selection-area,
     .model-document-selection-area .document-result-from-store {
-        background-color: darkslategrey;
+        background-color: #444343;
         border: 1px solid #d0d0d0;
         border-radius: 6px;
-        padding: 16px;
+        padding: 1px;
         color: white;
+        font-size: 14px;
     }
 
         .model-document-selection-area .model-selection-area label,
@@ -23,10 +24,10 @@
         .model-document-selection-area .model-selection-area button,
         .model-document-selection-area .document-selection-area button,
         .model-document-selection-area .document-result-from-store button {
-            background-color: #5f7f7f;
             border: 1px solid #4f6a6a;
             color: white;
             margin-top: 10px;
+            font-size: 14px;
         }
 
 
@@ -36,12 +37,12 @@
 }
 
     .doc_view_result_area .doc_view_area {
-        width: 50%;
+
     }
 
         .doc_view_result_area .doc_view_area iframe {
             width: 100%;
-            height: 85vh;
+            height: 100%;
         }
 
     .doc_view_result_area .doc_result_area {
