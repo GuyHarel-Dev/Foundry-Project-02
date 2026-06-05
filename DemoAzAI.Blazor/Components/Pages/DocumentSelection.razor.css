@@ -1,0 +1,30 @@
+﻿
+.document-selection-area {
+    background-color: #300c4d;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    padding: 1px;
+    color: white;
+    font-size: 14px;
+}
+
+    .document-selection-area .title {
+        background-color: #0b2464;
+        margin-bottom: 10px;
+    }
+
+    .document-selection-area .select-document {
+        margin-left: 10px;
+        margin-bottom: 10px;
+    }
+
+    .document-selection-area button {
+        background-color: #283f7a;
+        margin-bottom: 10px;
+
+    }
+.doc_view_area iframe {
+    width: 100%;
+    height: 85vh;
+}
+

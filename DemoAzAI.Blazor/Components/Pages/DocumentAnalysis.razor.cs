@@ -218,11 +218,6 @@ public partial class DocumentAnalysis
 
     }
 
-    private void UploadDocument()
-    {
-
-    }
-
     private void DisplayDocument(DocumentAnalysisResult? result)
     {
         if (result == null) return;

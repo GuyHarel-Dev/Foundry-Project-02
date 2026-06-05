@@ -2,8 +2,53 @@
 @inherits BasePage
 @rendermode InteractiveServer
 
-<h3>DocumentSelection</h3>
+@using DemoAzAI.Blazor.Components.Fragments
+
+
+<PageTitle>Document Selection</PageTitle>
+
+<PageDescription Title="Document Selection"
+                 Model=""
+                 Description="Select a document to analyse.">
+</PageDescription>
+
+<div class="document-selection-area">
+    <div class="title">Select or upload a document:</div>
+    <div class="select-document">
+        <label for="@SelectedDocument">Demo documents:</label>
+        <select class="model-select"
+                @bind="SelectedDocument">
+            <option value="@_demoDocumentEmpty">@_demoDocumentEmpty</option>
+            <option value="@_demoDocumentOccularCenter">@_demoDocumentOccularCenter</option>
+            <option value="@_demoDocumentLampReceit">@_demoDocumentLampReceit</option>
+            <option value="@_demoDocumentfKayakCertificate">@_demoDocumentfKayakCertificate</option>
+        </select>
+
+    </div>
+
+    <form @onsubmit="UploadDocument">
+
+        <button type="submit" class="ask-button" disabled>
+            <span>Upload document</span>
+        </button>
+
+    </form>
+</div>
+
+<div class="doc_view_area">
+    <iframe src="@($"{SelectedDocument}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
+</div>
 
 @code {
+    public string SelectedDocument { get; set; } = _demoDocumentOccularCenter;
 
+    private static string _demoDocumentEmpty = "/Pdf/empty-pdf.pdf";
+    private static string _demoDocumentOccularCenter = "/Pdf/fake-occular-center.pdf";
+    private static string _demoDocumentLampReceit = "/Pdf/fake-lamp-receit.pdf";
+    private static string _demoDocumentfKayakCertificate = "/Pdf/fake-kayak-certificate.pdf";
+
+    private void UploadDocument()
+    {
+
+    }
 }

@@ -42,25 +42,6 @@
         </form>
     </div>
 
-    <div class="document-selection-area">
-        <p>Select a document for the analysis:</p>
-        <label for="@SelectedDocument">Demo documents:</label>
-        <select class="model-select"
-                @bind="SelectedDocument">
-            <option value="@_demoDocumentOccularCenter">@_demoDocumentOccularCenter</option>
-            <option value="@_demoDocumentLampReceit">@_demoDocumentLampReceit</option>
-            <option value="@_demoDocumentfKayakCertificate">@_demoDocumentfKayakCertificate</option>
-        </select>
-
-        <form @onsubmit="UploadDocument">
-
-            <button type="submit" class="ask-button" disabled>
-                <span>Upload document</span>
-            </button>
-
-        </form>
-    </div>
-
     <div class="document-result-from-store">
         <p>Select a document analysis result from the store:</p>
         <select class="model-select" @onchange="OnDocumentSelected">
@@ -90,26 +71,6 @@
                 <LoadingPanel Message="Getting document analysis results from store..." />
             }
         </form>
-    </div>
-</div>
-
-
-<div class="doc_view_result_area">
-
-    <div class="doc_result_area">
-
-        <label for="docContent">Document text:</label>
-        <textarea readonly value="@documentText"></textarea>
-        <label for="docFields">Document content:</label>
-        <textarea readonly value="@documentContent"></textarea>
-
-        <ExecutionStepsPanel executionSteps="@executionLog"></ExecutionStepsPanel>
-        <StatisticsPanel Statistics="@statistics"></StatisticsPanel>
-
-    </div>
-
-    <div class="doc_view_area">
-        <iframe src="@($"{SelectedDocument}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
     </div>
 </div>
 

@@ -1,11 +1,16 @@
 ﻿.description_area {
-    background-color: #0d3451;
+    background-color: #300c4d;
     font-size: 16px;
     padding: 10px;
-
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    padding: 1px;
+    color: white;
+    font-size: 14px;
+    margin-bottom:10px;
 }
     .description_area .title {
-        background-color: #3e4c57
+        background-color: #0b2464
     }
 
     .description_area .model {
