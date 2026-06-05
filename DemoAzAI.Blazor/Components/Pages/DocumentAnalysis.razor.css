@@ -1,9 +1,9 @@
 ﻿
 .page-area {
-    width:100%;
-    height:80vh;
-
+    width: 100%;
+    height: 80vh;
 }
+
     .page-area .document-selected-area {
         height: 5%;
     }
@@ -16,13 +16,9 @@
         height: 85%;
     }
 
-    .page-area .model-selection-area {
-        display: flex;
-    }
-
-
-
-    .document-selected-area, .model-selection-area, .document-analysis-area {
+    .page-area .document-selected-area,
+    .page-area .model-selection-area,
+    .page-area .document-analysis-area {
         background-color: #300c4d;
         border: 1px solid #d0d0d0;
         border-radius: 6px;
@@ -33,4 +29,11 @@
         margin-bottom: 10px;
     }
 
+    .page-area .model-selection-area {
+        display: flex;
+        align-items: center;
+    }
 
+    .page-area .model-analysis {
+        margin-left: auto;
+    }
