@@ -77,7 +77,7 @@ namespace DemoAzAI.Infrastructure.Persistence
                 CreatedAt = r.CreatedAt,
                 Hash = r.Hash,
                 AnalysisResult = JsonSerializer.Deserialize<DocumentAnalysisResult>(
-                    r.AnalysisResult)!
+                    r.AnalysisResultJson)!
             });
         }
 

@@ -28,15 +28,16 @@ public partial class DocumentAnalysis
 
     private async Task OnDocumentSelected(ChangeEventArgs e)
     {
-        int index = Convert.ToInt16(e.Value);
+        int id = Convert.ToInt16(e.Value);
 
-        if (index > 0)
+        var result = await apiClient.GetAsync<DocumentAnalysisStoredResult>($"api/store/document/analysis/results/{id}");    
+
+        if (result.Value == null)
         {
-            var test = 0; 
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"OnDocumentSelected: No stored results found for id {id}.");
+            return;
         }
-        Console.WriteLine($"Selected document index: {index}");
-
-        //SelectedDocument = e.
+        DisplayDocument(result.Value.AnalysisResult);
     }
 
     private async Task AnalyzeDocument()
@@ -114,9 +115,60 @@ public partial class DocumentAnalysis
         return result.Value;
     }
 
-    private async Task GetStoredResults()
+    private async Task GetAllDocumentAnalysisResults()
     {
-        var nameOfMethod = nameof(GetStoredResults);
+        var nameOfMethod = nameof(GetAllDocumentAnalysisResults);
+        try
+        {
+            getStoredResultsBusy = true;
+
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Fetching results from store.", clearSteps: true);
+
+            await RefreshUI();
+
+            var request = new DocumentAnalysisRequestDto()
+            {
+                ModelName = SelectedModel,
+                FileName = Path.GetFileName(SelectedDocument),
+                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDocument.TrimStart('/'))),
+                AddDocumentToStore = true
+
+            };
+
+            var result = await apiClient.GetAsync<List<DocumentAnalysisStoredResult>>("api/store/document/analysis/results");
+
+
+            if (!result.IsSuccess)
+            {
+                throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
+            }
+
+            if ( result.Value == null || result.Value.Count == 0)
+            {
+                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: No stored results found.");
+            }
+            else
+            {
+                _storedResults = result.Value;
+                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Retrieved {result.Value.Count} stored results.");
+            }
+             
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error while extraction document results from store.");
+        }
+        finally
+        {
+            getStoredResultsBusy = false;
+        }
+
+
+    }
+
+    private async Task GetStoredResultByIndex(int index)
+    {
+        var nameOfMethod = nameof(GetStoredResultByIndex);
         try
         {
             getStoredResultsBusy = true;
@@ -142,7 +194,7 @@ public partial class DocumentAnalysis
                 throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
             }
 
-            if ( result.Value == null || result.Value.Count == 0)
+            if (result.Value == null || result.Value.Count == 0)
             {
                 executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: No stored results found.");
             }
@@ -164,6 +216,7 @@ public partial class DocumentAnalysis
 
 
     }
+
     private void UploadDocument()
     {
 
@@ -208,22 +261,22 @@ public partial class DocumentAnalysis
 
     private string ExtractStatistics(DocumentAnalysisResponseDto? response)
     {
-        if (response == null)
+        if (response is null || response.DocumentAnalysisResult is null)
             return "No response data to extract statistics.";
 
         string str = "";
 
-        //str += $"PageCount: {response.PageCount}\n";
-        //str += $"ParagraphCount: {response.ParagraphCount}\n";
-        //str += $"TableCount: {response.TableCount}\n";
-        //str += $"FigureCount: {response.FigureCount}\n";
-        //str += $"SectionCount: {response.SectionCount}\n";
-        //str += $"LanguagesCount: {response.LanguagesCount}\n";
-        //str += $"LanguagesCount: {response.LanguagesCount}\n";
+        str += $"PageCount: {response.DocumentAnalysisResult.PageCount}\n";
+        str += $"ParagraphCount: {response.DocumentAnalysisResult.ParagraphCount}\n";
+        str += $"TableCount: {response.DocumentAnalysisResult.TableCount}\n";
+        str += $"FigureCount: {response.DocumentAnalysisResult.FigureCount}\n";
+        str += $"SectionCount: {response.DocumentAnalysisResult.SectionCount}\n";
+        str += $"LanguagesCount: {response.DocumentAnalysisResult.LanguagesCount}\n";
+        str += $"LanguagesCount: {response.DocumentAnalysisResult.LanguagesCount}\n";
 
-        //// Derived statistics
-        //str += $"CharacterCount : {response.DocContent.Length}\n";
-        //str += $"WordCount : {response.DocContent.Split(' ').Length}\n";
+        // Derived statistics
+        str += $"CharacterCount : {response.DocumentAnalysisResult.DocContent.Length}\n";
+        str += $"WordCount : {response.DocumentAnalysisResult.DocContent.Split(' ').Length}\n";
 
         return str;
 

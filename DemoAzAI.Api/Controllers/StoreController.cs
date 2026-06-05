@@ -1,7 +1,6 @@
 ﻿using DemoAzAI.Abstractions;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Services.Interfaces;
 
 namespace WebApi.Controllers
 {
@@ -12,8 +11,8 @@ namespace WebApi.Controllers
         ) : ControllerBase
     {
 
-        [HttpGet("document/analysis")]
-        public async Task<ActionResult<IEnumerable<DocumentAnalysisStoredResult>>> GetAllDocumentAnalysis()
+        [HttpGet("document/analysis/results")]
+        public async Task<ActionResult<IEnumerable<DocumentAnalysisStoredResult>>> GetAllDocumentAnalysisResults()
         {
             var history = await storeService.GetAllAsync();
 
@@ -26,8 +25,8 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpGet("document/analysis/{id}")]
-        public async Task<ActionResult<DocumentAnalysisStoredResult>> GetDocumentAnalysis(string id)
+        [HttpGet("document/analysis/results/{id}")]
+        public async Task<ActionResult<DocumentAnalysisStoredResult>> GetDocumentAnalysisResultsById(string id)
         {
             var doc = await storeService.GetByIdAsync(id);
 
