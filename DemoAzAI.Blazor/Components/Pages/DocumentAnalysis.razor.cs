@@ -24,31 +24,25 @@ public partial class DocumentAnalysis
     private UiStateContainer UiState { get; set;  } = default!;
 
 
-    private void Test()
-    {
-        var abc = 123;
-
-    }
-
     protected override async Task OnInitializedAsync()
     {
         DocumentSelected = UiState.DocumentSelected;
     }
 
-    private async Task OnDocumentSelected(ChangeEventArgs e)
-    {
-        int id = Convert.ToInt16(e.Value);
+    //private async Task OnDocumentSelected(ChangeEventArgs e)
+    //{
+    //    int id = Convert.ToInt16(e.Value);
 
-        var result = await apiClient.GetAsync<DocumentAnalysisStoredResult>($"api/store/document/analysis/results/{id}");    
+    //    var result = await apiClient.GetAsync<DocumentAnalysisStoredResult>($"api/store/document/analysis/results/{id}");    
 
-        if (result.Value == null)
-        {
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"OnDocumentSelected: No stored results found for id {id}.");
-            return;
-        }
-        SelectedDocument = _demoDocumentEmpty;
-        DisplayDocument(result.Value.AnalysisResult);
-    }
+    //    if (result.Value == null)
+    //    {
+    //        executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"OnDocumentSelected: No stored results found for id {id}.");
+    //        return;
+    //    }
+    //    SelectedDocument = _demoDocumentEmpty;
+    //    DisplayDocument(result.Value.AnalysisResult);
+    //}
 
     private async Task AnalyzeDocument()
     {
@@ -58,7 +52,7 @@ public partial class DocumentAnalysis
         {
             sendDocumentAnalysBusy = true;
 
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Starting analysis for {SelectedDocument} with model: {SelectedModel}", clearSteps: true);
+            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Starting analysis for {DocumentSelected} with model: {SelectedModel}", clearSteps: true);
 
             await RefreshUI();
 
@@ -67,7 +61,7 @@ public partial class DocumentAnalysis
 
             if (result == null)
             {
-                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: No analysis result returned for {SelectedDocument} with model: {SelectedModel}");
+                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: No analysis result returned for {DocumentSelected} with model: {SelectedModel}");
                 return;
             }
 
@@ -95,8 +89,8 @@ public partial class DocumentAnalysis
         var request = new DocumentAnalysisRequestDto()
         {
             ModelName = SelectedModel,
-            FileName = Path.GetFileName(SelectedDocument),
-            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDocument.TrimStart('/'))),
+            FileName = Path.GetFileName(DocumentSelected),
+            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, DocumentSelected.TrimStart('/'))),
             AddDocumentToStore = true
 
         };
@@ -109,7 +103,7 @@ public partial class DocumentAnalysis
             throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
         }
 
-        executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Received analysis result for {SelectedDocument} with model: {SelectedModel}");
+        executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Received analysis result for {DocumentSelected} with model: {SelectedModel}");
 
         var responseDto = result.Value;
 
@@ -125,107 +119,107 @@ public partial class DocumentAnalysis
         return result.Value;
     }
 
-    private async Task GetAllDocumentAnalysisResults()
-    {
-        var nameOfMethod = nameof(GetAllDocumentAnalysisResults);
-        try
-        {
-            getStoredResultsBusy = true;
+    //private async Task GetAllDocumentAnalysisResults()
+    //{
+    //    var nameOfMethod = nameof(GetAllDocumentAnalysisResults);
+    //    try
+    //    {
+    //        getStoredResultsBusy = true;
 
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Fetching results from store.", clearSteps: true);
+    //        executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Fetching results from store.", clearSteps: true);
 
-            await RefreshUI();
+    //        await RefreshUI();
 
-            var request = new DocumentAnalysisRequestDto()
-            {
-                ModelName = SelectedModel,
-                FileName = Path.GetFileName(SelectedDocument),
-                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDocument.TrimStart('/'))),
-                AddDocumentToStore = true
+    //        var request = new DocumentAnalysisRequestDto()
+    //        {
+    //            ModelName = SelectedModel,
+    //            FileName = Path.GetFileName(DocumentSelected),
+    //            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, DocumentSelected.TrimStart('/'))),
+    //            AddDocumentToStore = true
 
-            };
+    //        };
 
-            var result = await apiClient.GetAsync<List<DocumentAnalysisStoredResult>>("api/store/document/analysis/results");
+    //        var result = await apiClient.GetAsync<List<DocumentAnalysisStoredResult>>("api/store/document/analysis/results");
 
 
-            if (!result.IsSuccess)
-            {
-                throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
-            }
+    //        if (!result.IsSuccess)
+    //        {
+    //            throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
+    //        }
 
-            if ( result.Value == null || result.Value.Count == 0)
-            {
-                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: No stored results found.");
-            }
-            else
-            {
-                _storedResults = result.Value;
-                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Retrieved {result.Value.Count} stored results.");
-            }
+    //        if ( result.Value == null || result.Value.Count == 0)
+    //        {
+    //            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: No stored results found.");
+    //        }
+    //        else
+    //        {
+    //            _storedResults = result.Value;
+    //            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Retrieved {result.Value.Count} stored results.");
+    //        }
              
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Error while extraction document results from store.");
-        }
-        finally
-        {
-            getStoredResultsBusy = false;
-        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Logger.LogError(ex, "Error while extraction document results from store.");
+    //    }
+    //    finally
+    //    {
+    //        getStoredResultsBusy = false;
+    //    }
 
 
-    }
+    //}
 
-    private async Task GetStoredResultByIndex(int index)
-    {
-        var nameOfMethod = nameof(GetStoredResultByIndex);
-        try
-        {
-            getStoredResultsBusy = true;
+    //private async Task GetStoredResultByIndex(int index)
+    //{
+    //    var nameOfMethod = nameof(GetStoredResultByIndex);
+    //    try
+    //    {
+    //        getStoredResultsBusy = true;
 
-            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Fetching results from store.", clearSteps: true);
+    //        executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Fetching results from store.", clearSteps: true);
 
-            await RefreshUI();
+    //        await RefreshUI();
 
-            var request = new DocumentAnalysisRequestDto()
-            {
-                ModelName = SelectedModel,
-                FileName = Path.GetFileName(SelectedDocument),
-                Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDocument.TrimStart('/'))),
-                AddDocumentToStore = true
+    //        var request = new DocumentAnalysisRequestDto()
+    //        {
+    //            ModelName = SelectedModel,
+    //            FileName = Path.GetFileName(SelectedDocument),
+    //            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDocument.TrimStart('/'))),
+    //            AddDocumentToStore = true
 
-            };
+    //        };
 
-            var result = await apiClient.GetAsync<List<DocumentAnalysisStoredResult>>("api/store/document/analysis");
-
-
-            if (!result.IsSuccess)
-            {
-                throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
-            }
-
-            if (result.Value == null || result.Value.Count == 0)
-            {
-                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: No stored results found.");
-            }
-            else
-            {
-                _storedResults = result.Value;
-                executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Retrieved {result.Value.Count} stored results.");
-            }
-
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Error while extraction document results from store.");
-        }
-        finally
-        {
-            getStoredResultsBusy = false;
-        }
+    //        var result = await apiClient.GetAsync<List<DocumentAnalysisStoredResult>>("api/store/document/analysis");
 
 
-    }
+    //        if (!result.IsSuccess)
+    //        {
+    //            throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
+    //        }
+
+    //        if (result.Value == null || result.Value.Count == 0)
+    //        {
+    //            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: No stored results found.");
+    //        }
+    //        else
+    //        {
+    //            _storedResults = result.Value;
+    //            executionLog = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameOfMethod}: Retrieved {result.Value.Count} stored results.");
+    //        }
+
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Logger.LogError(ex, "Error while extraction document results from store.");
+    //    }
+    //    finally
+    //    {
+    //        getStoredResultsBusy = false;
+    //    }
+
+
+    //}
 
     private void DisplayDocument(DocumentAnalysisResult? result)
     {

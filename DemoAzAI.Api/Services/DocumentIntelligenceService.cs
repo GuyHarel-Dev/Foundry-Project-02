@@ -19,15 +19,12 @@ namespace DemoAzAI.Api.Services
         {
             var documentHash = request.BytesHash;
 
-            if (await DocumentExistsInStore(documentHash))
-                return DocumentExistsResponse(request.FileName);
-
             logger.LogInformation($"Sending document {request.FileName} to analysis model");
 
             var result = await SendAnalyseDocumentRequestAsync(request, cancellationToken);
 
-            if (request.AddDocumentToStore)
-                return await StoreDocumentAsync(request.FileName, documentHash, result);
+            //if (request.AddDocumentToStore)
+            //    return await StoreDocumentAsync(request.FileName, documentHash, result);
 
             logger.LogInformation($"Returning response");
 
@@ -43,21 +40,6 @@ namespace DemoAzAI.Api.Services
             return new AnalyzeDocumentOptions(
                 modelName,
                 bytes);
-        }
-
-        private async Task<bool> DocumentExistsInStore(string documentHash)
-        {
-            return documentAnalysisStoreService.ExistsAsync(documentHash).GetAwaiter().GetResult();
-        }
-
-        private DocumentAnalysisResponseDto DocumentExistsResponse(string fileName)
-        {
-            var response = new DocumentAnalysisResponseDto
-            {
-                Status = $"Document {fileName} already exists in the store"
-            };
-            logger.LogWarning(response.Status);
-            return response;
         }
 
         private async Task<DocumentAnalysisResponseDto> SendAnalyseDocumentRequestAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken)

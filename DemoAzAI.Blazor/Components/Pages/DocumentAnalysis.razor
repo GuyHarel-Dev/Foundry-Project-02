@@ -48,7 +48,7 @@
         </form>
     </div>
 
-    <div class="document-result-from-store">
+ @*    <div class="document-result-from-store">
         <p>Select a document analysis result from the store:</p>
         <select class="model-select" @onchange="OnDocumentSelected">
             @if (!_storedResults.Any())
@@ -70,14 +70,12 @@
                 <span>Get stored results</span>
             </button>
 
-            <button @onclick="Test">Test buttont</button>
-
             @if (getStoredResultsBusy)
             {
                 <LoadingPanel Message="Getting document analysis results from store..." />
             }
         </form>
-    </div>
+    </div> *@
 </div>
 
 
@@ -87,23 +85,23 @@
     private string DocumentSelected { get; set; } = string.Empty;
 
     private bool sendDocumentAnalysBusy;
-    private bool getStoredResultsBusy;
+    // private bool getStoredResultsBusy;
 
     public string SelectedModel { get; set; } = _readModel;
-    public string SelectedDocument { get; set; } = _demoDocumentEmpty;
+    // public string SelectedDocument { get; set; } = _demoDocumentEmpty;
 
     private static string _readModel = "prebuilt-read";
     private static string _layoutModel = "prebuilt-layout";
     private static string _invoiceModel = "prebuilt-invoice";
     private static string _receiptModel = "prebuilt-receipt";
 
-    private static string _demoDocumentEmpty = "/Pdf/empty-pdf.pdf";
-    private static string _demoDocumentOccularCenter = "/Pdf/fake-occular-center.pdf";
-    private static string _demoDocumentLampReceit = "/Pdf/fake-lamp-receit.pdf";
-    private static string _demoDocumentfKayakCertificate = "/Pdf/fake-kayak-certificate.pdf";
+    // private static string _demoDocumentEmpty = "/Pdf/empty-pdf.pdf";
+    // private static string _demoDocumentOccularCenter = "/Pdf/fake-occular-center.pdf";
+    // private static string _demoDocumentLampReceit = "/Pdf/fake-lamp-receit.pdf";
+    // private static string _demoDocumentfKayakCertificate = "/Pdf/fake-kayak-certificate.pdf";
 
-    private List<DocumentAnalysisStoredResult> _storedResults = new();
-    public string SelectedStoredResult { get; set; } = string.Empty;
+    // private List<DocumentAnalysisStoredResult> _storedResults = new();
+    // public string SelectedStoredResult { get; set; } = string.Empty;
 
     private string executionLog = string.Empty;
     private string statistics = string.Empty;
