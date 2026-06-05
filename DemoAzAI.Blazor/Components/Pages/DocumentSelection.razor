@@ -2,8 +2,10 @@
 @inherits BasePage
 @rendermode InteractiveServer
 
+@using DemoAzAI.Blazor.Services.UI
 @using DemoAzAI.Blazor.Components.Fragments
 
+@inject UiStateContainer UiState
 
 <PageTitle>Document Selection</PageTitle>
 
@@ -16,8 +18,7 @@
     <div class="title">Select or upload a document:</div>
     <div class="select-document">
         <label for="@SelectedDocument">Demo documents:</label>
-        <select class="model-select"
-                @bind="SelectedDocument">
+        <select class="model-select" @onchange="OnDocumentSelected">
             <option value="@_demoDocumentEmpty">@_demoDocumentEmpty</option>
             <option value="@_demoDocumentOccularCenter">@_demoDocumentOccularCenter</option>
             <option value="@_demoDocumentLampReceit">@_demoDocumentLampReceit</option>
@@ -40,12 +41,19 @@
 </div>
 
 @code {
-    public string SelectedDocument { get; set; } = _demoDocumentOccularCenter;
+    public string SelectedDocument { get; set; } = _demoDocumentEmpty;
 
     private static string _demoDocumentEmpty = "/Pdf/empty-pdf.pdf";
     private static string _demoDocumentOccularCenter = "/Pdf/fake-occular-center.pdf";
     private static string _demoDocumentLampReceit = "/Pdf/fake-lamp-receit.pdf";
     private static string _demoDocumentfKayakCertificate = "/Pdf/fake-kayak-certificate.pdf";
+
+    private async Task OnDocumentSelected(ChangeEventArgs e)
+    {
+        SelectedDocument = e.Value?.ToString() ?? "";
+        UiState.DocumentSelected = SelectedDocument;
+
+    }
 
     private void UploadDocument()
     {

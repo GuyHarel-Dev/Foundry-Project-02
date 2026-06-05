@@ -5,6 +5,7 @@ using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
 using System.Text;
+using DemoAzAI.Blazor.Services.UI;
 
 namespace DemoAzAI.Blazor.Components.Pages;
 
@@ -19,11 +20,19 @@ public partial class DocumentAnalysis
     [Inject]
     private IStepTracer StepTracer { get; set; } = default!;
 
+    [Inject]
+    private UiStateContainer UiState { get; set;  } = default!;
+
 
     private void Test()
     {
         var abc = 123;
 
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        DocumentSelected = UiState.DocumentSelected;
     }
 
     private async Task OnDocumentSelected(ChangeEventArgs e)

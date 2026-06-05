@@ -15,7 +15,13 @@
                  Description="Description: Intelligent document analysis service.">
 </PageDescription>
 
-<div class="model-document-selection-area">
+<div class="document-selected-area">
+
+    <div>Document selected: <span>@DocumentSelected</span></div>
+
+</div>
+
+<div class="model-selection-area">
     <div class="model-selection-area">
         <p>Select a model for the analysis:</p>
 
@@ -77,6 +83,9 @@
 
 
 @code {
+
+    private string DocumentSelected { get; set; } = string.Empty;
+
     private bool sendDocumentAnalysBusy;
     private bool getStoredResultsBusy;
 

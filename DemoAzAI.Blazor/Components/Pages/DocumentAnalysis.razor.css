@@ -1,11 +1,21 @@
-﻿.model-document-selection-area {
-    display: flex;
-    flex-wrap: wrap;
+﻿.document-selected-area {
+    background-color: #300c4d;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    padding: 1px;
+    color: white;
+    font-size: 14px;
+    padding-top:10px;
+    padding-bottom:10px;
 }
 
+.document-selected-area  span {
+    background-color: #ffffff;
+    color: black;
+}
 
-    .model-document-selection-area .model-selection-area,
-    .model-document-selection-area .document-result-from-store {
+/*    .model-selection-area .model-selection-area,
+    .model-selection-area .document-result-from-store {
         background-color: #444343;
         border: 1px solid #d0d0d0;
         border-radius: 6px;
@@ -14,16 +24,16 @@
         font-size: 14px;
     }
 
-        .model-document-selection-area .model-selection-area label,
-        .model-document-selection-area .document-result-from-store label {
+        .model-selection-area .model-selection-area label,
+        .model-selection-area .document-result-from-store label {
             margin-right: 20px;
         }
 
-        .model-document-selection-area .model-selection-area button,
-        .model-document-selection-area .document-result-from-store button {
+        .model-selection-area .model-selection-area button,
+        .model-selection-area .document-result-from-store button {
             border: 1px solid #4f6a6a;
             color: white;
             margin-top: 10px;
             font-size: 14px;
-        }
+        }*/
 
