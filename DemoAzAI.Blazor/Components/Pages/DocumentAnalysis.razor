@@ -38,19 +38,41 @@
             </select>
         </div>
 
-        <div class="model-analysis">
-            <form @onsubmit="AnalyzeDocument">
+        <div class="model-selection-buttons">
+            <div class="model-analysis">
+                <form @onsubmit="AnalyzeDocument">
 
-                <button type="submit" class="ask-button" disabled="@sendDocumentAnalysBusy">
-                    <span>Analyse document</span>
-                </button>
+                    <button type="submit" class="ask-button" disabled="@sendDocumentAnalysBusy">
+                        <span>Analyse document</span>
+                    </button>
 
-                @if (sendDocumentAnalysBusy)
-                {
-                    <LoadingPanel Message="Sending document to ai document analysis model..." />
-                }
-            </form>
+                    @if (sendDocumentAnalysBusy)
+                    {
+                        <LoadingPanel Message="Sending document to ai document analysis model..." />
+                    }
+                </form>
+
+
+            </div>
+
+        
+            <div class="model-save-store">
+                <form @onsubmit="SaveAnalysisToStore">
+
+                    <button type="submit" class="ask-button">
+                        <span>Save analysis to store</span>
+                    </button>
+
+                    @if (sendDocumentAnalysBusy)
+                    {
+                        <LoadingPanel Message="Savind document analysis to application store..." />
+                    }
+                </form>
+
+
+            </div>
         </div>
+    
 
     </div>
 

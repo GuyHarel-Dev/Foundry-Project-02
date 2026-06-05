@@ -34,6 +34,9 @@
         align-items: center;
     }
 
-    .page-area .model-analysis {
-        margin-left: auto;
-    }
+        .page-area .model-selection-area .model-selection-buttons {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }

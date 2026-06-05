@@ -83,7 +83,10 @@ public partial class DocumentAnalysis
         return result.Value;
     }
 
-  
+   private async Task SaveAnalysisToStore()
+    {
+
+    }
 
     private void DisplayDocument(DocumentAnalysisResult? result)
     {
