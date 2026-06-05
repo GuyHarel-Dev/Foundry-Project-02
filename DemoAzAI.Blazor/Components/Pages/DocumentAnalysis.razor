@@ -8,76 +8,64 @@
 @using DemoAzAI.Domain.Models.DocumentAnalysis
 
 
-<PageTitle>Document Analysis</PageTitle>
+<div class="title-area">
+    <PageTitle>Document Analysis Page</PageTitle>
 
-<PageDescription Title="Document Analysis"
-                 Model="Ai service: Document Intelligence / Form Recognizer (Microsoft Azure)"
-                 Description="Description: Intelligent document analysis service.">
-</PageDescription>
-
-<div class="document-selected-area">
-
-    <div>Document selected: <span>@DocumentSelected</span></div>
+    <PageDescription Title="Document Analysis Page"
+                     Model="Ai service: Document Intelligence / Form Recognizer (Microsoft Azure)"
+                     Description="Description: Intelligent document analysis service.">
+    </PageDescription>
 
 </div>
 
-<div class="model-selection-area">
-    <div class="model-selection-area">
-        <p>Select a model for the analysis:</p>
-
-        <label for="@SelectedModel">Available models:</label>
-
-        <select class="model-select"
-                @bind="SelectedModel">
-            <option value="@_readModel">@_readModel</option>
-            <option value="@_layoutModel">@_layoutModel</option>
-            <option value="@_invoiceModel">@_invoiceModel</option>
-            <option value="@_receiptModel">@_receiptModel</option>
-        </select>
-
-        <form @onsubmit="AnalyzeDocument">
-
-            <button type="submit" class="ask-button" disabled="@sendDocumentAnalysBusy">
-                <span>Analyse document</span>
-            </button>
-
-            @if (sendDocumentAnalysBusy)
-            {
-                <LoadingPanel Message="Sending document to ai document analysis model..." />
-            }
-        </form>
+<div class="page-area">
+    <div class="document-selected-area">
+        <div>Document selected: <span>@DocumentSelected</span></div>
     </div>
 
- @*    <div class="document-result-from-store">
-        <p>Select a document analysis result from the store:</p>
-        <select class="model-select" @onchange="OnDocumentSelected">
-            @if (!_storedResults.Any())
-            {
-                <option value="">No results loaded...</option>
-            }
-            else
-            {
-                <option value="-1">(select a document...)</option>
-                @foreach (var result in _storedResults)
+    <div class="model-selection-area">
+        <div class="model-selection">
+            <p>Select a model for the analysis:</p>
+
+            <label for="@SelectedModel">Available models:</label>
+
+            <select class="model-select"
+                    @bind="SelectedModel">
+                <option value="@_readModel">@_readModel</option>
+                <option value="@_layoutModel">@_layoutModel</option>
+                <option value="@_invoiceModel">@_invoiceModel</option>
+                <option value="@_receiptModel">@_receiptModel</option>
+            </select>
+        </div>
+
+        <div class="model-analysis">
+            <form @onsubmit="AnalyzeDocument">
+
+                <button type="submit" class="ask-button" disabled="@sendDocumentAnalysBusy">
+                    <span>Analyse document</span>
+                </button>
+
+                @if (sendDocumentAnalysBusy)
                 {
-                    <option value="@result.Id">@result</option>
+                    <LoadingPanel Message="Sending document to ai document analysis model..." />
                 }
-            }
-        </select>
-        <form @onsubmit="GetAllDocumentAnalysisResults">
+            </form>
+        </div>
 
-            <button type="submit" class="ask-button">
-                <span>Get stored results</span>
-            </button>
+    </div>
 
-            @if (getStoredResultsBusy)
-            {
-                <LoadingPanel Message="Getting document analysis results from store..." />
-            }
-        </form>
-    </div> *@
+    <div class="document-analysis-area">
+        <div class="document-extracted-text">
+            <label for="documentExtractedText">Extracted text:</label>
+            <textarea>@documentExtractedText</textarea>
+        </div>
+
+        <div class="document-extracted-sections">
+            <label for="documentExtractedSections">Extracted sections:</label>
+            <textarea>@documentExtractedSections</textarea>
+        </div>
+    </div>
 </div>
-
 
 
 @code {
@@ -85,27 +73,14 @@
     private string DocumentSelected { get; set; } = string.Empty;
 
     private bool sendDocumentAnalysBusy;
-    // private bool getStoredResultsBusy;
 
     public string SelectedModel { get; set; } = _readModel;
-    // public string SelectedDocument { get; set; } = _demoDocumentEmpty;
 
     private static string _readModel = "prebuilt-read";
     private static string _layoutModel = "prebuilt-layout";
     private static string _invoiceModel = "prebuilt-invoice";
     private static string _receiptModel = "prebuilt-receipt";
 
-    // private static string _demoDocumentEmpty = "/Pdf/empty-pdf.pdf";
-    // private static string _demoDocumentOccularCenter = "/Pdf/fake-occular-center.pdf";
-    // private static string _demoDocumentLampReceit = "/Pdf/fake-lamp-receit.pdf";
-    // private static string _demoDocumentfKayakCertificate = "/Pdf/fake-kayak-certificate.pdf";
-
-    // private List<DocumentAnalysisStoredResult> _storedResults = new();
-    // public string SelectedStoredResult { get; set; } = string.Empty;
-
-    private string executionLog = string.Empty;
-    private string statistics = string.Empty;
-
-    private string documentText = string.Empty;
-    private string documentContent = string.Empty;
+    private string documentExtractedText = string.Empty;
+    private string documentExtractedSections = string.Empty;
 }

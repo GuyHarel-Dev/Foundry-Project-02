@@ -1,7 +1,6 @@
 ﻿.description_area {
     background-color: #300c4d;
     font-size: 16px;
-    padding: 10px;
     border: 1px solid #d0d0d0;
     border-radius: 6px;
     padding: 1px;
@@ -10,11 +9,10 @@
     margin-bottom:10px;
 }
     .description_area .title {
-        background-color: #0b2464
+       font-size: 20px;
     }
 
     .description_area .model {
-
     }
 
     .description_area .description {
