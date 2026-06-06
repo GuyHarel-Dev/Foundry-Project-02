@@ -27,7 +27,7 @@ public partial class DocumentAnalysis
 
     protected override async Task OnInitializedAsync()
     {
-        DocumentSelected = UiState.DocumentSelection.DocumentSelected;
+        documentSelected = UiState.DocumentSelection.DocumentSelected;
     }
 
     private async Task AnalyzeDocument()
@@ -42,7 +42,7 @@ public partial class DocumentAnalysis
 
             if (result == null)
             {
-                Logger.LogWarning($"No analysis result returned for {DocumentSelected} with model: {SelectedModel}");
+                Logger.LogWarning($"No analysis result returned for {documentSelected} with model: {SelectedModel}");
                 return;
             }
 
@@ -66,8 +66,8 @@ public partial class DocumentAnalysis
         var request = new DocumentAnalysisRequestDto()
         {
             ModelName = SelectedModel,
-            FileName = Path.GetFileName(DocumentSelected),
-            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, DocumentSelected.TrimStart('/')))
+            FileName = Path.GetFileName(documentSelected),
+            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, documentSelected.TrimStart('/')))
         };
 
         request.BytesHash = Convert.ToHexString(SHA256.HashData(request.Bytes));

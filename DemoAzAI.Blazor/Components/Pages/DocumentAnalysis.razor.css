@@ -12,12 +12,18 @@
     }
 
     .page-area .document-analysis-result-area {
-        height: 85%;
+        height: 65%;
+    }
+
+
+    .page-area .execution-steps-area {
+        height: 20%;
     }
 
     .page-area .document-selected-area,
     .page-area .document-analysis-area,
-    .page-area .document-analysis-result-area {
+    .page-area .document-analysis-result-area,
+    .page-area .execution-steps-area {
         background-color: #300c4d;
         border: 1px solid #d0d0d0;
         border-radius: 6px;

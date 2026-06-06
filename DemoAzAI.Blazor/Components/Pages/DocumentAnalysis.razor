@@ -20,7 +20,7 @@
 
 <div class="page-area">
     <div class="document-selected-area">
-        <div>Document selected: <span>@DocumentSelected</span></div>
+        <div>Document selected: <span>@documentSelected</span></div>
     </div>
 
     <div class="document-analysis-area">
@@ -85,12 +85,20 @@
             <textarea>@documentExtractedSections</textarea>
         </div>
     </div>
+
+    <div class="execution-steps-area">
+        <ExecutionStepsPanel ExecutionSteps="@executionSteps"></ExecutionStepsPanel>
+    </div>
+
+
 </div>
 
 
 @code {
 
-    private string DocumentSelected { get; set; } = string.Empty;
+    private string executionSteps { get; set; } = string.Empty;
+
+    private string documentSelected { get; set; } = string.Empty;
 
     private bool sendDocumentAnalysBusy;
     private bool storeDocumentAnalysBusy;
