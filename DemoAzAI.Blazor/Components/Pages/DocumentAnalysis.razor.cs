@@ -35,8 +35,8 @@ public partial class DocumentAnalysis
         try
         {
             sendDocumentAnalysBusy = true;
-            await RefreshUI();
 
+            AddStep(nameof(SaveAnalysisToStore), $"Starting analysis for document {documentSelected} using model {SelectedModel}");
 
             var result = await SendAnalyzeDocumentRequest();
 
@@ -48,6 +48,9 @@ public partial class DocumentAnalysis
 
             DisplayDocument(result.DocumentAnalysisResult);
 
+            AddStep(nameof(SaveAnalysisToStore), $"Analysis completed for document {documentSelected} using model {SelectedModel}");
+
+            sendDocumentAnalysBusy = false;
         }
         catch (Exception ex)
         {
@@ -55,7 +58,7 @@ public partial class DocumentAnalysis
         }
         finally
         {
-            sendDocumentAnalysBusy = false;
+            executionSteps = StepTracer.GetSteps();
         }
 
     }
@@ -79,7 +82,7 @@ public partial class DocumentAnalysis
 
         if (!result.IsSuccess)
         {
-            throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
+            AddStep(nameof(SaveAnalysisToStore), $"Error during analysis of {documentSelected}. Message = {result.ErrorMessage}");
         }
 
 
@@ -117,6 +120,8 @@ public partial class DocumentAnalysis
 
             AddStep(nameof(SaveAnalysisToStore), $"Document {analysis.FileName} saved to store.");
 
+            storeDocumentAnalysBusy = false;
+
         }
         catch (Exception ex)
         {
@@ -124,7 +129,7 @@ public partial class DocumentAnalysis
         }
         finally
         {
-            storeDocumentAnalysBusy = false;
+            executionSteps = StepTracer.GetSteps();
         }
     }
 
