@@ -40,3 +40,10 @@
             align-items: center;
             gap: 10px
         }
+
+.document-selected-area span {
+    font-size: 1rem;
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 4px;
+}

@@ -11,7 +11,6 @@ namespace DemoAzAI.Api.Services
 {
     public class DocumentIntelligenceService(
             DocumentIntelligenceClient client,
-            IDocumentAnalysisStoreService documentAnalysisStoreService,
             ILogger<DocumentIntelligenceService> logger)
         : IDocumentIntelligenceService
     {
@@ -22,9 +21,6 @@ namespace DemoAzAI.Api.Services
             logger.LogInformation($"Sending document {request.FileName} to analysis model");
 
             var result = await SendAnalyseDocumentRequestAsync(request, cancellationToken);
-
-            //if (request.AddDocumentToStore)
-            //    return await StoreDocumentAsync(request.FileName, documentHash, result);
 
             logger.LogInformation($"Returning response");
 
@@ -59,26 +55,6 @@ namespace DemoAzAI.Api.Services
                 FileName = request.FileName,
                 DocumentAnalysisResult = docAnalysisResult
             };
-
-            response.Status = "Document analyzed";
-            logger.LogInformation(response.Status);
-
-            return response;
-        }
-
-        private async Task<DocumentAnalysisResponseDto> StoreDocumentAsync(string fileName, string documentHash, DocumentAnalysisResponseDto response)
-        {
-            if (response.DocumentAnalysisResult == null)
-            {
-                response.Status = "No document analysis result to store";
-                logger.LogWarning($"{response.Status}");
-                return response;
-            }
-
-            var status = await documentAnalysisStoreService.SaveAsync(fileName, documentHash, response.DocumentAnalysisResult);
-
-            response.Status = $"Document {fileName} added to store";
-            logger.LogWarning($"{response.Status}");
 
             return response;
         }

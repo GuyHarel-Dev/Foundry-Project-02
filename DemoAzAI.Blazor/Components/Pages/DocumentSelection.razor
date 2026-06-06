@@ -51,7 +51,7 @@
     private async Task OnDocumentSelected(ChangeEventArgs e)
     {
         SelectedDocument = e.Value?.ToString() ?? "";
-        UiState.DocumentSelected = SelectedDocument;
+        UiState.DocumentSelection.DocumentSelected = SelectedDocument;
 
     }
 

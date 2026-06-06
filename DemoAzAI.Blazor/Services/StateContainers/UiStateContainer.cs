@@ -1,17 +1,13 @@
-﻿namespace DemoAzAI.Blazor.Services.UI
+﻿using DemoAzAI.Blazor.Services.StateContainers;
+using DemoAzAI.Domain.Models.DocumentAnalysis;
+
+namespace DemoAzAI.Blazor.Services.UI
 {
-    public class UiStateContainer : IDisposable
+    public class UiStateContainer
     {
-        public string DocumentSelected { get; set; } = "(empty) Select a document in page Document Selection";
-
-        public void Reset()
-        {
-            DocumentSelected = string.Empty;
-        }
-
-        public void Dispose()
-        {
-            Reset();
-        }
+        public UiStateDocumentSelection DocumentSelection { get; set; } = new UiStateDocumentSelection();
+        public UiStateDocumentAnalysis DocumentAnalysis { get; set; } = new UiStateDocumentAnalysis();
     }
+    
+
 }

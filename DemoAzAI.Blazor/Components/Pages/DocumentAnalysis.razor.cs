@@ -26,7 +26,7 @@ public partial class DocumentAnalysis
 
     protected override async Task OnInitializedAsync()
     {
-        DocumentSelected = UiState.DocumentSelected;
+        DocumentSelected = UiState.DocumentSelection.DocumentSelected;
     }
 
     private async Task AnalyzeDocument()
