@@ -23,8 +23,8 @@
         <div>Document selected: <span>@DocumentSelected</span></div>
     </div>
 
-    <div class="model-selection-area">
-        <div class="model-selection">
+    <div class="document-analysis-area">
+        <div class="model-selection-area">
             <p>Select a model for the analysis:</p>
 
             <label for="@SelectedModel">Available models:</label>
@@ -38,8 +38,8 @@
             </select>
         </div>
 
-        <div class="model-selection-buttons">
-            <div class="model-analysis">
+        <div class="analyse-store-document-area">
+            <div class="analyse-document-area">
                 <form @onsubmit="AnalyzeDocument">
 
                     <button type="submit" class="ask-button" disabled="@sendDocumentAnalysBusy">
@@ -55,16 +55,13 @@
 
             </div>
 
-        
-            <div class="model-save-store">
+            <div class="store-document-area">
                 <form @onsubmit="SaveAnalysisToStore">
-
-                    <h3>@SaveAnalysisToStoreButtonDisabled()</h3>
                     <button type="submit" class="ask-button" disabled="@SaveAnalysisToStoreButtonDisabled()">
                         <span>Save analysis to store</span>
                     </button>
 
-                    @if (sendDocumentAnalysBusy)
+                    @if (storeDocumentAnalysBusy)
                     {
                         <LoadingPanel Message="Saving document analysis to application store..." />
                     }
@@ -73,11 +70,11 @@
 
             </div>
         </div>
-    
 
+    
     </div>
 
-    <div class="document-analysis-area">
+    <div class="document-analysis-result-area">
         <div class="document-extracted-text">
             <label for="documentExtractedText">Extracted text:</label>
             <textarea>@documentExtractedText</textarea>
@@ -96,6 +93,7 @@
     private string DocumentSelected { get; set; } = string.Empty;
 
     private bool sendDocumentAnalysBusy;
+    private bool storeDocumentAnalysBusy;
 
     public string SelectedModel { get; set; } = _readModel;
 

@@ -88,30 +88,52 @@ public partial class DocumentAnalysis
 
     private async Task SaveAnalysisToStore()
     {
-        var analysis = UiState.DocumentAnalysis.DocumentAnalysis;
-
-        if (analysis == null)
-            return;
-
-        var request = new StoredDocumentAnalysisRequestDto()
+        try
         {
-            FileName = analysis.FileName,
-            BytesHash = analysis.BytesHash,
-            DocumentAnalysisResult = analysis.DocumentAnalysisResult
-        };
+            storeDocumentAnalysBusy = true;
 
-        var result = await apiClient.PostAsync<StoredDocumentAnalysisRequestDto,
-            StoredDocumentAnalysisResponseDto>("api/store/document/analysis", request);
+            var analysis = UiState.DocumentAnalysis.DocumentAnalysis;
+
+            if (analysis == null) 
+                throw new ApplicationException("No document analysis available to save to store.");
+
+            AddStep(nameof(SaveAnalysisToStore), $"Saving document analysis for {analysis.FileName} to store.");
+
+            var request = new StoredDocumentAnalysisRequestDto()
+            {
+                FileName = analysis.FileName,
+                BytesHash = analysis.BytesHash,
+                DocumentAnalysisResult = analysis.DocumentAnalysisResult
+            };
+
+            var result = await apiClient.PostAsync<StoredDocumentAnalysisRequestDto,
+                StoredDocumentAnalysisResponseDto>("api/store/document/analysis", request);
 
 
-        if (!result.IsSuccess)
-        {
-            throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
+            if (!result.IsSuccess)
+            {
+                AddStep(nameof(SaveAnalysisToStore), $"Error while saving {analysis.FileName} to store. Message = {result.ErrorMessage}");
+            }
+
+            AddStep(nameof(SaveAnalysisToStore), $"Document {analysis.FileName} saved to store.");
+
         }
-
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error while saving document analysis to store.");
+        }
+        finally
+        {
+            storeDocumentAnalysBusy = false;
+        }
     }
 
-    public bool SaveAnalysisToStoreButtonDisabled()
+    private void AddStep(string source, string desc)
+    {
+        StepTracer.AddStep("BlazorUi", $"{source}: {desc}");
+    }
+
+    private bool SaveAnalysisToStoreButtonDisabled()
     {
         return UiState.DocumentAnalysis.DocumentAnalysis == null;
     }

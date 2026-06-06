@@ -9,7 +9,7 @@ namespace WebApi.Controllers
     [Route("api/store")]
     [ApiController]
     public class StoreController(
-        IDocumentAnalysisStoreService storeService
+        IDocumentAnalysisStoreService documentAnalysysStoreService
         ) : ControllerBase
     {
 
@@ -21,7 +21,12 @@ namespace WebApi.Controllers
                 return BadRequest();
             }
 
-            var success = await storeService.SaveAsync(request.FileName, request.BytesHash, request.DocumentAnalysisResult);
+            if (await documentAnalysysStoreService.ExistsAsync(request.BytesHash))
+            {
+                return Conflict($"Document {request.FileName} hash: {request.BytesHash} already exists.");
+            }
+
+            var success = await documentAnalysysStoreService.SaveAsync(request.FileName, request.BytesHash, request.DocumentAnalysisResult);
 
             var response = new StoredDocumentAnalysisResponseDto
             {
@@ -36,7 +41,7 @@ namespace WebApi.Controllers
         [HttpGet("document/analysis/results")]
         public async Task<ActionResult<IEnumerable<DocumentAnalysisStoredResult>>> GetAllDocumentAnalysisResults()
         {
-            var history = await storeService.GetAllAsync();
+            var history = await documentAnalysysStoreService.GetAllAsync();
 
             if (history is null || history.Any() is false)
             {
@@ -50,7 +55,7 @@ namespace WebApi.Controllers
         [HttpGet("document/analysis/results/{id}")]
         public async Task<ActionResult<DocumentAnalysisStoredResult>> GetDocumentAnalysisResultsById(string id)
         {
-            var doc = await storeService.GetByIdAsync(id);
+            var doc = await documentAnalysysStoreService.GetByIdAsync(id);
 
             if (doc is null)
             {

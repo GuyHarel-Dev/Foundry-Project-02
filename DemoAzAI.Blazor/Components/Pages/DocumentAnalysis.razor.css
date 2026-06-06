@@ -3,22 +3,21 @@
     width: 100%;
     height: 80vh;
 }
-
     .page-area .document-selected-area {
         height: 5%;
     }
 
-    .page-area .model-selection-area {
+    .page-area .document-analysis-area {
         height: 10%;
     }
 
-    .page-area .document-analysis-area {
+    .page-area .document-analysis-result-area {
         height: 85%;
     }
 
     .page-area .document-selected-area,
-    .page-area .model-selection-area,
-    .page-area .document-analysis-area {
+    .page-area .document-analysis-area,
+    .page-area .document-analysis-result-area {
         background-color: #300c4d;
         border: 1px solid #d0d0d0;
         border-radius: 6px;
@@ -29,21 +28,14 @@
         margin-bottom: 10px;
     }
 
-    .page-area .model-selection-area {
+    .page-area .document-analysis-area {
         display: flex;
         align-items: center;
     }
 
-        .page-area .model-selection-area .model-selection-buttons {
+        .page-area .document-analysis-area .analyse-store-document-area {
             margin-left: auto;
             display: flex;
             align-items: center;
             gap: 10px
         }
-
-.document-selected-area span {
-    font-size: 1rem;
-    color: #ffffff;
-    padding: 4px 12px;
-    border-radius: 4px;
-}
