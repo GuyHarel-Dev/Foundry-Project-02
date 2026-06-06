@@ -1,5 +1,4 @@
-﻿using DemoAzAI.Application.Extensions;
-
+﻿
 namespace DemoAzAI.Contracts.Api.Requests
 {
     public class DocumentAnalysisRequestDto
@@ -12,7 +11,7 @@ namespace DemoAzAI.Contracts.Api.Requests
 
         public byte[] Bytes { get; set; } = Array.Empty<byte>();
 
-        public string BytesHash => Bytes.ComputeHash();
+        public string BytesHash { get; set; } = string.Empty;
 
     }
 }

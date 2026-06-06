@@ -23,6 +23,8 @@ namespace DemoAzAI.Api.Controllers
 
             var response = await _documentIntelligence.AnalyzeDocumentAsync(request);
 
+            response.BytesHash = request.BytesHash;
+
             return Ok(response);
 
         }

@@ -1,11 +1,12 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
+using DemoAzAI.Blazor.Services.UI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
+using System.Security.Cryptography;
 using System.Text;
-using DemoAzAI.Blazor.Services.UI;
 
 namespace DemoAzAI.Blazor.Components.Pages;
 
@@ -21,7 +22,7 @@ public partial class DocumentAnalysis
     private IStepTracer StepTracer { get; set; } = default!;
 
     [Inject]
-    private UiStateContainer UiState { get; set;  } = default!;
+    private UiStateContainer UiState { get; set; } = default!;
 
 
     protected override async Task OnInitializedAsync()
@@ -36,7 +37,7 @@ public partial class DocumentAnalysis
             sendDocumentAnalysBusy = true;
             await RefreshUI();
 
-      
+
             var result = await SendAnalyzeDocumentRequest();
 
             if (result == null)
@@ -66,13 +67,15 @@ public partial class DocumentAnalysis
         {
             ModelName = SelectedModel,
             FileName = Path.GetFileName(DocumentSelected),
-            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, DocumentSelected.TrimStart('/'))),
-            AddDocumentToStore = true
-
+            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, DocumentSelected.TrimStart('/')))
         };
+
+        request.BytesHash = Convert.ToHexString(SHA256.HashData(request.Bytes));
 
         var result = await apiClient.PostAsync<DocumentAnalysisRequestDto,
             DocumentAnalysisResponseDto>("api/document/analyse", request);
+
+        UiState.DocumentAnalysis.DocumentAnalysis = result.Value;
 
         if (!result.IsSuccess)
         {
@@ -83,9 +86,34 @@ public partial class DocumentAnalysis
         return result.Value;
     }
 
-   private async Task SaveAnalysisToStore()
+    private async Task SaveAnalysisToStore()
     {
+        var analysis = UiState.DocumentAnalysis.DocumentAnalysis;
 
+        if (analysis == null)
+            return;
+
+        var request = new StoredDocumentAnalysisRequestDto()
+        {
+            FileName = analysis.FileName,
+            BytesHash = analysis.BytesHash,
+            DocumentAnalysisResult = analysis.DocumentAnalysisResult
+        };
+
+        var result = await apiClient.PostAsync<StoredDocumentAnalysisRequestDto,
+            StoredDocumentAnalysisResponseDto>("api/store/document/analysis", request);
+
+
+        if (!result.IsSuccess)
+        {
+            throw new ApplicationException($"{result.StatusCode.ToString()}, {result.ErrorMessage}");
+        }
+
+    }
+
+    public bool SaveAnalysisToStoreButtonDisabled()
+    {
+        return UiState.DocumentAnalysis.DocumentAnalysis == null;
     }
 
     private void DisplayDocument(DocumentAnalysisResult? result)

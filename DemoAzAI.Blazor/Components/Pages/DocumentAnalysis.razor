@@ -59,7 +59,8 @@
             <div class="model-save-store">
                 <form @onsubmit="SaveAnalysisToStore">
 
-                    <button type="submit" class="ask-button">
+                    <h3>@SaveAnalysisToStoreButtonDisabled()</h3>
+                    <button type="submit" class="ask-button" disabled="@SaveAnalysisToStoreButtonDisabled()">
                         <span>Save analysis to store</span>
                     </button>
 

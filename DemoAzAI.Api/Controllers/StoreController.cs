@@ -16,17 +16,17 @@ namespace WebApi.Controllers
         [HttpPost("document/analysis")]
         public async Task<ActionResult<StoredDocumentAnalysisResponseDto>> StoreDocumentAnalysis([FromBody] StoredDocumentAnalysisRequestDto request)
         {
-            if (request is null || string.IsNullOrEmpty(request.FileName) || string.IsNullOrEmpty(request.Hash) || request.DocumentAnalysisResult is null)
+            if (request is null || string.IsNullOrEmpty(request.FileName) || string.IsNullOrEmpty(request.BytesHash) || request.DocumentAnalysisResult is null)
             {
                 return BadRequest();
             }
 
-            var success = await storeService.SaveAsync(request.FileName, request.Hash, request.DocumentAnalysisResult);
+            var success = await storeService.SaveAsync(request.FileName, request.BytesHash, request.DocumentAnalysisResult);
 
             var response = new StoredDocumentAnalysisResponseDto
             {
                 FileName = request.FileName,
-                Hash = request.Hash,
+                Hash = request.BytesHash,
                 Status = success ? "Success" : "Failed"
             };
 
