@@ -2,13 +2,9 @@
 @inherits BasePage
 @rendermode InteractiveServer
 
-@using DemoAzAI.Contracts.Api.Requests
-@using DemoAzAI.Contracts.Api.Responses
 @using DemoAzAI.Application
 @using DemoAzAI.Blazor.Components.Fragments
-@using DemoAzAI.Blazor.Services.Api
 
-@inject ApiClient apiClient
 @inject IStepTracer StepTracer
 @inject ILogger<SemanticAnalysis> Logger
 
@@ -22,10 +18,10 @@
 <label for="TextToEmbed">Text to embed:</label>
 <textarea @bind="textToEmbed"></textarea>
 
-<form @onsubmit="EmbedTextLines">
-    <button type="submit">Generate Embeddings</button>
+<form @onsubmit="GetDocumentResultsFromStore">
+    <button type="submit">Get document results from store</button>
     <!-- call wait panel -->
-    @if (isBusy)
+    @if (getDocumentResultsFromStoreIsBusy)
     {
         <LoadingPanel Message="Sending text for embedding to the embedding model..."></LoadingPanel>
     }
@@ -33,14 +29,14 @@
 
 <div>
     <div>
+        <label for="executionSteps">Execution log:</label>
+        <textarea readonly value="@executionSteps"></textarea>
+
+    </div>
+    <div>
         <label for="embeddedText">Text embedding:</label>
         <textarea readonly value="@embeddedText"></textarea>
     </div>
-    <div>
-        <label for="executionSteps">Execution log:</label>
-        <textarea readonly value="@executionSteps"></textarea>
-    </div>
-
 
 </div>
 
@@ -60,7 +56,8 @@
 
 @code {
 
-    private bool isBusy;
+    private bool getDocumentResultsFromStoreIsBusy = false;
+
     private string textToEmbed = TextToEmbedDefault;
 
     private string embeddedText = string.Empty;
@@ -69,85 +66,6 @@
 
     private string semanticQuestion = string.Empty;
 
-    private async Task SemanticSearch()
-    {
-        if (string.IsNullOrWhiteSpace(semanticQuestion))
-        {
-            semanticQuestion = "Please enter a semantic question...";
-            return;
-        }
-        ;
-
-
-        searchSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SemanticSearch)}: Searching embedding store...");
-
-        var request = new EmbeddingRequestDto
-        {
-            AddEmbeddingsToStore = false,
-            TextLines = semanticQuestion
-                .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-                .ToList()
-        };
-
-        // api/embedding/search/store
-
-
-        await RefreshUI();
-    }
-
-    private async Task EmbedTextLines()
-    {
-
-        try
-        {
-            isBusy = true;
-
-            embeddedText = string.Empty;
-            executionSteps = string.Empty;
-
-            executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(EmbedTextLines)}: Starting embedding text...", clearSteps: true);
-
-            await RefreshUI();
-
-            List<string> lines = textToEmbed
-                .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-                .ToList();
-
-            var request = new EmbeddingRequestDto
-            {
-                AddEmbeddingsToStore = true,
-                TextLines = lines
-            };
-
-            var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed/chunks", request);
-
-            if (!result.IsSuccess)
-            {
-                executionSteps = "API returned no data.";
-                Logger.LogInformation(result.ErrorMessage);
-                return;
-
-            }
-
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Error while embedding text lines.");
-        }
-        finally
-        {
-            isBusy = false;
-        }
-
-    }
-
-
-
-    
-
-    private static string TextToEmbedDefault = @"Cats are playful pets
-Dogs are loyal animals
-Pizza is delicious
-Machine learning uses vectors";
+  
 
 }

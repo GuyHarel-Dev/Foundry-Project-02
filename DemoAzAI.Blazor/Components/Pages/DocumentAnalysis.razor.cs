@@ -32,11 +32,14 @@ public partial class DocumentAnalysis
 
     private async Task AnalyzeDocument()
     {
+        var stepSource = $"UI DocumentAnalysis:{nameof(AnalyzeDocument)}";
         try
         {
-            sendDocumentAnalysBusy = true;
+            StepTracer.ClearSteps();
 
-            AddStep(nameof(SaveAnalysisToStore), $"Starting analysis for document {documentSelected} using model {SelectedModel}");
+            sendDocumentAnalysisBusy = true;
+
+            StepTracer.AddStep($"{stepSource}:", $"Starting analysis for document {documentSelected} using model {SelectedModel}");
 
             var result = await SendAnalyzeDocumentRequest();
 
@@ -48,19 +51,21 @@ public partial class DocumentAnalysis
 
             DisplayDocument(result.DocumentAnalysisResult);
 
-            AddStep(nameof(SaveAnalysisToStore), $"Analysis completed for document {documentSelected} using model {SelectedModel}");
+            StepTracer.AddStep($"{stepSource}:", $"Analysis completed for document {documentSelected} using model {SelectedModel}");
 
-            sendDocumentAnalysBusy = false;
         }
         catch (Exception ex)
         {
+            StepTracer.AddStep($"{stepSource}:", ex.Message);
+
             Logger.LogError(ex, "Error while processing document for analysis.");
         }
         finally
         {
-            executionSteps = StepTracer.GetSteps();
+            sendDocumentAnalysisBusy = false;
         }
 
+        executionSteps = StepTracer.GetSteps();
     }
 
     private async Task<DocumentAnalysisResponseDto?> SendAnalyzeDocumentRequest()
@@ -82,7 +87,7 @@ public partial class DocumentAnalysis
 
         if (!result.IsSuccess)
         {
-            AddStep(nameof(SaveAnalysisToStore), $"Error during analysis of {documentSelected}. Message = {result.ErrorMessage}");
+            StepTracer.AddStep(nameof(SaveAnalysisToStore), $"Error during analysis of {documentSelected}. Message = {result.ErrorMessage}");
         }
 
 
@@ -91,16 +96,19 @@ public partial class DocumentAnalysis
 
     private async Task SaveAnalysisToStore()
     {
+        var stepSource = $"UI DocumentAnalysis:{nameof(SaveAnalysisToStore)}";
+
         try
         {
-            storeDocumentAnalysBusy = true;
+            storeDocumentAnalysisBusy = true;
+            StepTracer.ClearSteps();
 
             var analysis = UiState.DocumentAnalysis.DocumentAnalysis;
 
             if (analysis == null) 
                 throw new ApplicationException("No document analysis available to save to store.");
 
-            AddStep(nameof(SaveAnalysisToStore), $"Saving document analysis for {analysis.FileName} to store.");
+            StepTracer.AddStep(stepSource, $"Saving document analysis for {analysis.FileName} to store.");
 
             var request = new StoredDocumentAnalysisRequestDto()
             {
@@ -115,12 +123,10 @@ public partial class DocumentAnalysis
 
             if (!result.IsSuccess)
             {
-                AddStep(nameof(SaveAnalysisToStore), $"Error while saving {analysis.FileName} to store. Message = {result.ErrorMessage}");
+                StepTracer.AddStep(stepSource, $"Error while saving {analysis.FileName} to store. Message = {result.ErrorMessage}");
             }
 
-            AddStep(nameof(SaveAnalysisToStore), $"Document {analysis.FileName} saved to store.");
-
-            storeDocumentAnalysBusy = false;
+            StepTracer.AddStep(stepSource, $"Document {analysis.FileName} saved to store.");
 
         }
         catch (Exception ex)
@@ -129,14 +135,12 @@ public partial class DocumentAnalysis
         }
         finally
         {
-            executionSteps = StepTracer.GetSteps();
+            storeDocumentAnalysisBusy = false;
         }
+
+        executionSteps = StepTracer.GetSteps();
     }
 
-    private void AddStep(string source, string desc)
-    {
-        StepTracer.AddStep("BlazorUi", $"{source}: {desc}");
-    }
 
     private bool SaveAnalysisToStoreButtonDisabled()
     {

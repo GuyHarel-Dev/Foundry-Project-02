@@ -42,11 +42,11 @@
             <div class="analyse-document-area">
                 <form @onsubmit="AnalyzeDocument">
 
-                    <button type="submit" class="ask-button" disabled="@sendDocumentAnalysBusy">
+                    <button type="submit" class="ask-button" disabled="@sendDocumentAnalysisBusy">
                         <span>Analyse document</span>
                     </button>
 
-                    @if (sendDocumentAnalysBusy)
+                    @if (sendDocumentAnalysisBusy)
                     {
                         <LoadingPanel Message="Sending document to ai document analysis model..." />
                     }
@@ -61,7 +61,7 @@
                         <span>Save analysis to store</span>
                     </button>
 
-                    @if (storeDocumentAnalysBusy)
+                    @if (storeDocumentAnalysisBusy)
                     {
                         <LoadingPanel Message="Saving document analysis to application store..." />
                     }
@@ -72,6 +72,10 @@
         </div>
 
     
+    </div>
+
+    <div class="execution-steps-area">
+        <ExecutionStepsPanel ExecutionSteps="@executionSteps"></ExecutionStepsPanel>
     </div>
 
     <div class="document-analysis-result-area">
@@ -86,9 +90,7 @@
         </div>
     </div>
 
-    <div class="execution-steps-area">
-        <ExecutionStepsPanel ExecutionSteps="@executionSteps"></ExecutionStepsPanel>
-    </div>
+
 
 
 </div>
@@ -100,8 +102,8 @@
 
     private string documentSelected { get; set; } = string.Empty;
 
-    private bool sendDocumentAnalysBusy;
-    private bool storeDocumentAnalysBusy;
+    private bool sendDocumentAnalysisBusy;
+    private bool storeDocumentAnalysisBusy;
 
     public string SelectedModel { get; set; } = _readModel;
 
