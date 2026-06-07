@@ -1,6 +1,6 @@
 ﻿.log-container {
 }
-    .log-container pre {
+    .log-container textarea {
         margin: 0;
         white-space: pre-wrap;
         word-wrap: break-word;

@@ -1,12 +1,12 @@
 ﻿using DemoAzAI.Blazor.Services.StateContainers;
-using DemoAzAI.Domain.Models.DocumentAnalysis;
 
-namespace DemoAzAI.Blazor.Services.UI
+namespace DemoAzAI.Blazor.Services.StateContainers
 {
     public class UiStateContainer
     {
-        public UiStateDocumentSelection DocumentSelection { get; set; } = new UiStateDocumentSelection();
-        public UiStateDocumentAnalysis DocumentAnalysis { get; set; } = new UiStateDocumentAnalysis();
+        public UiStateDocumentSelection DocumentSelection { get; set; } = new();
+        public UiStateDocumentAnalysis DocumentAnalysis { get; set; } = new();
+        public UiStateSemanticAnalysis SemanticAnalysis { get; set; } = new();
     }
     
 

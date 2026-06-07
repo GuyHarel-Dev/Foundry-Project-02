@@ -4,10 +4,12 @@
 
 @using DemoAzAI.Application
 @using DemoAzAI.Blazor.Components.Fragments
+@using DemoAzAI.Blazor.Services.StateContainers
 @using DemoAzAI.Domain.Models.DocumentAnalysis
 
 @inject IStepTracer StepTracer
 @inject ILogger<SemanticAnalysis> Logger
+@inject UiStateContainer UiState
 
 <PageTitle>Semantic Analysis</PageTitle>
 
@@ -18,24 +20,20 @@
 
 <div class="page-area">
     <div class="select-document-text-area">
-
-        <select @bind="selectedDocument">
+        <span>Select a document stored results:</span>
+        <select @onchange="OnDocumentSelected">
             @foreach (var doc in storedDocuments)
             {
                 <option value="@doc.Id">@doc.FileName</option>
             }
         </select>
 
-        <form @onsubmit="GetDocumentResultsFromStore">
-            <button type="submit">Get document results from store</button>
-            <!-- call wait panel -->
-            @if (getDocumentResultsFromStoreIsBusy)
-            {
-                <LoadingPanel Message="Getting document results from store..."></LoadingPanel>
-            }
-        </form>
     </div>
-    <div class="prepare-document-text-area"></div>
+    <div class="prepare-document-text-area">
+
+        <label>Prepare document result text for vectorization:</label>
+        <textarea>@DocumentStoredAnalysisResultText</textarea>
+    </div>
     <div class="vectorize-document-text-area"></div>
     <div class="search-document-text-area"></div>
 
@@ -62,6 +60,8 @@
     private string semanticQuestion = string.Empty;
 
     private List<DocumentAnalysisStoredResult> storedDocuments { get; set; } = new();
+
+    private string DocumentStoredAnalysisResultText { get; set; } = string.Empty;
 
   
 

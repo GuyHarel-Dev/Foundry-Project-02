@@ -10,19 +10,29 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         private ApiClient apiClient { get; set; } = default!;
 
+        protected override async Task OnInitializedAsync()
+        {
+            await GetDocumentResultsFromStore();
+        }
+
+        private async Task OnDocumentSelected(ChangeEventArgs e)
+        {
+            if (e.Value == null)
+            {
+                return;
+            }
+
+            var docId = e.Value.ToString();
+
+            DocumentStoredAnalysisResultText = storedDocuments.First(doc  => doc.Id == docId).ToText();
+        }
+
         private async Task GetDocumentResultsFromStore()
         {
-            var stepSource = $"UI SemanticAnalysis:{nameof(GetDocumentResultsFromStore)}";
             try
             {
-                StepTracer.ClearSteps();
-
-                StepTracer.AddUiStep("message");
-
 
                 getDocumentResultsFromStoreIsBusy = true;
-
-                StepTracer.AddStep($"{stepSource}:", $"Getting document analysis results from store");
 
                 var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisStoredResult>>("api/store/document/analysis/results");
 
@@ -33,14 +43,12 @@ namespace DemoAzAI.Blazor.Components.Pages
                 }
 
                 storedDocuments = result.Value.ToList();
+                DocumentStoredAnalysisResultText = storedDocuments.First().ToText();
 
-                StepTracer.AddStep($"{stepSource}:", $"Done getting document analysis results from store");
 
             }
             catch (Exception ex)
             {
-                StepTracer.AddStep($"{stepSource}:", ex.Message);
-
                 Logger.LogError(ex, "Error while getting document results from store.");
             }
             finally
@@ -48,7 +56,6 @@ namespace DemoAzAI.Blazor.Components.Pages
                 getDocumentResultsFromStoreIsBusy = false;
             }
 
-            executionSteps = StepTracer.GetSteps();
         }
 
         private async Task SemanticSearch()

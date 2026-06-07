@@ -72,7 +72,7 @@ namespace DemoAzAI.Infrastructure.Persistence
 
             return rows.Select(r => new DocumentAnalysisStoredResult
             {
-                Id = r.Id,
+                Id = r.Id.ToString(),
                 FileName = r.FileName,
                 CreatedAt = r.CreatedAt,
                 Hash = r.Hash,
