@@ -1,5 +1,6 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
+using DemoAzAI.Blazor.Services.StateContainers;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
@@ -42,6 +43,10 @@ public partial class DocumentAnalysis
         }
     }
 
+    private bool IsDocumentSelected(UiStateDocumentInfo docInfo)
+    {
+        return SelectedDocument.Id == docInfo.Id;
+    }
     private async Task AnalyzeDocument()
     {
         try
