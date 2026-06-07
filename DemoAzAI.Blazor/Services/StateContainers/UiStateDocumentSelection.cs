@@ -2,6 +2,8 @@
 {
     public class UiStateDocumentSelection
     {
-        public string DocumentSelected { get; set; } = "(empty) Select a document in page Document Selection";
+        public List<UiStateDocumentInfo> AvailableDocuments { get; set; } = new();
+        public UiStateDocumentInfo? SelectedDocument { get; set; } = null;
+
     }
 }

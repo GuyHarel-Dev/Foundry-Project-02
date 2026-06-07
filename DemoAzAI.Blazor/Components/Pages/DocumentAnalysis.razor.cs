@@ -1,6 +1,5 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
-using DemoAzAI.Blazor.Services.UI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
@@ -21,13 +20,26 @@ public partial class DocumentAnalysis
     [Inject]
     private IStepTracer StepTracer { get; set; } = default!;
 
-    [Inject]
-    private UiStateContainer UiState { get; set; } = default!;
+    private async Task OnDocumentSelected(ChangeEventArgs e)
+    {
+        if (e.Value == null)
+        {
+            return;
+        }
 
+        var docId = e.Value.ToString();
+        SelectedDocument = UiState.DocumentSelection.AvailableDocuments.First((doc) => doc.Id == docId);
+
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        documentSelected = UiState.DocumentSelection.DocumentSelected;
+        if (UiState.DocumentSelection.AvailableDocuments.Any()) 
+        {
+            AvailableDocuments = UiState.DocumentSelection.AvailableDocuments;
+            if (UiState.DocumentSelection.SelectedDocument is not null)
+                SelectedDocument = UiState.DocumentSelection.SelectedDocument;
+        }
     }
 
     private async Task AnalyzeDocument()
@@ -38,19 +50,19 @@ public partial class DocumentAnalysis
 
             sendDocumentAnalysisBusy = true;
 
-            StepTracer.AddUiStep($"Starting analysis for document {documentSelected} using model {SelectedModel}");
+            AddStepBeginAnalysis();
 
             var result = await SendAnalyzeDocumentRequest();
 
             if (result == null)
             {
-                Logger.LogWarning($"No analysis result returned for {documentSelected} with model: {SelectedModel}");
+                Logger.LogWarning($"No analysis result returned for {SelectedDocument.FileName} with model: {SelectedModel}");
                 return;
             }
 
             DisplayDocument(result.DocumentAnalysisResult);
 
-            StepTracer.AddUiStep($"Analysis completed for document {documentSelected} using model {SelectedModel}");
+            AddStepAnalysisCompleted();
 
         }
         catch (Exception ex)
@@ -67,14 +79,23 @@ public partial class DocumentAnalysis
         executionSteps = StepTracer.GetSteps();
     }
 
+    private void AddStepBeginAnalysis()
+    {
+        StepTracer.AddUiStep($"Starting analysis for document {SelectedDocument.FileName} using model {SelectedModel}");
+    }
+
+    private void AddStepAnalysisCompleted()
+    {
+        StepTracer.AddUiStep($"Analysis completed for document {SelectedDocument.FileName} using model {SelectedModel}");
+    }
     private async Task<DocumentAnalysisResponseDto?> SendAnalyzeDocumentRequest()
     {
 
         var request = new DocumentAnalysisRequestDto()
         {
             ModelName = SelectedModel,
-            FileName = Path.GetFileName(documentSelected),
-            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, documentSelected.TrimStart('/')))
+            FileName = Path.GetFileName(SelectedDocument.FileName),
+            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDocument.FilePath.TrimStart('/')))
         };
 
         request.BytesHash = Convert.ToHexString(SHA256.HashData(request.Bytes));
@@ -86,7 +107,7 @@ public partial class DocumentAnalysis
 
         if (!result.IsSuccess)
         {
-            StepTracer.AddStep(nameof(SaveAnalysisToStore), $"Error during analysis of {documentSelected}. Message = {result.ErrorMessage}");
+            StepTracer.AddStep(nameof(SaveAnalysisToStore), $"Error during analysis of {SelectedDocument.FilePath}. Message = {result.ErrorMessage}");
         }
 
 

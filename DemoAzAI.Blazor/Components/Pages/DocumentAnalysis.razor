@@ -2,10 +2,13 @@
 @inherits BasePage
 @rendermode InteractiveServer
 
-@inject ILogger<DocumentAnalysis> Logger
 
+@using DemoAzAI.Blazor.Services.UI
 @using DemoAzAI.Blazor.Components.Fragments
-@using DemoAzAI.Domain.Models.DocumentAnalysis
+@using DemoAzAI.Blazor.Services.StateContainers
+
+@inject ILogger<DocumentAnalysis> Logger
+@inject UiStateContainer UiState
 
 
 <div class="title-area">
@@ -18,9 +21,18 @@
 
 </div>
 
+
+
 <div class="page-area">
     <div class="document-selected-area">
-        <div>Document selected: <span>@documentSelected</span></div>
+        <span>Select a document to Analyse:</span>
+        <select @onchange="OnDocumentSelected">
+            @foreach (var doc in UiState.DocumentSelection.AvailableDocuments)
+            {
+                <option value="@doc.Id">@doc.FileName</option>
+            }
+
+        </select>
     </div>
 
     <div class="document-analysis-area">
@@ -98,12 +110,14 @@
 
     private string executionSteps { get; set; } = string.Empty;
 
-    private string documentSelected { get; set; } = string.Empty;
-
     private bool sendDocumentAnalysisBusy;
     private bool storeDocumentAnalysisBusy;
 
     public string SelectedModel { get; set; } = _readModel;
+
+    public UiStateDocumentInfo SelectedDocument { get; set; } = new();
+    private List<UiStateDocumentInfo> AvailableDocuments { get; set; } = new();
+
 
     private static string _readModel = "prebuilt-read";
     private static string _layoutModel = "prebuilt-layout";
@@ -112,4 +126,6 @@
 
     private string documentExtractedText = string.Empty;
     private string documentExtractedSections = string.Empty;
+
+
 }

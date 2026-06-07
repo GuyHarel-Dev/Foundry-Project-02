@@ -4,6 +4,7 @@
 
 @using DemoAzAI.Blazor.Services.UI
 @using DemoAzAI.Blazor.Components.Fragments
+@using DemoAzAI.Blazor.Services.StateContainers
 
 @inject UiStateContainer UiState
 
@@ -19,10 +20,11 @@
     <div class="select-document">
         <label for="@SelectedDocument">Demo documents:</label>
         <select class="model-select" @onchange="OnDocumentSelected">
-            <option value="@_demoDocumentEmpty">@_demoDocumentEmpty</option>
-            <option value="@_demoDocumentOccularCenter">@_demoDocumentOccularCenter</option>
-            <option value="@_demoDocumentLampReceit">@_demoDocumentLampReceit</option>
-            <option value="@_demoDocumentfKayakCertificate">@_demoDocumentfKayakCertificate</option>
+            @foreach (var doc in UiState.DocumentSelection.AvailableDocuments)
+            {
+                <option value="@doc.Id">@doc.FileName</option>
+            }
+
         </select>
 
     </div>
@@ -37,26 +39,42 @@
 </div>
 
 <div class="doc_view_area">
-    <iframe src="@($"{SelectedDocument}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
+    <iframe src="@($"{SelectedDocument.FilePath}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe>
 </div>
 
 @code {
-    public string SelectedDocument { get; set; } = _demoDocumentEmpty;
-
-    private static string _demoDocumentEmpty = "/Pdf/empty-pdf.pdf";
-    private static string _demoDocumentOccularCenter = "/Pdf/fake-occular-center.pdf";
-    private static string _demoDocumentLampReceit = "/Pdf/fake-lamp-receit.pdf";
-    private static string _demoDocumentfKayakCertificate = "/Pdf/fake-kayak-certificate.pdf";
+    public UiStateDocumentInfo SelectedDocument { get; set; } = new();
+    private List<UiStateDocumentInfo> AvailableDocuments { get; set; } = new();
 
     private async Task OnDocumentSelected(ChangeEventArgs e)
     {
-        SelectedDocument = e.Value?.ToString() ?? "";
-        UiState.DocumentSelection.DocumentSelected = SelectedDocument;
+        if (e.Value == null)
+        {
+            return;
+        }
 
+        var docId = e.Value.ToString();
+        SelectedDocument = UiState.DocumentSelection.AvailableDocuments.First((doc) => doc.Id == docId);
+        UiState.DocumentSelection.SelectedDocument = SelectedDocument;
     }
 
     private void UploadDocument()
     {
 
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var documents = new List<UiStateDocumentInfo>() {
+            new UiStateDocumentInfo { Id = "1", FileName = "Empty PDF", FilePath = "/Pdf/empty-pdf.pdf" },
+            new UiStateDocumentInfo { Id = "2", FileName = "Ocular Center Invoice", FilePath = "/Pdf/fake-occular-center.pdf" },
+            new UiStateDocumentInfo { Id = "3", FileName = "Lamp Receipt", FilePath = "/Pdf/fake-lamp-receit.pdf" },
+            new UiStateDocumentInfo { Id = "4", FileName = "Kayak Certificate", FilePath = "/Pdf/fake-kayak-certificate.pdf" }
+        };
+
+        UiState.DocumentSelection.AvailableDocuments = documents;
+        UiState.DocumentSelection.SelectedDocument = documents.First();
+        SelectedDocument = UiState.DocumentSelection.SelectedDocument;
+    }
+
 }
