@@ -1,7 +1,5 @@
-﻿using Azure.Core;
-using DemoAzAI.Blazor.Services.Api;
+﻿using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
-using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
 
@@ -19,18 +17,22 @@ namespace DemoAzAI.Blazor.Components.Pages
             {
                 StepTracer.ClearSteps();
 
+                StepTracer.AddUiStep("message");
+
+
                 getDocumentResultsFromStoreIsBusy = true;
 
                 StepTracer.AddStep($"{stepSource}:", $"Getting document analysis results from store");
 
                 var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisStoredResult>>("api/store/document/analysis/results");
 
-                if (result == null)
+                if (result == null || result.Value is null)
                 {
                     Logger.LogWarning($"No document retreived from store");
                     return;
                 }
 
+                storedDocuments = result.Value.ToList();
 
                 StepTracer.AddStep($"{stepSource}:", $"Done getting document analysis results from store");
 

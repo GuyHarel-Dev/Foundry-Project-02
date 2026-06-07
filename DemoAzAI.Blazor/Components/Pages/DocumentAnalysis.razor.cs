@@ -32,14 +32,13 @@ public partial class DocumentAnalysis
 
     private async Task AnalyzeDocument()
     {
-        var stepSource = $"UI DocumentAnalysis:{nameof(AnalyzeDocument)}";
         try
         {
             StepTracer.ClearSteps();
 
             sendDocumentAnalysisBusy = true;
 
-            StepTracer.AddStep($"{stepSource}:", $"Starting analysis for document {documentSelected} using model {SelectedModel}");
+            StepTracer.AddUiStep($"Starting analysis for document {documentSelected} using model {SelectedModel}");
 
             var result = await SendAnalyzeDocumentRequest();
 
@@ -51,12 +50,12 @@ public partial class DocumentAnalysis
 
             DisplayDocument(result.DocumentAnalysisResult);
 
-            StepTracer.AddStep($"{stepSource}:", $"Analysis completed for document {documentSelected} using model {SelectedModel}");
+            StepTracer.AddUiStep($"Analysis completed for document {documentSelected} using model {SelectedModel}");
 
         }
         catch (Exception ex)
         {
-            StepTracer.AddStep($"{stepSource}:", ex.Message);
+            StepTracer.AddUiStep(ex.Message);
 
             Logger.LogError(ex, "Error while processing document for analysis.");
         }

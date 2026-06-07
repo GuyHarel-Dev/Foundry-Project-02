@@ -10,13 +10,9 @@ namespace DemoAzAI.Application
         {
             Steps.Clear();
         }   
-
-        public void AddStep(string source, string title, bool clearSteps = false)
+        
+        public void AddStep(string source, string title)
         {
-            if (clearSteps)
-            {
-                ClearSteps();
-            }
 
             Steps.Add(new StepTracerStep
             {
@@ -26,6 +22,18 @@ namespace DemoAzAI.Application
             });
 
         }
+
+        public void AddUiStep(string title)
+        {
+            Steps.Add(new StepTracerStep
+            {
+                StepTitle = title,
+                StepSource = "UI",
+                StepDateTime = DateTime.UtcNow
+            });
+
+        }
+
         public string GetSteps()
         {
             if (Steps.Count == 0)

@@ -1,0 +1,8 @@
+﻿.log-container {
+}
+    .log-container pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: Consolas, monospace;
+    }

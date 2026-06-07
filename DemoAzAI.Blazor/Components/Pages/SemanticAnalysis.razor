@@ -4,6 +4,7 @@
 
 @using DemoAzAI.Application
 @using DemoAzAI.Blazor.Components.Fragments
+@using DemoAzAI.Domain.Models.DocumentAnalysis
 
 @inject IStepTracer StepTracer
 @inject ILogger<SemanticAnalysis> Logger
@@ -15,46 +16,40 @@
                  Description="Description: Generates semantic representations used for knowledge retrieval, similarity matching, and intelligent search.">
 </PageDescription>
 
-<label for="TextToEmbed">Text to embed:</label>
-<textarea @bind="textToEmbed"></textarea>
+<div class="page-area">
+    <div class="select-document-text-area">
 
-<form @onsubmit="GetDocumentResultsFromStore">
-    <button type="submit">Get document results from store</button>
-    <!-- call wait panel -->
-    @if (getDocumentResultsFromStoreIsBusy)
-    {
-        <LoadingPanel Message="Sending text for embedding to the embedding model..."></LoadingPanel>
-    }
-</form>
+        <select @bind="selectedDocument">
+            @foreach (var doc in storedDocuments)
+            {
+                <option value="@doc.Id">@doc.FileName</option>
+            }
+        </select>
 
-<div>
-    <div>
-        <label for="executionSteps">Execution log:</label>
-        <textarea readonly value="@executionSteps"></textarea>
-
+        <form @onsubmit="GetDocumentResultsFromStore">
+            <button type="submit">Get document results from store</button>
+            <!-- call wait panel -->
+            @if (getDocumentResultsFromStoreIsBusy)
+            {
+                <LoadingPanel Message="Getting document results from store..."></LoadingPanel>
+            }
+        </form>
     </div>
-    <div>
-        <label for="embeddedText">Text embedding:</label>
-        <textarea readonly value="@embeddedText"></textarea>
-    </div>
+    <div class="prepare-document-text-area"></div>
+    <div class="vectorize-document-text-area"></div>
+    <div class="search-document-text-area"></div>
 
-</div>
+    <div class="execution-steps-area">
+        <ExecutionStepsPanel ExecutionSteps="@executionSteps"></ExecutionStepsPanel>
 
-<div>
-    <label for="semanticQuestion">Semantic search:</label>
-    <textarea readonly value="@semanticQuestion"></textarea>
-    <form @onsubmit="SemanticSearch">
-        <button type="submit">Perform semantic search</button>
-
-    </form>
-
-    <div>
-        <label for="searchSteps">Semantic search log:</label>
-        <textarea readonly value="@searchSteps"></textarea>
     </div>
 </div>
 
 @code {
+
+    private string selectedDocument { get; set; } = "123";
+
+    private string[] testSelectList = new string[] { "1 aaa", "2 bbb" };
 
     private bool getDocumentResultsFromStoreIsBusy = false;
 
@@ -65,6 +60,8 @@
     private string searchSteps = string.Empty;
 
     private string semanticQuestion = string.Empty;
+
+    private List<DocumentAnalysisStoredResult> storedDocuments { get; set; } = new();
 
   
 
