@@ -29,11 +29,27 @@
         </select>
 
     </div>
+
     <div class="prepare-document-text-area">
 
         <label>Prepare document result text for vectorization:</label>
-        <textarea>@DocumentStoredAnalysisResultText</textarea>
+
+        <div class="content-area">
+            <div class="document-text-area">
+                <label for="DocumentAnalysisText">Text from document analysis:</label>
+                <textarea>@DocumentAnalysisText</textarea>
+            </div>
+
+            <div class="document-chunk-area">
+                <label>Text prepared for vectorization (chunking):</label>
+                <textarea>@DocumentAnalysisTextChunk</textarea>
+            </div>
+
+        </div>
+
+
     </div>
+
     <div class="vectorize-document-text-area"></div>
     <div class="search-document-text-area"></div>
 
@@ -61,8 +77,8 @@
 
     private List<DocumentAnalysisStoredResult> storedDocuments { get; set; } = new();
 
-    private string DocumentStoredAnalysisResultText { get; set; } = string.Empty;
-
+    private string DocumentAnalysisText { get; set; } = string.Empty;
+    private string DocumentAnalysisTextChunk { get; set; } = string.Empty;
   
 
 }

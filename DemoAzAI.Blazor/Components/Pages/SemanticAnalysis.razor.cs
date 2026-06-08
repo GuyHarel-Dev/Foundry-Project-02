@@ -24,7 +24,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
             var docId = e.Value.ToString();
 
-            DocumentStoredAnalysisResultText = storedDocuments.First(doc => doc.Id == docId).AnalysisResult.DocumentsFieldsContent;
+            DocumentAnalysisText = storedDocuments.First(doc => doc.Id == docId).AnalysisResult.DocumentsFieldsContent;
         }
 
         private async Task GetDocumentResultsFromStore()
@@ -43,7 +43,7 @@ namespace DemoAzAI.Blazor.Components.Pages
                 }
 
                 storedDocuments = result.Value.ToList();
-                DocumentStoredAnalysisResultText = storedDocuments.First().AnalysisResult.DocumentsFieldsContent;
+                DocumentAnalysisText = storedDocuments.First().AnalysisResult.DocumentsFieldsContent;
 
 
             }
