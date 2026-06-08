@@ -189,21 +189,8 @@ public partial class DocumentAnalysis
         sb.AppendLine($"Languages: {result.LanguagesCount}");
         sb.AppendLine("");
 
-        sb.AppendLine("Documents:");
-        foreach (var doc in result.Documents)
-        {
-            sb.AppendLine($"  Document type: {doc.DocumentType}");
-            sb.AppendLine($"  Document type confidence: {doc.DocumentTypeConfidence}");
-
-            sb.AppendLine("    Document Fields:");
-            foreach (var fields in doc.DocumentFields)
-            {
-                sb.AppendLine($"      Field name: {fields.Name}");
-                sb.AppendLine($"      Field value: {fields.Value}");
-                sb.AppendLine($"      Field type: {fields.FieldType}");
-                sb.AppendLine($"      Field type confidence: {fields.FieldTypeConfidence}");
-            }
-        }
+        sb.AppendLine("Documents and their fields:");
+        sb.AppendLine(result.DocumentsFieldsContent);
 
         documentExtractedSections = sb.ToString();
 

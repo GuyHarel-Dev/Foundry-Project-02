@@ -19,20 +19,6 @@ namespace DemoAzAI.Domain.Models.DocumentAnalysis
             return $"{Id}-{FileName}";
         }
 
-        public string ToText()
-        {
-            var sb = new StringBuilder();
 
-            sb.AppendLine(AnalysisResult.DocContent);
-
-            foreach (var doc in AnalysisResult.Documents)
-            {
-                foreach (var field in doc.DocumentFields)
-                {
-                    sb.AppendLine(field.Name + ": " + field.Value);
-                }
-            }
-            return sb.ToString();
-        }
     }
 }

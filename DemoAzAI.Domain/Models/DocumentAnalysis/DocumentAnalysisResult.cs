@@ -15,7 +15,7 @@
         public int FigureCount { get; set; }
         public int LanguagesCount { get; set; }
 
-        public List<DocumentAnalyzed> Documents { get; set; } = new();
+        public string DocumentsFieldsContent { get; set; } = string.Empty;
 
     }
 }

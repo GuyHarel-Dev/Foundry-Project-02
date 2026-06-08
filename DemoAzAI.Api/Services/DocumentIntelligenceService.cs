@@ -1,11 +1,12 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
-using DemoAzAI.Abstractions;
 using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
-using WebApi.Extensions;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace DemoAzAI.Api.Services
 {
@@ -76,36 +77,36 @@ namespace DemoAzAI.Api.Services
             result.FigureCount = azureAnalysisResult.Figures?.Count ?? 0;
             result.LanguagesCount = azureAnalysisResult.Languages?.Count ?? 0;
 
-
             if (azureAnalysisResult.Documents != null)
             {
+                var sb = new StringBuilder();
+
                 foreach (var document in azureAnalysisResult.Documents)
                 {
-                    DocumentAnalyzed doc = new()
+                    sb.AppendLine($"DocumentType:{document.DocumentType}");
+                    sb.AppendLine($"Confidence:{document.Confidence}");
+                    sb.AppendLine("");
+
+                    foreach (var field in document.Fields)
                     {
-                        DocumentType = document.DocumentType,
-                        DocumentTypeConfidence = document.Confidence
+                        var fieldName = field.ToString();
+                        var fieldValues = JsonSerializer.Serialize(field, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, WriteIndented = true });
 
-                    };
+                        sb.AppendLine($"fieldName:{fieldName}");
+                        sb.AppendLine($"fieldValues:{fieldValues}");
 
-                    foreach (var fields in document.Fields)
-                    {
-                        doc.DocumentFields.Add(new DocumentAnalyzedFields
-                        {
-                            Name = fields.Key,
-                            Value = fields.Value.Content,
-                            FieldType = fields.Value.FieldType.ToString(),
-                            FieldTypeConfidence = fields.Value.Confidence
-
-                        });
+                        sb.AppendLine("");
                     }
 
-                    result.Documents.Add(doc);
                 }
 
+                result.DocumentsFieldsContent = sb.ToString();
             }
             return result;
         }
 
+
     }
 }
+
+
