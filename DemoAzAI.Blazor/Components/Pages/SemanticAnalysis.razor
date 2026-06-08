@@ -43,6 +43,21 @@
             <div class="document-chunk-area">
                 <label>Text prepared for vectorization (chunking):</label>
                 <textarea>@DocumentAnalysisTextChunk</textarea>
+
+                <form @onsubmit="SendTextPreparationRequest">
+
+                    <button type="submit" class="ask-button">
+                        <span>Send text preparation request</span>
+                    </button>
+
+                    @if (sendTextPreparationRequestBusy)
+                    {
+                        <LoadingPanel Message="Sending text preparation request to api..." />
+                    }
+                </form>
+                <label>Vectorization request statistics:</label>
+                <textarea>@DocumentAnalysisTextChunkStatistics</textarea>
+
             </div>
 
         </div>
@@ -53,21 +68,17 @@
     <div class="vectorize-document-text-area"></div>
     <div class="search-document-text-area"></div>
 
-    <div class="execution-steps-area">
+@*     <div class="execution-steps-area">
         <ExecutionStepsPanel ExecutionSteps="@executionSteps"></ExecutionStepsPanel>
 
-    </div>
+    </div> *@
 </div>
 
 @code {
 
-    private string selectedDocument { get; set; } = "123";
-
-    private string[] testSelectList = new string[] { "1 aaa", "2 bbb" };
+    private bool sendTextPreparationRequestBusy { get; set; } = false;
 
     private bool getDocumentResultsFromStoreIsBusy = false;
-
-    private string textToEmbed = TextToEmbedDefault;
 
     private string embeddedText = string.Empty;
     private string executionSteps = string.Empty;
@@ -79,6 +90,6 @@
 
     private string DocumentAnalysisText { get; set; } = string.Empty;
     private string DocumentAnalysisTextChunk { get; set; } = string.Empty;
-  
+    private string DocumentAnalysisTextChunkStatistics { get; set; } = string.Empty;
 
 }

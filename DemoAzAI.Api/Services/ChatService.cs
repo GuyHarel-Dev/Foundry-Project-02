@@ -46,11 +46,9 @@ namespace DemoAzAI.Api.Services
 
         private CreateResponseOptions CreateResponseOptions(ChatRequestDto request)
         {
-            var systemPrompt = config["FoundryPrj01:SystemPrompt"] ?? string.Empty;
-
             var options = new CreateResponseOptions
             {
-                Instructions = systemPrompt
+                Instructions = request.SystemPrompt
             };
 
             options.InputItems.Add(

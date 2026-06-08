@@ -7,6 +7,10 @@
         height: 5%;
     }
 
+    .page-area .prepare-document-text-area {
+        height: 60%;
+    }
+
     .page-area .select-document-text-area,
     .page-area .prepare-document-text-area {
         background-color: #300c4d;

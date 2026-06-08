@@ -1,5 +1,6 @@
 ﻿using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
+using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
 
@@ -15,6 +16,54 @@ namespace DemoAzAI.Blazor.Components.Pages
             await GetDocumentResultsFromStore();
         }
 
+        private async Task SendTextPreparationRequest()
+        {
+
+            try
+            {
+
+                sendTextPreparationRequestBusy = true;
+
+                var request = new ChatRequestDto()
+                {
+                    SystemPrompt = "Just supply the text required, no dialog or explanation",
+                    Prompt = $"I need the following text to be prepared (chunked) for vectorisation:{DocumentAnalysisText}"
+                };
+
+                var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request);
+                if (result == null || result.Value is null)
+                {
+                    Logger.LogWarning($"Document chunking request returned no value");
+                    return;
+                }
+
+                if (!result.IsSuccess)
+                {
+                    executionSteps = result.ErrorMessage ?? "Unknown API error.";
+                    return;
+                }
+
+                var response = result.Value;
+
+                DocumentAnalysisTextChunk = response.ChatResponse;
+
+                if (response.ModelStatistics != null)
+                {
+                    DocumentAnalysisTextChunkStatistics = response.ModelStatistics.ToString(); 
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error while getting document results from store.");
+            }
+            finally
+            {
+                sendTextPreparationRequestBusy = false;
+            }
+
+        }
+
         private async Task OnDocumentSelected(ChangeEventArgs e)
         {
             if (e.Value == null)
@@ -24,7 +73,8 @@ namespace DemoAzAI.Blazor.Components.Pages
 
             var docId = e.Value.ToString();
 
-            DocumentAnalysisText = storedDocuments.First(doc => doc.Id == docId).AnalysisResult.DocumentsFieldsContent;
+            DocumentAnalysisText = storedDocuments.First(doc => docId == docId).AnalysisResult.DocumentsFieldsContent;
+            DocumentAnalysisTextChunk = string.Empty;
         }
 
         private async Task GetDocumentResultsFromStore()
