@@ -1,6 +1,7 @@
 ﻿using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
+using DemoAzAI.Domain;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
 
@@ -18,12 +19,14 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         private async Task SendTextEmbeddingRequest()
         {
-            var textLines = DocumentAnalysisTextChunk;
+            //var textLines = DocumentAnalysisTextChunk;
 
-            //var textLinesSeperated = DocumentAnalysisTextChunk.Split("\n");
 
-            var textLinesSeperated = new string[] { "aa", "bb" };
+            var textLines = """
+                3345 BOULEVARD FICTIF APPARTEMENT 001  
+                """;
 
+            var textLinesSeperated = textLines.Split("\r\n").Where(l => l.Length > 0);
             try
             {
 
@@ -31,10 +34,10 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 var request = new EmbeddingRequestDto()
                 {
-                    TextLines = textLinesSeperated.ToList()
+                    Text = "3345 BOULEVARD FICTIF APPARTEMENT 001"
                 };
 
-                var result = await apiClient.PostAsync<EmbeddingRequestDto, string>("api/embedding/embed/textlines", request);
+                var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddedChunk>("api/embedding/embed/text", request);
                 if (result == null || result.Value is null)
                 {
                     Logger.LogWarning($"Document chunking request returned no value");
@@ -157,21 +160,21 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         private async Task SemanticSearch()
         {
-            if (string.IsNullOrWhiteSpace(semanticQuestion))
-            {
-                semanticQuestion = "Please enter a semantic question...";
-                return;
-            }
+            //if (string.IsNullOrWhiteSpace(semanticQuestion))
+            //{
+            //    semanticQuestion = "Please enter a semantic question...";
+            //    return;
+            //}
 
-            searchSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SemanticSearch)}: Searching embedding store...");
+            //searchSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SemanticSearch)}: Searching embedding store...");
 
-            var request = new EmbeddingRequestDto
-            {
-                AddEmbeddingsToStore = false,
-                TextLines = semanticQuestion
-                    .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-                    .ToList()
-            };
+            //var request = new EmbeddingRequestDto
+            //{
+            //    AddEmbeddingsToStore = false,
+            //    TextLines = semanticQuestion
+            //        .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+            //        .ToList()
+            //};
 
             // api/embedding/search/store
 

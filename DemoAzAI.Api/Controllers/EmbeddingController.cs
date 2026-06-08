@@ -33,6 +33,14 @@ namespace DemoAzAI.Api.Controllers
             return Ok(summary);
         }
 
+        [HttpPost("embed/text")]
+        public async Task<ActionResult<EmbeddedChunk?>> EmbedText([FromBody] EmbeddingRequestDto request)
+        {
+            var response = await embeddingService.EmbedTextAsync(request.Text);
+
+            return Ok(response);
+        }
+
         //[HttpGet("search/store")]
         //public async Task<ActionResult<List<SemanticSearchResult>>> SearchEmbeddingStoreForSimilarTextLinesAsync([FromQuery] string? question)
         //{

@@ -66,8 +66,8 @@ namespace DemoAzAI.Api.Services
                 response.TextEmbeddings.Add(embeddedChunk);
             }
 
-            if (request.AddEmbeddingsToStore)
-                AddNewEmbeddingsToStore(response.TextEmbeddings);
+            //if (request.AddEmbeddingsToStore)
+            //    AddNewEmbeddingsToStore(response.TextEmbeddings);
 
             return response;
 
