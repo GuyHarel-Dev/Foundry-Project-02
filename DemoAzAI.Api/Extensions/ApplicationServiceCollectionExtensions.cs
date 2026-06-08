@@ -14,8 +14,8 @@ namespace WebApi.Extensions
             services.AddScoped<IDocumentIntelligenceService,
                 DocumentIntelligenceService>();
 
-            //services.AddScoped<IEmbeddingService,
-            //    EmbeddingService>();
+            services.AddScoped<IEmbeddingService,
+                EmbeddingService>();
 
             //services.AddScoped<ISemanticSearchService,
             //    SemanticSearchService>();

@@ -65,7 +65,23 @@
 
     </div>
 
-    <div class="vectorize-document-text-area"></div>
+    <div class="vectorize-document-text-area">
+        <label>Vectorize text for cosinus similarity search</label>
+        <textarea>@DocumentAnalysisTextChunkVectorized</textarea>
+
+        <form @onsubmit="SendTextEmbeddingRequest">
+
+            <button type="submit" class="ask-button">
+                <span>Send vectorize request</span>
+            </button>
+
+@*             @if (sendTextPreparationRequestBusy)
+            {
+                <LoadingPanel Message="Sending text preparation request to api..." />
+            } *@
+        </form>
+
+    </div>
     <div class="search-document-text-area"></div>
 
 @*     <div class="execution-steps-area">
@@ -91,5 +107,6 @@
     private string DocumentAnalysisText { get; set; } = string.Empty;
     private string DocumentAnalysisTextChunk { get; set; } = string.Empty;
     private string DocumentAnalysisTextChunkStatistics { get; set; } = string.Empty;
+    private string DocumentAnalysisTextChunkVectorized { get; set; } = string.Empty;
 
 }

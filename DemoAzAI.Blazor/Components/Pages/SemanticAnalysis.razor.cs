@@ -16,6 +16,53 @@ namespace DemoAzAI.Blazor.Components.Pages
             await GetDocumentResultsFromStore();
         }
 
+        private async Task SendTextEmbeddingRequest()
+        {
+            var textLines = DocumentAnalysisTextChunk;
+
+            //var textLinesSeperated = DocumentAnalysisTextChunk.Split("\n");
+
+            var textLinesSeperated = new string[] { "aa", "bb" };
+
+            try
+            {
+
+                sendTextPreparationRequestBusy = true;
+
+                var request = new EmbeddingRequestDto()
+                {
+                    TextLines = textLinesSeperated.ToList()
+                };
+
+                var result = await apiClient.PostAsync<EmbeddingRequestDto, string>("api/embedding/embed/textlines", request);
+                if (result == null || result.Value is null)
+                {
+                    Logger.LogWarning($"Document chunking request returned no value");
+                    return;
+                }
+
+                if (!result.IsSuccess)
+                {
+                    executionSteps = result.ErrorMessage ?? "Unknown API error.";
+                    return;
+                }
+
+                var response = result.Value;
+
+
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error while getting document results from store.");
+            }
+            finally
+            {
+                sendTextPreparationRequestBusy = false;
+            }
+
+        }
+
         private async Task SendTextPreparationRequest()
         {
 

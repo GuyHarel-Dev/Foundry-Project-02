@@ -22,7 +22,7 @@ namespace DemoAzAI.Api.Controllers
             {
                 return BadRequest("TextLines cannot be null or empty.");
             }
-            var response = await embeddingService.EmbeddTextLinesAsync(request);
+            var response = await embeddingService.EmbedTextLinesAsync(request);
 
             if (response == null || response.TextEmbeddings.Any() == false)
                 throw new InvalidOperationException(
@@ -33,22 +33,22 @@ namespace DemoAzAI.Api.Controllers
             return Ok(summary);
         }
 
-        [HttpGet("search/store")]
-        public async Task<ActionResult<List<SemanticSearchResult>>> SearchEmbeddingStoreForSimilarTextLinesAsync([FromQuery] string? question)
-        {
-            if (string.IsNullOrEmpty(question))
-            {
-                return BadRequest("Search question cannot be null or empty");
-            }
-            //if (embeddingService.EmbeddingStoreCount == 0)
-            //{
-            //    return BadRequest("No embeddings stored yet. Please embed some text before searching.");
-            //};
+        //[HttpGet("search/store")]
+        //public async Task<ActionResult<List<SemanticSearchResult>>> SearchEmbeddingStoreForSimilarTextLinesAsync([FromQuery] string? question)
+        //{
+        //    if (string.IsNullOrEmpty(question))
+        //    {
+        //        return BadRequest("Search question cannot be null or empty");
+        //    }
+        //    //if (embeddingService.EmbeddingStoreCount == 0)
+        //    //{
+        //    //    return BadRequest("No embeddings stored yet. Please embed some text before searching.");
+        //    //};
 
-            var result = await embeddingService.SearchEmbeddingStoreForSimilarTextLinesAsync(question);
+        //    var result = await embeddingService.SearchEmbeddingStoreForSimilarTextLinesAsync(question);
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
     }
 }
 

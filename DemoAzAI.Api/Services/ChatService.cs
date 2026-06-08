@@ -5,14 +5,12 @@ using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain;
 using OpenAI.Responses;
 using System.ClientModel;
-using WebApi.Extensions;
 
 #pragma warning disable OPENAI001 // pour using OpenAI.Responses;
 
 namespace DemoAzAI.Api.Services
 {
     public class ChatService(
-            IConfiguration config,
             ProjectResponsesClient projectClient,
             ILogger<ChatService> logger) 
         : IChatService
