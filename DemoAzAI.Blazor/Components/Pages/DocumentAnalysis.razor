@@ -49,32 +49,27 @@
         </div>
 
         <div class="analyse-store-document-area">
-            <div class="analyse-document-area">
-                <form @onsubmit="AnalyzeDocument">
+            <form @onsubmit="AnalyzeDocument">
 
-                    <button type="submit" class="ask-button" disabled="@sendDocumentAnalysisBusy">
-                        <span>Analyse document</span>
-                    </button>
-                    <input type="checkbox" @bind="saveAnalysisToStore" />
+                <button type="submit" class="ask-button" disabled="@sendDocumentAnalysisBusy">
+                    <span>Analyse document</span>
+                </button>
 
-                    @if (sendDocumentAnalysisBusy)
-                    {
-                        <LoadingPanel Message="Sending document to ai document analysis model..." />
-                    }
+                <label for="saveAnalysisToStore">Save analysis to store</label>
+                <input type="checkbox" @bind="saveAnalysisToStore" />
 
-                    @if (storeDocumentAnalysisBusy)
-                    {
-                        <LoadingPanel Message="Saving document analysis to application store..." />
-                    }
+                @if (sendDocumentAnalysisBusy)
+                {
+                    <LoadingPanel Message="Sending document to ai document analysis model..." />
+                }
 
-                </form>
+                @if (storeDocumentAnalysisBusy)
+                {
+                    <LoadingPanel Message="Saving document analysis to application store..." />
+                }
 
-
-            </div>
-
+            </form>
         </div>
-
-    
     </div>
 
     <div class="execution-steps-area">

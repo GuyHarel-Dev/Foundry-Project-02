@@ -32,6 +32,7 @@
 
         .page-area .prepare-document-text-area .document-text-area {
             width: 50%;
+            height: 300px;
         }
 
         .page-area .prepare-document-text-area .document-chunk-area {

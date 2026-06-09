@@ -1,9 +1,10 @@
 ﻿using DemoAzAI.Application;
+using DemoAzAI.Blazor.Services.Api;
 using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
-    public abstract class BasePage: ComponentBase
+    public abstract class BasePage : ComponentBase
     {
         public string executionSteps { get; set; } = string.Empty;
 
@@ -17,7 +18,27 @@ namespace DemoAzAI.Blazor.Components.Pages
             await Task.Yield();
         }
 
-        public void AddExecutionStep(IExecutionStepTracer executionStepTracer, string title, bool logStep = false)
+        public bool ApiClientResulIsOk<T>(IExecutionStepTracer executionStepTracer, ApiClientResult<T> result)
+        {
+            if (result == null || result.Value is null)
+            {
+                executionSteps = executionStepTracer.AddUiStep($"Error: api call for {typeof(T).Name} returned no value");
+            }
+
+            if (result!.IsSuccess == false)
+            {
+                executionSteps = executionStepTracer.AddUiStep(result.ErrorMessage ?? "Unknown API error.");
+                return false;
+            }
+
+            return true;
+        }
+        public void AddExecutionError(IExecutionStepTracer executionStepTracer, string title)
+        {
+            executionSteps = executionStepTracer.AddUiStep($"Error: {title}");
+
+        }
+        public void AddExecutionStep(IExecutionStepTracer executionStepTracer, string title)
         {
             executionSteps = executionStepTracer.AddUiStep(title);
         }

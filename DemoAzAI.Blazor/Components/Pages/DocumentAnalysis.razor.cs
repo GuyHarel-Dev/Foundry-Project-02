@@ -5,6 +5,7 @@ using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
+using Microsoft.VisualBasic;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -16,7 +17,7 @@ public partial class DocumentAnalysis
     private IWebHostEnvironment Env { get; set; } = default!;
 
     [Inject]
-    private ILogger<DocumentAnalysis> logger {  get; set; } = default!;
+    private ILogger<DocumentAnalysis> logger { get; set; } = default!;
 
     [Inject]
     private ApiClient apiClient { get; set; } = default!;
@@ -38,7 +39,7 @@ public partial class DocumentAnalysis
 
     protected override async Task OnInitializedAsync()
     {
-        if (UiState.DocumentSelection.AvailableDocuments.Any()) 
+        if (UiState.DocumentSelection.AvailableDocuments.Any())
         {
             AvailableDocuments = UiState.DocumentSelection.AvailableDocuments;
             if (UiState.DocumentSelection.SelectedDocument is not null)
@@ -53,6 +54,12 @@ public partial class DocumentAnalysis
 
     private async Task AnalyzeDocument()
     {
+        if (string.IsNullOrEmpty(SelectedDocument.FileName))
+        {
+            AddExecutionError(executionStepTracer, "Select a file for analysis");
+            return;
+        }
+
         try
         {
 
@@ -60,14 +67,15 @@ public partial class DocumentAnalysis
 
             var result = await SendAnalyzeDocumentRequest();
 
-            if (result == null)
+            if (ApiClientResulIsOk<DocumentAnalysisResponseDto>(executionStepTracer, result))
             {
-                AddExecutionStep(executionStepTracer, $"No analysis result returned for {SelectedDocument.FileName} with model: {SelectedModel}", true); return;
+                UiState.DocumentAnalysis.DocumentAnalysis = result.Value;
+                DisplayDocument(result.Value!.DocumentAnalysisResult);
+
+                if (saveAnalysisToStore)
+                    await SaveAnalysisToStore();
+
             }
-
-            DisplayDocument(result.DocumentAnalysisResult);
-
-            EndAnalyseDocumentUiProcess();
 
         }
         catch (Exception ex)
@@ -76,7 +84,7 @@ public partial class DocumentAnalysis
         }
         finally
         {
-            sendDocumentAnalysisBusy = false;
+            EndAnalyseDocumentUiProcess();
         }
 
     }
@@ -94,7 +102,7 @@ public partial class DocumentAnalysis
     }
 
 
-    private async Task<DocumentAnalysisResponseDto?> SendAnalyzeDocumentRequest()
+    private async Task<ApiClientResult<DocumentAnalysisResponseDto>> SendAnalyzeDocumentRequest()
     {
 
         var request = new DocumentAnalysisRequestDto()
@@ -109,26 +117,22 @@ public partial class DocumentAnalysis
         var result = await apiClient.PostAsync<DocumentAnalysisRequestDto,
             DocumentAnalysisResponseDto>("api/document/analyse", request);
 
-        UiState.DocumentAnalysis.DocumentAnalysis = result.Value;
 
-        if (!result.IsSuccess)
-        {
-            AddExecutionStep(executionStepTracer, $"Error during analysis of {SelectedDocument.FilePath}. Message = {result.ErrorMessage}");
-        }
-
-
-        return result.Value;
+        return result;
     }
 
     private async Task SaveAnalysisToStore()
     {
 
+        if (UiState.DocumentAnalysis.DocumentAnalysis is null)
+        {
+            AddExecutionError(executionStepTracer, "No document analysis available to save to store");
+            return;
+        }
+
         try
         {
             var analysis = UiState.DocumentAnalysis.DocumentAnalysis;
-
-            if (analysis == null) 
-                throw new ApplicationException("No document analysis available to save to store.");
 
             BeginStoreDocumentAnalysisUiProcess(analysis);
 
@@ -142,14 +146,11 @@ public partial class DocumentAnalysis
             var result = await apiClient.PostAsync<StoredDocumentAnalysisRequestDto,
                 StoredDocumentAnalysisResponseDto>("api/store/document/analysis", request);
 
-
-            if (!result.IsSuccess)
+            if (ApiClientResulIsOk(executionStepTracer, result))
             {
-                AddExecutionStep(executionStepTracer, $"Error while saving {analysis.FileName} to store. Message = {result.ErrorMessage}");
+
+
             }
-
-            EndStoreDocumentAnalysisUiProcess(analysis);
-
 
         }
         catch (Exception ex)
@@ -158,7 +159,7 @@ public partial class DocumentAnalysis
         }
         finally
         {
-            storeDocumentAnalysisBusy = false;
+            EndStoreDocumentAnalysisUiProcess();
         }
 
     }
@@ -169,10 +170,10 @@ public partial class DocumentAnalysis
         AddExecutionStep(executionStepTracer, $"Saving document analysis for {analysis.FileName} to store.");
     }
 
-    private void EndStoreDocumentAnalysisUiProcess(DocumentAnalysisResponseDto analysis)
+    private void EndStoreDocumentAnalysisUiProcess()
     {
         storeDocumentAnalysisBusy = false;
-        AddExecutionStep(executionStepTracer, $"Document {analysis.FileName} saved to store.");
+        AddExecutionStep(executionStepTracer, $"Document saved to store.");
     }
 
     private void DisplayDocument(DocumentAnalysisResult? result)

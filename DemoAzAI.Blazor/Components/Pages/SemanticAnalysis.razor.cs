@@ -1,4 +1,5 @@
-﻿using DemoAzAI.Blazor.Services.Api;
+﻿using DemoAzAI.Application;
+using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
@@ -11,6 +12,9 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         private ApiClient apiClient { get; set; } = default!;
 
+        [Inject]
+        private IExecutionStepTracer executionStepTracer { get; set; } = default!;
+
         protected override async Task OnInitializedAsync()
         {
             await GetDocumentResultsFromStore();
@@ -18,12 +22,10 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         private async Task SendTextEmbeddingRequest()
         {
-
-
             try
             {
 
-                sendTextPreparationRequestBusy = true;
+                sendTextEmbeddingRequestBusy = true;
 
                 var request = new EmbeddingRequestDto()
                 {
@@ -39,21 +41,14 @@ namespace DemoAzAI.Blazor.Components.Pages
                 };
 
                 var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed/textlines", request);
-                if (result == null || result.Value is null)
+
+                if (ApiClientResulIsOk(executionStepTracer, result))
                 {
-                    Logger.LogWarning($"Document chunking request returned no value");
-                    return;
+
+                    var response = result.Value;
+
+                    DocumentAnalysisTextChunkVectorized = response!.GetSummary();
                 }
-
-                if (!result.IsSuccess)
-                {
-                    executionSteps = result.ErrorMessage ?? "Unknown API error.";
-                    return;
-                }
-
-                var response = result.Value;
-
-                DocumentAnalysisTextChunkVectorized = response.GetSummary();
 
             }
             catch (Exception ex)
@@ -62,14 +57,13 @@ namespace DemoAzAI.Blazor.Components.Pages
             }
             finally
             {
-                sendTextPreparationRequestBusy = false;
+                sendTextEmbeddingRequestBusy = false;
             }
 
         }
 
         private async Task SendTextPreparationRequest()
         {
-
             try
             {
 
@@ -82,25 +76,18 @@ namespace DemoAzAI.Blazor.Components.Pages
                 };
 
                 var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request);
-                if (result == null || result.Value is null)
+
+                if (ApiClientResulIsOk(executionStepTracer, result))
                 {
-                    Logger.LogWarning($"Document chunking request returned no value");
-                    return;
-                }
 
-                if (!result.IsSuccess)
-                {
-                    executionSteps = result.ErrorMessage ?? "Unknown API error.";
-                    return;
-                }
+                    var response = result.Value;
 
-                var response = result.Value;
+                    DocumentAnalysisTextChunk = response!.ChatResponse;
 
-                DocumentAnalysisTextChunk = response.ChatResponse;
-
-                if (response.ModelStatistics != null)
-                {
-                    DocumentAnalysisTextChunkStatistics = response.ModelStatistics.ToString(); 
+                    if (response.ModelStatistics != null)
+                    {
+                        DocumentAnalysisTextChunkStatistics = response.ModelStatistics.ToString();
+                    }
                 }
 
             }
@@ -110,9 +97,33 @@ namespace DemoAzAI.Blazor.Components.Pages
             }
             finally
             {
-                sendTextPreparationRequestBusy = false;
+                EndSendTextPreparationProcess();
             }
 
+        }
+
+        private void BeginSendTextPreparationProcess()
+        {
+            sendTextPreparationRequestBusy = true;
+            //AddExecutionStep(executionStepTracer, $"Starting analysis for document {SelectedDocument.FileName} using model {SelectedModel}");
+        }
+
+        private void EndSendTextPreparationProcess()
+        {
+            sendTextPreparationRequestBusy = false;
+            //AddExecutionStep(executionStepTracer, $"Analysis completed for document {SelectedDocument.FileName} using model {SelectedModel}");
+        }
+
+        private void BeginSendTextEmbeddingProcess()
+        {
+            sendTextEmbeddingRequestBusy = true;
+            //AddExecutionStep(executionStepTracer, $"Starting analysis for document {SelectedDocument.FileName} using model {SelectedModel}");
+        }
+
+        private void EndSendTextEmbeddingProcess()
+        {
+            sendTextEmbeddingRequestBusy = false;
+            //AddExecutionStep(executionStepTracer, $"Analysis completed for document {SelectedDocument.FileName} using model {SelectedModel}");
         }
 
         private async Task OnDocumentSelected(ChangeEventArgs e)
@@ -124,7 +135,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
             var docId = e.Value.ToString();
 
-            DocumentAnalysisText = storedDocuments.First(doc => docId == docId).AnalysisResult.DocumentsFieldsContent;
+            DocumentAnalysisText = storedDocuments.First(doc => doc.Id == docId).AnalysisResult.DocumentsFieldsContent;
             DocumentAnalysisTextChunk = string.Empty;
         }
 

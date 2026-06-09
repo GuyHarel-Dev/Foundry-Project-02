@@ -75,32 +75,22 @@
                 <span>Send vectorize request</span>
             </button>
 
-@*             @if (sendTextPreparationRequestBusy)
+            @if (sendTextEmbeddingRequestBusy)
             {
-                <LoadingPanel Message="Sending text preparation request to api..." />
-            } *@
+                <LoadingPanel Message="Sending text embedding request to api..." />
+            }
         </form>
 
     </div>
     <div class="search-document-text-area"></div>
 
-@*     <div class="execution-steps-area">
-        <ExecutionStepsPanel ExecutionSteps="@executionSteps"></ExecutionStepsPanel>
-
-    </div> *@
 </div>
 
 @code {
 
     private bool sendTextPreparationRequestBusy { get; set; } = false;
-
-    private bool getDocumentResultsFromStoreIsBusy = false;
-
-    private string embeddedText = string.Empty;
-    private string executionSteps = string.Empty;
-    private string searchSteps = string.Empty;
-
-    private string semanticQuestion = string.Empty;
+    private bool sendTextEmbeddingRequestBusy { get; set; } = false;
+    private bool getDocumentResultsFromStoreIsBusy { get; set; } = false;
 
     private List<DocumentAnalysisStoredResult> storedDocuments { get; set; } = new();
 
