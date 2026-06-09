@@ -29,19 +29,21 @@ namespace DemoAzAI.Api.Services
         //}
 
 
-        public async Task<EmbeddedChunk> EmbedTextAsync(string text, CancellationToken cancellationToken = default)
+        public async Task<EmbeddingResponseDto> EmbedTextAsync(string text, CancellationToken cancellationToken = default)
         {
             logger.LogInformation("Starting embedding generation for text: {text}", text);
 
             ClientResult<OpenAIEmbedding> result = await embeddingClient
                 .GenerateEmbeddingAsync(text, cancellationToken: cancellationToken);
 
-            return new EmbeddedChunk
+            var chunk = new EmbeddedChunk
             (
                 Guid.NewGuid(),
                 text,
                 result.Value.ToFloats().ToArray()
             );
+
+            return new EmbeddingResponseDto { TextEmbeddings = new List<EmbeddedChunk> { chunk } };
         }
 
         public async Task<EmbeddingResponseDto> EmbedTextLinesAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)

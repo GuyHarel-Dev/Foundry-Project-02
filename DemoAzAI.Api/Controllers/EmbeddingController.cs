@@ -16,25 +16,19 @@ namespace DemoAzAI.Api.Controllers
     {
 
         [HttpPost("embed/textlines")]
-        public async Task<ActionResult<string>> EmbedTextLines([FromBody] EmbeddingRequestDto request)
+        public async Task<ActionResult<EmbeddingResponseDto>> EmbedTextLines([FromBody] EmbeddingRequestDto request)
         {
-            if (request.TextLines == null || !request.TextLines.Any() || request.TextLines.Any(string.IsNullOrWhiteSpace))
-            {
-                return BadRequest("TextLines cannot be null or empty.");
-            }
             var response = await embeddingService.EmbedTextLinesAsync(request);
 
             if (response == null || response.TextEmbeddings.Any() == false)
                 throw new InvalidOperationException(
                     "The embedding provider returned no embeddings.");
 
-            var summary = response.GetSummary();
-
-            return Ok(summary);
+            return Ok(response);
         }
 
         [HttpPost("embed/text")]
-        public async Task<ActionResult<EmbeddedChunk?>> EmbedText([FromBody] EmbeddingRequestDto request)
+        public async Task<ActionResult<EmbeddingResponseDto>> EmbedText([FromBody] EmbeddingRequestDto request)
         {
             var response = await embeddingService.EmbedTextAsync(request.Text);
 

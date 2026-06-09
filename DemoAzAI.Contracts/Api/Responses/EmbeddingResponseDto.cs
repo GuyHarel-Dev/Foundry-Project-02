@@ -15,9 +15,7 @@ namespace DemoAzAI.Contracts.Api.Responses
 
             foreach (var embedding in TextEmbeddings)
             {
-                sb.AppendLine($"{embedding.Text}");
-                sb.AppendLine($"[{string.Join(", ", embedding.EmbeddingVector.Take(5))}...]");
-                sb.AppendLine();
+                sb.AppendLine($"{embedding.Text}: [{string.Join(", ", embedding.EmbeddingVector.Take(5))}...]");
 
             }
             return sb.ToString();

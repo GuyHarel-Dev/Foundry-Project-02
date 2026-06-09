@@ -2,8 +2,9 @@
 {
     public record EmbeddedChunk
     (
-        Guid Guid,
+        Guid Id,
         string Text,
         float[] EmbeddingVector
     );
+
 }

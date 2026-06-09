@@ -2,11 +2,11 @@
 
 namespace DemoAzAI.Application
 {
-    public interface IStepTracer
+    public interface IExecutionStepTracer
     {
         void ClearSteps();
-        void AddStep(string source, string title);
-        void AddUiStep(string message);
+        string AddApiStep(string source, string title);
+        string AddUiStep(string message);
         string GetSteps();
         string GetTotalTime();
 

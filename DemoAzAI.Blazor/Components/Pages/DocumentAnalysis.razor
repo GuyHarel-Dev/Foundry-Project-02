@@ -55,30 +55,23 @@
                     <button type="submit" class="ask-button" disabled="@sendDocumentAnalysisBusy">
                         <span>Analyse document</span>
                     </button>
+                    <input type="checkbox" @bind="saveAnalysisToStore" />
 
                     @if (sendDocumentAnalysisBusy)
                     {
                         <LoadingPanel Message="Sending document to ai document analysis model..." />
                     }
-                </form>
-
-
-            </div>
-
-            <div class="store-document-area">
-                <form @onsubmit="SaveAnalysisToStore">
-                    <button type="submit" class="ask-button" disabled="@SaveAnalysisToStoreButtonDisabled()">
-                        <span>Save analysis to store</span>
-                    </button>
 
                     @if (storeDocumentAnalysisBusy)
                     {
                         <LoadingPanel Message="Saving document analysis to application store..." />
                     }
+
                 </form>
 
 
             </div>
+
         </div>
 
     
@@ -106,16 +99,13 @@
 
 @code {
 
-    private string executionSteps { get; set; } = string.Empty;
-
     private bool sendDocumentAnalysisBusy;
     private bool storeDocumentAnalysisBusy;
 
-    public string SelectedModel { get; set; } = _readModel;
+    private string SelectedModel { get; set; } = _readModel;
 
-    public UiStateDocumentInfo SelectedDocument { get; set; } = new();
+    private UiStateDocumentInfo SelectedDocument { get; set; } = new();
     private List<UiStateDocumentInfo> AvailableDocuments { get; set; } = new();
-
 
     private static string _readModel = "prebuilt-read";
     private static string _layoutModel = "prebuilt-layout";
@@ -124,6 +114,7 @@
 
     private string documentExtractedText = string.Empty;
     private string documentExtractedSections = string.Empty;
+    private bool saveAnalysisToStore { get; set; } = false;
 
 
 }

@@ -31,7 +31,7 @@ namespace UI.Extensions
 
         public static IServiceCollection AddApplicationStepTracer(this IServiceCollection services)
         {
-            services.AddScoped<IStepTracer, StepTracer>();
+            services.AddScoped<IExecutionStepTracer, ExecutionStepTracer>();
 
             return services;
         }

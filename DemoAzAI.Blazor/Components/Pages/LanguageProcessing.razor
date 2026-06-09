@@ -9,7 +9,7 @@
 @using DemoAzAI.Application
 
 @inject ApiClient apiClient
-@inject IStepTracer StepTracer
+@inject IExecutionStepTracer StepTracer
 
 <PageTitle>Language processing</PageTitle>
 
@@ -67,7 +67,6 @@
     private bool isBusy;
     private string question = "This is just a test. No answer is expected.";
     private string chatResponse = string.Empty;
-    private string executionSteps = string.Empty;
     private string statistics = string.Empty;
 
     private async Task SendQuestion()
@@ -76,7 +75,7 @@
         {
             isBusy = true;
 
-            executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SendQuestion)}: Sending question to chat model", clearSteps: true);
+            AddExecutionStep(StepTracer, $"{nameof(SendQuestion)}: Sending question to chat model");
 
             executionSteps = StepTracer.GetSteps();
             await RefreshUI();
@@ -102,7 +101,7 @@
             }
 
 
-            executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SendQuestion)}: Received answer for question: {question}");
+            AddExecutionStep(StepTracer, $"{nameof(SendQuestion)}: Received answer for question: {question}");
 
             var responseDto = result.Value;
 

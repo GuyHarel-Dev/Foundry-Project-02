@@ -16,10 +16,13 @@ public partial class DocumentAnalysis
     private IWebHostEnvironment Env { get; set; } = default!;
 
     [Inject]
+    private ILogger<DocumentAnalysis> logger {  get; set; } = default!;
+
+    [Inject]
     private ApiClient apiClient { get; set; } = default!;
 
     [Inject]
-    private IStepTracer StepTracer { get; set; } = default!;
+    private IExecutionStepTracer executionStepTracer { get; set; } = default!;
 
     private async Task OnDocumentSelected(ChangeEventArgs e)
     {
@@ -47,52 +50,50 @@ public partial class DocumentAnalysis
     {
         return SelectedDocument.Id == docInfo.Id;
     }
+
     private async Task AnalyzeDocument()
     {
         try
         {
-            StepTracer.ClearSteps();
 
-            sendDocumentAnalysisBusy = true;
-
-            AddStepBeginAnalysis();
+            BeginAnalyseDocumentUiProcess();
 
             var result = await SendAnalyzeDocumentRequest();
 
             if (result == null)
             {
-                Logger.LogWarning($"No analysis result returned for {SelectedDocument.FileName} with model: {SelectedModel}");
-                return;
+                AddExecutionStep(executionStepTracer, $"No analysis result returned for {SelectedDocument.FileName} with model: {SelectedModel}", true); return;
             }
 
             DisplayDocument(result.DocumentAnalysisResult);
 
-            AddStepAnalysisCompleted();
+            EndAnalyseDocumentUiProcess();
 
         }
         catch (Exception ex)
         {
-            StepTracer.AddUiStep(ex.Message);
-
-            Logger.LogError(ex, "Error while processing document for analysis.");
+            LogExecutionError(logger, ex, "Error while processing document for analysis.");
         }
         finally
         {
             sendDocumentAnalysisBusy = false;
         }
 
-        executionSteps = StepTracer.GetSteps();
     }
 
-    private void AddStepBeginAnalysis()
+    private void BeginAnalyseDocumentUiProcess()
     {
-        StepTracer.AddUiStep($"Starting analysis for document {SelectedDocument.FileName} using model {SelectedModel}");
+        sendDocumentAnalysisBusy = true;
+        AddExecutionStep(executionStepTracer, $"Starting analysis for document {SelectedDocument.FileName} using model {SelectedModel}");
     }
 
-    private void AddStepAnalysisCompleted()
+    private void EndAnalyseDocumentUiProcess()
     {
-        StepTracer.AddUiStep($"Analysis completed for document {SelectedDocument.FileName} using model {SelectedModel}");
+        sendDocumentAnalysisBusy = false;
+        AddExecutionStep(executionStepTracer, $"Analysis completed for document {SelectedDocument.FileName} using model {SelectedModel}");
     }
+
+
     private async Task<DocumentAnalysisResponseDto?> SendAnalyzeDocumentRequest()
     {
 
@@ -112,7 +113,7 @@ public partial class DocumentAnalysis
 
         if (!result.IsSuccess)
         {
-            StepTracer.AddStep(nameof(SaveAnalysisToStore), $"Error during analysis of {SelectedDocument.FilePath}. Message = {result.ErrorMessage}");
+            AddExecutionStep(executionStepTracer, $"Error during analysis of {SelectedDocument.FilePath}. Message = {result.ErrorMessage}");
         }
 
 
@@ -121,19 +122,15 @@ public partial class DocumentAnalysis
 
     private async Task SaveAnalysisToStore()
     {
-        var stepSource = $"UI DocumentAnalysis:{nameof(SaveAnalysisToStore)}";
 
         try
         {
-            storeDocumentAnalysisBusy = true;
-            StepTracer.ClearSteps();
-
             var analysis = UiState.DocumentAnalysis.DocumentAnalysis;
 
             if (analysis == null) 
                 throw new ApplicationException("No document analysis available to save to store.");
 
-            StepTracer.AddStep(stepSource, $"Saving document analysis for {analysis.FileName} to store.");
+            BeginStoreDocumentAnalysisUiProcess(analysis);
 
             var request = new StoredDocumentAnalysisRequestDto()
             {
@@ -148,10 +145,11 @@ public partial class DocumentAnalysis
 
             if (!result.IsSuccess)
             {
-                StepTracer.AddStep(stepSource, $"Error while saving {analysis.FileName} to store. Message = {result.ErrorMessage}");
+                AddExecutionStep(executionStepTracer, $"Error while saving {analysis.FileName} to store. Message = {result.ErrorMessage}");
             }
 
-            StepTracer.AddStep(stepSource, $"Document {analysis.FileName} saved to store.");
+            EndStoreDocumentAnalysisUiProcess(analysis);
+
 
         }
         catch (Exception ex)
@@ -163,13 +161,18 @@ public partial class DocumentAnalysis
             storeDocumentAnalysisBusy = false;
         }
 
-        executionSteps = StepTracer.GetSteps();
     }
 
-
-    private bool SaveAnalysisToStoreButtonDisabled()
+    private void BeginStoreDocumentAnalysisUiProcess(DocumentAnalysisResponseDto analysis)
     {
-        return UiState.DocumentAnalysis.DocumentAnalysis == null;
+        storeDocumentAnalysisBusy = true;
+        AddExecutionStep(executionStepTracer, $"Saving document analysis for {analysis.FileName} to store.");
+    }
+
+    private void EndStoreDocumentAnalysisUiProcess(DocumentAnalysisResponseDto analysis)
+    {
+        storeDocumentAnalysisBusy = false;
+        AddExecutionStep(executionStepTracer, $"Document {analysis.FileName} saved to store.");
     }
 
     private void DisplayDocument(DocumentAnalysisResult? result)
@@ -218,4 +221,6 @@ public partial class DocumentAnalysis
         return str;
 
     }
+
+
 }

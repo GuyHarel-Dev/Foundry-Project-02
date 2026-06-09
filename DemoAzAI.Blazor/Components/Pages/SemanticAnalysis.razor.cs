@@ -1,7 +1,6 @@
 ﻿using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
 
@@ -19,14 +18,8 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         private async Task SendTextEmbeddingRequest()
         {
-            //var textLines = DocumentAnalysisTextChunk;
 
 
-            var textLines = """
-                3345 BOULEVARD FICTIF APPARTEMENT 001  
-                """;
-
-            var textLinesSeperated = textLines.Split("\r\n").Where(l => l.Length > 0);
             try
             {
 
@@ -34,10 +27,18 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 var request = new EmbeddingRequestDto()
                 {
-                    Text = "3345 BOULEVARD FICTIF APPARTEMENT 001"
+                    TextLines = new List<string>()
+                    {
+                        "The cat is sleeping on the sofa",
+                        "A kitten is resting on a couch",
+                        "The dog is playing in the garden",
+                        "The stock market closed higher today",
+                        "Interest rates were increased by the central bank",
+                        "A recipe for chocolate cake requires eggs and flour"
+                    }
                 };
 
-                var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddedChunk>("api/embedding/embed/text", request);
+                var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed/textlines", request);
                 if (result == null || result.Value is null)
                 {
                     Logger.LogWarning($"Document chunking request returned no value");
@@ -52,7 +53,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 var response = result.Value;
 
-
+                DocumentAnalysisTextChunkVectorized = response.GetSummary();
 
             }
             catch (Exception ex)
