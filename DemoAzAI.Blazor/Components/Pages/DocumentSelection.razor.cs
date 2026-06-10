@@ -1,21 +1,22 @@
-using DemoAzAI.Blazor.Services.StateContainers;
-using Microsoft.AspNetCore.Components;
+using DemoAzAI.Blazor.Models;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
     public partial class DocumentSelection
     {
 
-        private async Task OnDocumentSelected(ChangeEventArgs e)
+        private void OnDocumentSelected(DocumentEntity doc)
         {
-            if (e.Value == null)
-            {
-                return;
-            }
+            //if (e.Value == null)
+            //{
+            //    return;
+            //}
 
-            var docId = e.Value.ToString();
-            SelectedDocument = UiState.DocumentSelection.AvailableDocuments.First((doc) => doc.Id == docId);
-            UiState.DocumentSelection.SelectedDocument = SelectedDocument;
+            //var docId = e.Value.ToString();
+            //SelectedDocument = UiState.DocumentSelection.AvailableDocuments.First((doc) => doc.Id == docId);
+            //UiState.DocumentSelection.SelectedDocument = SelectedDocument;
+
+            var id = doc.Id; 
         }
 
         private void UploadDocument()
@@ -23,18 +24,19 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         }
 
-        protected override async Task OnInitializedAsync()
+        private async Task<IEnumerable<DocumentEntity>> OnLoadDocumentsAsync()
         {
-            var documents = new List<UiStateDocumentInfo>() {
-            new UiStateDocumentInfo { Id = "1", FileName = "Empty PDF", FilePath = "/Pdf/empty-pdf.pdf" },
-            new UiStateDocumentInfo { Id = "2", FileName = "Ocular Center Invoice", FilePath = "/Pdf/fake-occular-center.pdf" },
-            new UiStateDocumentInfo { Id = "3", FileName = "Lamp Receipt", FilePath = "/Pdf/fake-lamp-receit.pdf" },
-            new UiStateDocumentInfo { Id = "4", FileName = "Kayak Certificate", FilePath = "/Pdf/fake-kayak-certificate.pdf" }
-        };
+            var documents = new List<DocumentEntity>() {
+                new DocumentEntity { Id = "1", Name = "Empty PDF", FilePath = "/Pdf/empty-pdf.pdf" },
+                new DocumentEntity { Id = "2", Name = "Ocular Center Invoice", FilePath = "/Pdf/fake-occular-center.pdf" },
+                new DocumentEntity { Id = "3", Name = "Lamp Receipt", FilePath = "/Pdf/fake-lamp-receit.pdf" },
+                new DocumentEntity { Id = "4", Name = "Kayak Certificate", FilePath = "/Pdf/fake-kayak-certificate.pdf" }
+            };
 
-            UiState.DocumentSelection.AvailableDocuments = documents;
-            UiState.DocumentSelection.SelectedDocument = documents.First();
-            SelectedDocument = UiState.DocumentSelection.SelectedDocument;
+            return documents;
+            //UiState.DocumentSelection.AvailableDocuments = documents;
+            //UiState.DocumentSelection.SelectedDocument = documents.First();
+            //SelectedDocument = UiState.DocumentSelection.SelectedDocument;
         }
     }
 }

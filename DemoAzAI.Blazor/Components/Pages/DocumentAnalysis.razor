@@ -4,6 +4,7 @@
 
 @using DemoAzAI.Blazor.Components.Fragments
 @using DemoAzAI.Blazor.Services.StateContainers
+@using DemoAzAI.Blazor.Models
 
 @inject ILogger<DocumentAnalysis> Logger
 @inject UiStateContainer UiState
@@ -99,8 +100,8 @@
 
     private string SelectedModel { get; set; } = _readModel;
 
-    private UiStateDocumentInfo SelectedDocument { get; set; } = new();
-    private List<UiStateDocumentInfo> AvailableDocuments { get; set; } = new();
+    private DocumentEntity SelectedDocument { get; set; } = new();
+    private List<DocumentEntity> AvailableDocuments { get; set; } = new();
 
     private static string _readModel = "prebuilt-read";
     private static string _layoutModel = "prebuilt-layout";

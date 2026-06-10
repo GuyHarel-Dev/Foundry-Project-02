@@ -1,9 +1,11 @@
-﻿namespace DemoAzAI.Blazor.Services.StateContainers
+﻿using DemoAzAI.Blazor.Models;
+
+namespace DemoAzAI.Blazor.Services.StateContainers
 {
     public class UiStateDocumentSelection
     {
-        public List<UiStateDocumentInfo> AvailableDocuments { get; set; } = new();
-        public UiStateDocumentInfo? SelectedDocument { get; set; } = null;
+        public List<DocumentEntity> AvailableDocuments { get; set; } = new();
+        public DocumentEntity? SelectedDocument { get; set; } = null;
 
     }
 }

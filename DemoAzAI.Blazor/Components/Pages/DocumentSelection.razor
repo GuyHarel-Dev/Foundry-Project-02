@@ -4,7 +4,7 @@
 
 @using DemoAzAI.Blazor.Components.Fragments
 @using DemoAzAI.Blazor.Services.StateContainers
-@using DemoAzAI.Blazor.Components.Models
+@using DemoAzAI.Blazor.Models
 
 @inject UiStateContainer UiState
 
@@ -18,17 +18,12 @@
 <div class="document-selection-area">
     <div class="title">Select or upload a document:</div>
     <div class="select-document">
+        <DocumentSelectorCombo Title="Select a document:"
+                               ClickToLoadMessage="(Click the load button to load the available documents)"
+                               LoadDocumentsFuncAsync="OnLoadDocumentsAsync"
+                               OnDocumentSelectedCallBack="OnDocumentSelected">
 
-        <DocumentSelectorCombo Title="Select a document:" LoadDocumentsAsync="Test"></DocumentSelectorCombo>
-
-        @*         <select class="model-select" @onchange="OnDocumentSelected">
-            @foreach (var doc in UiState.DocumentSelection.AvailableDocuments)
-            {
-                <option value="@doc.Id">@doc.FileName</option>
-            }
-
-        </select> *@
-
+        </DocumentSelectorCombo>
     </div>
 
     <form @onsubmit="UploadDocument">
@@ -45,19 +40,7 @@
 </div>
 
 @code {
-    public UiStateDocumentInfo SelectedDocument { get; set; } = new();
-    private List<UiStateDocumentInfo> AvailableDocuments { get; set; } = new();
+    public DocumentEntity SelectedDocument { get; set; } = new();
+    private List<DocumentEntity> AvailableDocuments { get; set; } = new();
 
-    public async Task<IEnumerable<DocumentSelectorEntity>> Test()
-    {
-        var documents =  new List<DocumentSelectorEntity> {
-            new DocumentSelectorEntity { Id = "1", Name = "aaaaaaaaaaaaa" },
-              new DocumentSelectorEntity { Id = "2", Name = "bbbbbb" },
-                new DocumentSelectorEntity { Id = "3", Name = "ccccccc" }
-
-        };
-
-
-        return documents;
-    }
 }

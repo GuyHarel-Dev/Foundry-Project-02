@@ -1,4 +1,4 @@
-﻿@using DemoAzAI.Blazor.Components.Models
+﻿@using DemoAzAI.Blazor.Models
 
 <label>@Title</label>
 
@@ -13,7 +13,7 @@
         }
         else
         {
-            <option value="0">(click the load button to load documents)</option>
+            <option value="0">@ClickToLoadMessage</option>
         }
 
     </select>
@@ -35,15 +35,26 @@
     public string Title { get; set; } = string.Empty;
 
     [Parameter]
-    public Func<Task<IEnumerable<DocumentSelectorEntity>>>? LoadDocumentsAsync { get; set; }
+    public string ClickToLoadMessage { get; set; } = "(Click the load button)";
+
+    [Parameter]
+    public Func<Task<IEnumerable<DocumentEntity>>>? LoadDocumentsFuncAsync { get; set; }
+
+    [Parameter]
+    public EventCallback<DocumentEntity> OnDocumentSelectedCallBack { get; set; }
 
     private bool documentLoadingIsBusy { get; set; } = false;
 
-    private IEnumerable<DocumentSelectorEntity>? documents { get; set; } 
+    private IEnumerable<DocumentEntity>? documents { get; set; } 
 
-    public async Task OnDocumentSelected()
+    public async Task OnDocumentSelected(ChangeEventArgs e)
     {
-
+        if (e.Value is not null && documents is not null)
+        {
+            var id = e.Value as string;
+            var doc = documents.First(doc => doc.Id == id);
+            await OnDocumentSelectedCallBack.InvokeAsync(doc);
+        }
     }
 
     public async Task LoadDocuments()
@@ -51,9 +62,9 @@
         documentLoadingIsBusy = true;
 
 
-        if (LoadDocumentsAsync is not null)
+        if (LoadDocumentsFuncAsync is not null)
         {
-            documents = await LoadDocumentsAsync.Invoke();
+            documents = await LoadDocumentsFuncAsync.Invoke();
         }
 
         documentLoadingIsBusy = false;

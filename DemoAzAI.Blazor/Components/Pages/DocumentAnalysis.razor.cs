@@ -1,13 +1,12 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
-using DemoAzAI.Blazor.Services.StateContainers;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
-using Microsoft.VisualBasic;
 using System.Security.Cryptography;
 using System.Text;
+using DemoAzAI.Blazor.Models;
 
 namespace DemoAzAI.Blazor.Components.Pages;
 
@@ -47,7 +46,7 @@ public partial class DocumentAnalysis
         }
     }
 
-    private bool IsDocumentSelected(UiStateDocumentInfo docInfo)
+    private bool IsDocumentSelected(DocumentEntity docInfo)
     {
         return SelectedDocument.Id == docInfo.Id;
     }
