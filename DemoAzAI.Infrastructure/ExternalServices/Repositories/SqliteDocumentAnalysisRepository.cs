@@ -1,19 +1,19 @@
 ﻿using Dapper;
-using DemoAzAI.Abstractions;
+using DemoAzAI.Abstractions.Repositories;
+using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
-using DemoAzAI.Infrastructure.Entities;
 using Microsoft.Data.Sqlite;
 using System.Text.Json;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Stores
 {
-    public class SqliteDocumentAnalysisStore : IDocumentAnalysisStoreService
+    public class SqliteDocumentAnalysisRepository : IDocumentAnalysisRepository
     {
         private readonly string connectionString = "Data Source=document_analysis.db";
 
         private bool initialized;
 
-        public async Task<DocumentAnalysisStoredResult?> GetByIdAsync(string id)
+        public async Task<DocumentAnalysisEntity?> GetByIdAsync(string id)
         {
            EnsureInitialized();
 
@@ -31,14 +31,14 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Stores
                 WHERE Id = @IdParam
                 """;
 
-            var row = await connection.QuerySingleOrDefaultAsync<DocumentAnalysisStoredResult>(
+            var row = await connection.QuerySingleOrDefaultAsync<DocumentAnalysisEntity>(
                 sql,
                 new { IdParam = id });
 
             if (row == null)
                 return null;
 
-            return new DocumentAnalysisStoredResult
+            return new DocumentAnalysisEntity
             {
                 Id = row.Id,
                 FileName = row.FileName,
@@ -49,7 +49,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Stores
             };
         }
 
-        public async Task<IEnumerable<DocumentAnalysisStoredResult>> GetAllAsync()
+        public async Task<IEnumerable<DocumentAnalysisEntity>> GetAllAsync()
         {
             EnsureInitialized();
 
@@ -70,7 +70,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Stores
             var rows =
                 await connection.QueryAsync<DocumentAnalysisEntity>(sql);
 
-            return rows.Select(r => new DocumentAnalysisStoredResult
+            return rows.Select(r => new DocumentAnalysisEntity
             {
                 Id = r.Id.ToString(),
                 FileName = r.FileName,
@@ -149,7 +149,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Stores
         }
 
 
-        Task<DocumentAnalysisStoredResult?> IDocumentAnalysisStoreService.GetByHashAsync(string hash)
+        Task<DocumentAnalysisEntity?> IDocumentAnalysisRepository.GetByHashAsync(string hash)
         {
             throw new NotImplementedException();
         }

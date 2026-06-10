@@ -4,7 +4,7 @@
 
 @using DemoAzAI.Application
 @using DemoAzAI.Blazor.Components.Fragments
-@using DemoAzAI.Domain.Models.DocumentAnalysis
+@using DemoAzAI.Domain.Entities
 
 @inject IExecutionStepTracer StepTracer
 @inject ILogger<SemanticAnalysis> Logger
@@ -91,7 +91,7 @@
     private bool sendTextEmbeddingRequestBusy { get; set; } = false;
     private bool getDocumentResultsFromStoreIsBusy { get; set; } = false;
 
-    private List<DocumentAnalysisStoredResult> storedDocuments { get; set; } = new();
+    private List<DocumentAnalysisEntity> storedDocuments { get; set; } = new();
 
     private string DocumentAnalysisText { get; set; } = string.Empty;
     private string DocumentAnalysisTextChunk { get; set; } = string.Empty;

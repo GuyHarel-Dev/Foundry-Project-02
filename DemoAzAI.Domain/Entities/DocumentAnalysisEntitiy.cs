@@ -1,8 +1,8 @@
-﻿using System.Text;
+﻿using DemoAzAI.Domain.Models.DocumentAnalysis;
 
-namespace DemoAzAI.Domain.Models.DocumentAnalysis
+namespace DemoAzAI.Domain.Entities
 {
-    public class DocumentAnalysisStoredResult
+    public class DocumentAnalysisEntity
     {
         public string Id { get; set; } = string.Empty;
 

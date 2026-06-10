@@ -1,8 +1,8 @@
-﻿using DemoAzAI.Abstractions;
-using DemoAzAI.Abstractions.Models;
+﻿using DemoAzAI.Abstractions.Models;
+using DemoAzAI.Abstractions.Repositories;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain.Models.DocumentAnalysis;
+using DemoAzAI.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -10,7 +10,7 @@ namespace WebApi.Controllers
     [Route("api/store")]
     [ApiController]
     public class StoreController(
-        IDocumentAnalysisStoreService documentAnalysysStoreService
+        IDocumentAnalysisRepository documentAnalysysStoreService
         ) : ControllerBase
     {
 
@@ -47,7 +47,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("document/analysis/results")]
-        public async Task<ActionResult<IEnumerable<DocumentAnalysisStoredResult>>> GetAllDocumentAnalysisResults()
+        public async Task<ActionResult<IEnumerable<DocumentAnalysisEntity>>> GetAllDocumentAnalysisResults()
         {
             var history = await documentAnalysysStoreService.GetAllAsync();
 
@@ -61,7 +61,7 @@ namespace WebApi.Controllers
 
 
         [HttpGet("document/analysis/results/{id}")]
-        public async Task<ActionResult<DocumentAnalysisStoredResult>> GetDocumentAnalysisResultsById(string id)
+        public async Task<ActionResult<DocumentAnalysisEntity>> GetDocumentAnalysisResultsById(string id)
         {
             var doc = await documentAnalysysStoreService.GetByIdAsync(id);
 
