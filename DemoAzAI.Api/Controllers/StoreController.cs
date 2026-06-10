@@ -1,4 +1,5 @@
 ﻿using DemoAzAI.Abstractions;
+using DemoAzAI.Abstractions.Models;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
@@ -13,6 +14,13 @@ namespace WebApi.Controllers
         ) : ControllerBase
     {
 
+        [HttpGet("documents")]
+        public async Task<ActionResult<IEnumerable<DocumentEntity>>> GetAvailableDocuments()
+        {
+
+            return Ok();
+        }
+        
         [HttpPost("document/analysis")]
         public async Task<ActionResult<StoredDocumentAnalysisResponseDto>> StoreDocumentAnalysis([FromBody] StoredDocumentAnalysisRequestDto request)
         {

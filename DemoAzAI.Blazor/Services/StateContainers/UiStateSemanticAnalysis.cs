@@ -1,10 +1,10 @@
-﻿using DemoAzAI.Domain.Models.DocumentAnalysis;
+﻿//using DemoAzAI.Domain.Models.DocumentAnalysis;
 
-namespace DemoAzAI.Blazor.Services.StateContainers
-{
-    public class UiStateSemanticAnalysis
-    {
+//namespace DemoAzAI.Blazor.Services.StateContainers
+//{
+//    public class UiStateSemanticAnalysis
+//    {
 
 
-    }
-}
+//    }
+//}

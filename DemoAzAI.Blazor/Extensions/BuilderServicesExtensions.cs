@@ -1,6 +1,5 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
-using DemoAzAI.Blazor.Services.StateContainers;
 
 namespace UI.Extensions
 {
@@ -18,13 +17,6 @@ namespace UI.Extensions
 
             services.AddScoped(sp =>
               new ApiClient(httpClient));
-
-            return services;
-        }
-
-        public static IServiceCollection AddScopedPageContainers(this IServiceCollection services)
-        {
-            services.AddScoped<UiStateContainer>();
 
             return services;
         }

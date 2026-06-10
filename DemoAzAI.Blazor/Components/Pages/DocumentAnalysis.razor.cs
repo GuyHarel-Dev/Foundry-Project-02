@@ -6,7 +6,6 @@ using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
 using System.Security.Cryptography;
 using System.Text;
-using DemoAzAI.Blazor.Models;
 
 namespace DemoAzAI.Blazor.Components.Pages;
 
@@ -32,134 +31,134 @@ public partial class DocumentAnalysis
         }
 
         var docId = e.Value.ToString();
-        SelectedDocument = UiState.DocumentSelection.AvailableDocuments.First((doc) => doc.Id == docId);
+        //SelectedDocument = UiState.DocumentSelection.AvailableDocuments.First((doc) => doc.Id == docId);
 
     }
 
     protected override async Task OnInitializedAsync()
     {
-        if (UiState.DocumentSelection.AvailableDocuments.Any())
-        {
-            AvailableDocuments = UiState.DocumentSelection.AvailableDocuments;
-            if (UiState.DocumentSelection.SelectedDocument is not null)
-                SelectedDocument = UiState.DocumentSelection.SelectedDocument;
-        }
+        //if (UiState.DocumentSelection.AvailableDocuments.Any())
+        //{
+        //    AvailableDocuments = UiState.DocumentSelection.AvailableDocuments;
+        //    if (UiState.DocumentSelection.SelectedDocument is not null)
+        //        SelectedDocument = UiState.DocumentSelection.SelectedDocument;
+        //}
     }
 
-    private bool IsDocumentSelected(DocumentEntity docInfo)
-    {
-        return SelectedDocument.Id == docInfo.Id;
-    }
+    //private bool IsDocumentSelected(DocumentEntity docInfo)
+    //{
+    //    return SelectedDocument.Id == docInfo.Id;
+    //}
 
-    private async Task AnalyzeDocument()
-    {
-        if (string.IsNullOrEmpty(SelectedDocument.FileName))
-        {
-            AddExecutionError(executionStepTracer, "Select a file for analysis");
-            return;
-        }
+    //private async Task AnalyzeDocument()
+    //{
+    //    if (string.IsNullOrEmpty(SelectedDocument.FileName))
+    //    {
+    //        AddExecutionError(executionStepTracer, "Select a file for analysis");
+    //        return;
+    //    }
 
-        try
-        {
+    //    try
+    //    {
 
-            BeginAnalyseDocumentUiProcess();
+    //        BeginAnalyseDocumentUiProcess();
 
-            var result = await SendAnalyzeDocumentRequest();
+    //        var result = await SendAnalyzeDocumentRequest();
 
-            if (ApiClientResulIsOk(logger, result))
-            {
-                UiState.DocumentAnalysis.DocumentAnalysis = result.Value;
-                DisplayDocument(result.Value!.DocumentAnalysisResult);
+    //        if (ApiClientResulIsOk(logger, result))
+    //        {
+    //            //UiState.DocumentAnalysis.DocumentAnalysis = result.Value;
+    //            DisplayDocument(result.Value!.DocumentAnalysisResult);
 
-                if (saveAnalysisToStore)
-                    await SaveAnalysisToStore();
+    //            if (saveAnalysisToStore)
+    //                await SaveAnalysisToStore();
 
-            }
+    //        }
 
-        }
-        catch (Exception ex)
-        {
-            LogExecutionError(logger, ex, "Error while processing document for analysis.");
-        }
-        finally
-        {
-            EndAnalyseDocumentUiProcess();
-        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        LogExecutionError(logger, ex, "Error while processing document for analysis.");
+    //    }
+    //    finally
+    //    {
+    //        EndAnalyseDocumentUiProcess();
+    //    }
 
-    }
+    //}
 
     private void BeginAnalyseDocumentUiProcess()
     {
         sendDocumentAnalysisBusy = true;
-        AddExecutionStep(executionStepTracer, $"Starting analysis for document {SelectedDocument.FileName} using model {SelectedModel}");
+        //AddExecutionStep(executionStepTracer, $"Starting analysis for document {SelectedDocument.FileName} using model {SelectedModel}");
     }
 
     private void EndAnalyseDocumentUiProcess()
     {
         sendDocumentAnalysisBusy = false;
-        AddExecutionStep(executionStepTracer, $"Analysis completed for document {SelectedDocument.FileName} using model {SelectedModel}");
+        //AddExecutionStep(executionStepTracer, $"Analysis completed for document {SelectedDocument.FileName} using model {SelectedModel}");
     }
 
 
-    private async Task<ApiClientResult<DocumentAnalysisResponseDto>> SendAnalyzeDocumentRequest()
-    {
+    //private async Task<ApiClientResult<DocumentAnalysisResponseDto>> SendAnalyzeDocumentRequest()
+    //{
 
-        var request = new DocumentAnalysisRequestDto()
-        {
-            ModelName = SelectedModel,
-            FileName = Path.GetFileName(SelectedDocument.FileName),
-            Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDocument.FilePath.TrimStart('/')))
-        };
+    //    var request = new DocumentAnalysisRequestDto()
+    //    {
+    //        ModelName = SelectedModel,
+    //        FileName = Path.GetFileName(SelectedDocument.FileName),
+    //        Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDocument.FilePath.TrimStart('/')))
+    //    };
 
-        request.BytesHash = Convert.ToHexString(SHA256.HashData(request.Bytes));
+    //    request.BytesHash = Convert.ToHexString(SHA256.HashData(request.Bytes));
 
-        var result = await apiClient.PostAsync<DocumentAnalysisRequestDto,
-            DocumentAnalysisResponseDto>("api/document/analyse", request);
+    //    var result = await apiClient.PostAsync<DocumentAnalysisRequestDto,
+    //        DocumentAnalysisResponseDto>("api/document/analyse", request);
 
 
-        return result;
-    }
+    //    return result;
+    //}
 
     private async Task SaveAnalysisToStore()
     {
 
-        if (UiState.DocumentAnalysis.DocumentAnalysis is null)
-        {
-            AddExecutionError(executionStepTracer, "No document analysis available to save to store");
-            return;
-        }
+        //if (UiState.DocumentAnalysis.DocumentAnalysis is null)
+        //{
+        //    AddExecutionError(executionStepTracer, "No document analysis available to save to store");
+        //    return;
+        //}
 
-        try
-        {
-            var analysis = UiState.DocumentAnalysis.DocumentAnalysis;
+        //try
+        //{
+        //    var analysis = UiState.DocumentAnalysis.DocumentAnalysis;
 
-            BeginStoreDocumentAnalysisUiProcess(analysis);
+        //    BeginStoreDocumentAnalysisUiProcess(analysis);
 
-            var request = new StoredDocumentAnalysisRequestDto()
-            {
-                FileName = analysis.FileName,
-                BytesHash = analysis.BytesHash,
-                DocumentAnalysisResult = analysis.DocumentAnalysisResult
-            };
+        //    var request = new StoredDocumentAnalysisRequestDto()
+        //    {
+        //        FileName = analysis.FileName,
+        //        BytesHash = analysis.BytesHash,
+        //        DocumentAnalysisResult = analysis.DocumentAnalysisResult
+        //    };
 
-            var result = await apiClient.PostAsync<StoredDocumentAnalysisRequestDto,
-                StoredDocumentAnalysisResponseDto>("api/store/document/analysis", request);
+        //    var result = await apiClient.PostAsync<StoredDocumentAnalysisRequestDto,
+        //        StoredDocumentAnalysisResponseDto>("api/store/document/analysis", request);
 
-            if (ApiClientResulIsOk(logger, result))
-            {
+        //    if (ApiClientResulIsOk(logger, result))
+        //    {
 
 
-            }
+        //    }
 
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Error while saving document analysis to store.");
-        }
-        finally
-        {
-            EndStoreDocumentAnalysisUiProcess();
-        }
+        //}
+        //catch (Exception ex)
+        //{
+        //    Logger.LogError(ex, "Error while saving document analysis to store.");
+        //}
+        //finally
+        //{
+        //    EndStoreDocumentAnalysisUiProcess();
+        //}
 
     }
 

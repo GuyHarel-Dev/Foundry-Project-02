@@ -16,4 +16,8 @@
     <ProjectReference Include="..\DemoAzAI.Domain\DemoAzAI.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Documents\" />
+  </ItemGroup>
+
 </Project>

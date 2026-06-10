@@ -3,11 +3,8 @@
 @rendermode InteractiveServer
 
 @using DemoAzAI.Blazor.Components.Fragments
-@using DemoAzAI.Blazor.Services.StateContainers
-@using DemoAzAI.Blazor.Models
 
 @inject ILogger<DocumentAnalysis> Logger
-@inject UiStateContainer UiState
 
 
 <div class="title-area">
@@ -26,10 +23,10 @@
     <div class="document-selected-area">
         <span>Select a document to Analyse:</span>
         <select @onchange="OnDocumentSelected">
-            @foreach (var doc in UiState.DocumentSelection.AvailableDocuments)
+@*             @foreach (var doc in UiState.DocumentSelection.AvailableDocuments)
             {
                 <option value="@doc.Id" selected="@IsDocumentSelected(doc)">@doc.FileName</option>
-            }
+            } *@
 
         </select>
     </div>
@@ -50,7 +47,7 @@
         </div>
 
         <div class="analyse-store-document-area">
-            <form @onsubmit="AnalyzeDocument">
+@*             <form @onsubmit="AnalyzeDocument">
 
                 <button type="submit" class="ask-button" disabled="@sendDocumentAnalysisBusy">
                     <span>Analyse document</span>
@@ -69,7 +66,7 @@
                     <LoadingPanel Message="Saving document analysis to application store..." />
                 }
 
-            </form>
+            </form> *@
         </div>
     </div>
 
@@ -100,8 +97,8 @@
 
     private string SelectedModel { get; set; } = _readModel;
 
-    private DocumentEntity SelectedDocument { get; set; } = new();
-    private List<DocumentEntity> AvailableDocuments { get; set; } = new();
+    // private DocumentEntity SelectedDocument { get; set; } = new();
+    // private List<DocumentEntity> AvailableDocuments { get; set; } = new();
 
     private static string _readModel = "prebuilt-read";
     private static string _layoutModel = "prebuilt-layout";

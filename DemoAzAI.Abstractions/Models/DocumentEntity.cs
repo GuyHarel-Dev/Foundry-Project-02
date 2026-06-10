@@ -1,4 +1,4 @@
-﻿namespace DemoAzAI.Blazor.Models
+﻿namespace DemoAzAI.Abstractions.Models
 {
     public class DocumentEntity
     {
