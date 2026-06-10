@@ -1,5 +1,5 @@
 ﻿using DemoAzAI.Abstractions.Repositories;
-using DemoAzAI.Infrastructure.Documents;
+using DemoAzAI.Infrastructure.ExternalServices.Repositories;
 using DemoAzAI.Infrastructure.ExternalServices.Stores;
 
 namespace WebApi.Extensions
@@ -10,7 +10,7 @@ namespace WebApi.Extensions
             this IServiceCollection services)
         {
             services.AddSingleton<IDocumentAnalysisRepository, SqliteDocumentAnalysisRepository>();
-            services.AddSingleton<IDocumentRepository, DocumentRepository>();
+            services.AddSingleton<IDocumentRepository, SqliteDocumentRepository>();
 
             return services;
         }

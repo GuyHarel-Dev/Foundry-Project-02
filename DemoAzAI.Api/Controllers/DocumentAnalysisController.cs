@@ -21,12 +21,13 @@ namespace DemoAzAI.Api.Controllers
             [FromBody] DocumentAnalysisRequestDto request)
         {
 
-            var response = await _documentIntelligence.AnalyzeDocumentAsync(request);
+            //var response = await _documentIntelligence.AnalyzeDocumentAsync(request);
 
-            response.BytesHash = request.BytesHash;
+            //response.BytesHash = request.BytesHash;
 
-            return Ok(response);
+            //return Ok(response);
 
+            return Ok();
         }
 
    

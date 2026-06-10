@@ -11,7 +11,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Stores
     {
         private readonly string connectionString = "Data Source=document_analysis.db";
 
-        private bool initialized;
+        private bool initialized = false;
 
         public async Task<DocumentAnalysisEntity?> GetByIdAsync(string id)
         {

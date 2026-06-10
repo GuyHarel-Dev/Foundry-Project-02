@@ -1,4 +1,4 @@
-﻿using DemoAzAI.Abstractions.Models;
+﻿using DemoAzAI.Abstractions.Entities;
 
 namespace WebApi.Services.Interfaces
 {

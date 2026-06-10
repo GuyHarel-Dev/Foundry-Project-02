@@ -1,9 +1,9 @@
-﻿using DemoAzAI.Abstractions.Models;
+﻿using DemoAzAI.Abstractions.Entities;
 using WebApi.Services.Interfaces;
 
 namespace WebApi.Services
 {
-    public class StoreService : IStoreService
+    public class RepositoryService : IStoreService
     {
         public Task<IEnumerable<DocumentEntity>> GetAllDocuments()
         {

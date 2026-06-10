@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DemoAzAI.Contracts.Api.Responses
 {
-    public class StoredDocumentAnalysisResponseDto
+    public class DocumentAnalysisUploadResponseDto
     {
         public string FileName { get; set; } = string.Empty;
         public string Hash { get; set; } = string.Empty;

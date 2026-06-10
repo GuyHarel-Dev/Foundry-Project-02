@@ -17,9 +17,9 @@ namespace DemoAzAI.Api.Services
     {
         public async Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)
         {
-            var documentHash = request.BytesHash;
+            //var documentHash = request.BytesHash;
 
-            logger.LogInformation($"Sending document {request.FileName} to analysis model");
+            //logger.LogInformation($"Sending document {request.FileName} to analysis model");
 
             var result = await SendAnalyseDocumentRequestAsync(request, cancellationToken);
 
@@ -30,34 +30,39 @@ namespace DemoAzAI.Api.Services
 
         private AnalyzeDocumentOptions CreateAnalyzeDocumentOptions(DocumentAnalysisRequestDto doc)
         {
-            var modelName = doc.ModelName;
-            var stream = new MemoryStream(doc.Bytes);
-            var bytes = BinaryData.FromStream(stream);
+            //var modelName = doc.ModelName;
+            //var stream = new MemoryStream(doc.Bytes);
+            //var bytes = BinaryData.FromStream(stream);
 
-            return new AnalyzeDocumentOptions(
-                modelName,
-                bytes);
+            //return new AnalyzeDocumentOptions(
+            //    modelName,
+            //    bytes);
+
+            byte[] test = new byte[] { 113 };
+            return new AnalyzeDocumentOptions("", new Uri(""));
         }
 
         private async Task<DocumentAnalysisResponseDto> SendAnalyseDocumentRequestAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken)
         {
-            var options = CreateAnalyzeDocumentOptions(request);
+            //var options = CreateAnalyzeDocumentOptions(request);
 
-            Operation<AnalyzeResult> operation =
-                await client.AnalyzeDocumentAsync(
-                    WaitUntil.Completed,
-                    options,
-                    cancellationToken);
+            //Operation<AnalyzeResult> operation =
+            //    await client.AnalyzeDocumentAsync(
+            //        WaitUntil.Completed,
+            //        options,
+            //        cancellationToken);
 
-            var docAnalysisResult = Map(request.ModelName, operation.Value);
+            //var docAnalysisResult = Map(request.ModelName, operation.Value);
 
-            var response = new DocumentAnalysisResponseDto
-            {
-                FileName = request.FileName,
-                DocumentAnalysisResult = docAnalysisResult
-            };
+            //var response = new DocumentAnalysisResponseDto
+            //{
+            //    FileName = request.FileName,
+            //    DocumentAnalysisResult = docAnalysisResult
+            //};
 
-            return response;
+            //return response;
+
+            return new DocumentAnalysisResponseDto();
         }
 
         private DocumentAnalysisResult Map(string modelName, AnalyzeResult azureAnalysisResult)

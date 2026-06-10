@@ -1,9 +1,10 @@
-﻿using DemoAzAI.Abstractions.Models;
+﻿using DemoAzAI.Abstractions.Entities;
 
 namespace DemoAzAI.Abstractions.Repositories
 {
     public interface IDocumentRepository
     {
-        List<DocumentEntity> GetAllDocuments();
+        Task<bool> SaveAsync(DocumentEntity document);
+        Task<List<DocumentEntity>> GetAllDocuments();
     }
 }

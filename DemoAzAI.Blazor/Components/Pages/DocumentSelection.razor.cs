@@ -1,5 +1,4 @@
 
-using DemoAzAI.Abstractions.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages

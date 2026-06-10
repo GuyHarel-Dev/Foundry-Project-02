@@ -1,11 +1,68 @@
-﻿using DemoAzAI.Abstractions.Models;
+﻿using Dapper;
+using DemoAzAI.Abstractions.Entities;
 using DemoAzAI.Abstractions.Repositories;
+using Microsoft.Data.Sqlite;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 {
-    internal class SqliteDocumentRepository : IDocumentRepository
+    public class SqliteDocumentRepository : IDocumentRepository
     {
-        public List<DocumentEntity> GetAllDocuments()
+        private readonly string connectionString = "Data Source=document.db";
+        private bool initialized;
+
+        private void EnsureInitialized()
+        {
+            if (initialized)
+                return;
+
+            using var connection =
+                new SqliteConnection(connectionString);
+
+            connection.Execute("""
+                CREATE TABLE IF NOT EXISTS DocumentAnalysisResults (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    FileName TEXT NOT NULL UNIQUE,
+                    Hash TEXT NOT NULL UNIQUE,
+                    AnalysisResultJson TEXT NOT NULL,
+                    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+                """);
+
+            initialized = true;
+        }
+
+        public async Task<bool> SaveAsync(DocumentEntity document)
+        {
+            using var connection = new SqliteConnection(connectionString);
+
+            var rows = await connection.ExecuteAsync(
+                """
+            INSERT INTO Documents
+            (
+                Id,
+                FileName,
+                DisplayName,
+                FileType,
+                RelativePath,
+                CreatedUtc
+            )
+            VALUES
+            (
+                @Id,
+                @FileName,
+                @DisplayName,
+                @FileType,
+                @RelativePath,
+                datetime('now')
+            )
+            """,
+                document);
+
+
+            return rows > 0;
+        }
+
+        public async Task<List<DocumentEntity>> GetAllDocuments()
         {
             throw new NotImplementedException();
         }
