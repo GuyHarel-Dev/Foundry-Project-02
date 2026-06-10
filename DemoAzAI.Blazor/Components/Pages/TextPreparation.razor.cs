@@ -100,7 +100,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisStoredResult>>("api/store/document/analysis/results");
 
-                if (v(logger, result))
+                if (ApiClientResulIsOk(logger, result))
                 {
                     storedDocuments = result.Value!.ToList();
                     DocumentAnalysisText = storedDocuments.First().AnalysisResult.DocumentsFieldsContent;

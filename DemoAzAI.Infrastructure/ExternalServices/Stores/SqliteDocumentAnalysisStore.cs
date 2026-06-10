@@ -1,11 +1,11 @@
 ﻿using Dapper;
 using DemoAzAI.Abstractions;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
+using DemoAzAI.Infrastructure.Entities;
 using Microsoft.Data.Sqlite;
-using System.Data.Common;
 using System.Text.Json;
 
-namespace DemoAzAI.Infrastructure.Persistence
+namespace DemoAzAI.Infrastructure.ExternalServices.Stores
 {
     public class SqliteDocumentAnalysisStore : IDocumentAnalysisStoreService
     {

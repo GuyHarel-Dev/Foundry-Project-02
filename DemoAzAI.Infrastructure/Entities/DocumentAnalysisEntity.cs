@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DemoAzAI.Infrastructure.Persistence
+﻿namespace DemoAzAI.Infrastructure.Entities
 {
     public class DocumentAnalysisEntity
     {
