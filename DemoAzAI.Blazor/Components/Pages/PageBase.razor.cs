@@ -1,6 +1,7 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging.Configuration;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
@@ -18,16 +19,17 @@ namespace DemoAzAI.Blazor.Components.Pages
             await Task.Yield();
         }
 
-        public bool ApiClientResulIsOk<T>(IExecutionStepTracer executionStepTracer, ApiClientResult<T> result)
+        public bool ApiClientResulIsOk<T>(ILogger logger, ApiClientResult<T> result)
         {
             if (result == null || result.Value is null)
             {
-                executionSteps = executionStepTracer.AddUiStep($"Error: api call for {typeof(T).Name} returned no value");
+                logger.LogWarning($"Error: api call for {typeof(T).Name} returned no value");
             }
 
             if (result!.IsSuccess == false)
             {
-                executionSteps = executionStepTracer.AddUiStep(result.ErrorMessage ?? "Unknown API error.");
+                logger.LogError(result.ErrorMessage ?? "Unknown API error.");
+    
                 return false;
             }
 

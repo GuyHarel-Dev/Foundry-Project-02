@@ -67,7 +67,7 @@ public partial class DocumentAnalysis
 
             var result = await SendAnalyzeDocumentRequest();
 
-            if (ApiClientResulIsOk<DocumentAnalysisResponseDto>(executionStepTracer, result))
+            if (ApiClientResulIsOk(logger, result))
             {
                 UiState.DocumentAnalysis.DocumentAnalysis = result.Value;
                 DisplayDocument(result.Value!.DocumentAnalysisResult);
@@ -146,7 +146,7 @@ public partial class DocumentAnalysis
             var result = await apiClient.PostAsync<StoredDocumentAnalysisRequestDto,
                 StoredDocumentAnalysisResponseDto>("api/store/document/analysis", request);
 
-            if (ApiClientResulIsOk(executionStepTracer, result))
+            if (ApiClientResulIsOk(logger, result))
             {
 
 

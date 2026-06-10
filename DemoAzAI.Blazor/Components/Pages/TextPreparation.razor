@@ -2,10 +2,84 @@
 @inherits BasePage
 @rendermode InteractiveServer
 
-<h3>TextPreparation</h3>
 
-<button @onclick="Test">boutton</button>
+@using DemoAzAI.Application
+@using DemoAzAI.Blazor.Components.Fragments
+@using DemoAzAI.Blazor.Services.StateContainers
+@using DemoAzAI.Domain.Models.DocumentAnalysis
+
+@inject IExecutionStepTracer StepTracer
+@inject UiStateContainer UiState
+
+<PageTitle>Semantic Analysis</PageTitle>
+
+<PageDescription Title="Semantic Analysis"
+                 Model="AI Model: text-embedding-3-small (OpenAI)"
+                 Description="Description: Generates semantic representations used for knowledge retrieval, similarity matching, and intelligent search.">
+</PageDescription>
+
+<div class="page-area">
+
+    <div class="select-document-text-area">
+        <span>Select a document stored results:</span>
+        <select @onchange="OnDocumentSelected">
+            @foreach (var doc in storedDocuments)
+            {
+                <option value="@doc.Id">@doc.FileName</option>
+            }
+        </select>
+
+
+    </div>
+
+    <div class="prepare-document-text-area">
+
+        <label>Prepare document result text for vectorization:</label>
+
+        <div class="content-area">
+            <div class="document-text-area">
+                <label for="DocumentAnalysisText">Text from document analysis:</label>
+                <textarea>@DocumentAnalysisText</textarea>
+            </div>
+
+            <div class="document-chunk-area">
+                <label>Text prepared for vectorization (chunking):</label>
+                <textarea>@DocumentAnalysisTextChunk</textarea>
+
+                <form @onsubmit="SendTextPreparationRequest">
+
+                    <button type="submit" class="ask-button">
+                        <span>Send text preparation request</span>
+                    </button>
+
+                    @if (sendTextPreparationRequestBusy)
+                    {
+                        <LoadingPanel Message="Sending text preparation request to api..." />
+                    }
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
 
 @code {
 
+    private bool sendTextPreparationRequestBusy { get; set; } = false;
+    private bool sendTextEmbeddingRequestBusy { get; set; } = false;
+    private bool getDocumentResultsFromStoreIsBusy { get; set; } = false;
+
+    private List<DocumentAnalysisStoredResult> storedDocuments { get; set; } = new();
+
+    private string DocumentAnalysisText { get; set; } = string.Empty;
+    private string DocumentAnalysisTextChunk { get; set; } = string.Empty;
+    private string DocumentAnalysisTextChunkStatistics { get; set; } = string.Empty;
+    private string DocumentAnalysisTextChunkVectorized { get; set; } = string.Empty;
+
+    private static string TextToEmbedDefault = @"Cats are playful pets
+Dogs are loyal animals
+Pizza is delicious
+Machine learning uses vectors";
 }

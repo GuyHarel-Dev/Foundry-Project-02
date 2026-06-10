@@ -15,6 +15,9 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         private IExecutionStepTracer executionStepTracer { get; set; } = default!;
 
+        [Inject]
+        private ILogger<SemanticAnalysis> logger { get; set; } = default!;
+
         protected override async Task OnInitializedAsync()
         {
             await GetDocumentResultsFromStore();
@@ -42,7 +45,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed/textlines", request);
 
-                if (ApiClientResulIsOk(executionStepTracer, result))
+                if (ApiClientResulIsOk(logger, result))
                 {
 
                     var response = result.Value;
@@ -77,7 +80,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request);
 
-                if (ApiClientResulIsOk(executionStepTracer, result))
+                if (ApiClientResulIsOk(logger, result))
                 {
 
                     var response = result.Value;
@@ -148,17 +151,21 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisStoredResult>>("api/store/document/analysis/results");
 
-                if (result == null || result.Value is null)
+                if (ApiClientResulIsOk(logger, result))
                 {
-                    Logger.LogWarning($"No document retreived from store");
-                    return;
+                    storedDocuments = result.Value!.ToList();
+                    DocumentAnalysisText = storedDocuments.First().AnalysisResult.DocumentsFieldsContent;
                 }
+                    //if (result == null || result.Value is null)
+                    //{
+                    //    Logger.LogWarning($"No document retreived from store");
+                    //    return;
+                    //}
 
-                storedDocuments = result.Value.ToList();
-                DocumentAnalysisText = storedDocuments.First().AnalysisResult.DocumentsFieldsContent;
 
 
-            }
+
+                }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Error while getting document results from store.");
