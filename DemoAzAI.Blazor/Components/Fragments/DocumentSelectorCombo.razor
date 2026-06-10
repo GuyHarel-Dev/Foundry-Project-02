@@ -1,5 +1,36 @@
-﻿<h3>DocumentSelectionPanel</h3>
+﻿<label>@Title</label>
+
+<div class="document-select-area">
+    <select class="select-document" @onchange="OnDocumentSelected">
+        <option value="0">(click the load button to load documents)</option>
+    </select>
+
+    <button class="load-button" @onclick="LoadDocumentsAsync">
+        Load
+    </button>
+
+</div>
+
+@if (documentLoadingIsBusy)
+{
+    <LoadingPanel Message="Loading documents from store..."></LoadingPanel>  
+}
 
 @code {
 
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    private bool documentLoadingIsBusy { get; set; } = false;
+
+    public async Task OnDocumentSelected()
+    {
+
+    }
+
+    public async Task LoadDocumentsAsync()
+    {
+        documentLoadingIsBusy = true;
+    }
 }
+

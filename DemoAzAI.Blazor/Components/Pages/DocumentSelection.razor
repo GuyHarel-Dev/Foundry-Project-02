@@ -17,13 +17,16 @@
 <div class="document-selection-area">
     <div class="title">Select or upload a document:</div>
     <div class="select-document">
-        <select class="model-select" @onchange="OnDocumentSelected">
+
+        <DocumentSelectorCombo Title="Select a document:"></DocumentSelectorCombo>
+
+@*         <select class="model-select" @onchange="OnDocumentSelected">
             @foreach (var doc in UiState.DocumentSelection.AvailableDocuments)
             {
                 <option value="@doc.Id">@doc.FileName</option>
             }
 
-        </select>
+        </select> *@
 
     </div>
 
