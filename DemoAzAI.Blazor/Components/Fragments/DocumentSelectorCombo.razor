@@ -1,11 +1,24 @@
-﻿<label>@Title</label>
+﻿@using DemoAzAI.Blazor.Components.Models
+
+<label>@Title</label>
 
 <div class="document-select-area">
     <select class="select-document" @onchange="OnDocumentSelected">
-        <option value="0">(click the load button to load documents)</option>
+        @if (documents is not null && documents.Any())
+        {
+            foreach(var doc in documents)
+            {
+                <option value=@doc.Id>@doc.Name</option>
+            }
+        }
+        else
+        {
+            <option value="0">(click the load button to load documents)</option>
+        }
+
     </select>
 
-    <button class="load-button" @onclick="LoadDocumentsAsync">
+    <button class="load-button" @onclick="LoadDocuments">
         Load
     </button>
 
@@ -21,16 +34,31 @@
     [Parameter]
     public string Title { get; set; } = string.Empty;
 
+    [Parameter]
+    public Func<Task<IEnumerable<DocumentSelectorEntity>>>? LoadDocumentsAsync { get; set; }
+
     private bool documentLoadingIsBusy { get; set; } = false;
+
+    private IEnumerable<DocumentSelectorEntity>? documents { get; set; } 
 
     public async Task OnDocumentSelected()
     {
 
     }
 
-    public async Task LoadDocumentsAsync()
+    public async Task LoadDocuments()
     {
         documentLoadingIsBusy = true;
+
+
+        if (LoadDocumentsAsync is not null)
+        {
+            documents = await LoadDocumentsAsync.Invoke();
+        }
+
+        documentLoadingIsBusy = false;
+
+
     }
 }
 
