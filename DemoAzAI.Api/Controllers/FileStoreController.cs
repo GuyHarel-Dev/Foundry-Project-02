@@ -1,4 +1,5 @@
-﻿using DemoAzAI.Infrastructure.ExternalServices.Stores;
+﻿using DemoAzAI.Domain.Entities;
+using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -11,9 +12,11 @@ namespace WebApi.Controllers
     {
 
         [HttpGet("documents")]
-        public async Task<ActionResult<IEnumerable<string>>> GetAvailableDocuments()
+        public async Task<ActionResult<IEnumerable<StoreDocument>>> GetAvailableDocuments()
         {
-            return Ok(fileStoreService.GetAllDocuments());
+            var documents = await fileStoreService.GetAllDocuments();
+
+            return Ok(documents);
         }
 
     }

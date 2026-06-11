@@ -1,7 +1,9 @@
-﻿namespace DemoAzAI.Infrastructure.ExternalServices.Stores
+﻿using DemoAzAI.Domain.Entities;
+
+namespace DemoAzAI.Infrastructure.ExternalServices.Stores
 {
     public interface IFileStoreService
     {
-        Task<IEnumerable<string>> GetAllDocuments();
+        Task<List<StoreDocument>> GetAllDocuments();
     }
 }

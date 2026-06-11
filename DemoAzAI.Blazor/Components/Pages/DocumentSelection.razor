@@ -3,30 +3,32 @@
 @rendermode InteractiveServer
 
 @using DemoAzAI.Blazor.Components.Fragments
+@using DemoAzAI.Domain.Entities
 
 
 <PageTitle>Document Selection Page</PageTitle>
 
 <PageDescription Title="Document Selection Page"
                  Model=""
-                 Description="Select a document to analyse.">
+                 Description="Select a document from the document store.">
 </PageDescription>
 
 <div class="document-selection-area">
     <div class="title">Select or upload a document:</div>
     <div class="select-document">
-
-
-
+        <button @onclick="LoadDocumentsAsync">Click to load available documents</button>
+        <select class="select-document" @onchange="OnDocumentSelected">
+            @if (documents is not null && documents.Any())
+            {
+                foreach (var doc in documents)
+                {
+                    <option value=@doc.FileName>@doc.FileName</option>
+                }
+            }
+         
+        </select>
     </div>
 
-    <form @onsubmit="UploadDocument">
-
-        <button type="submit" class="ask-button" disabled>
-            <span>Upload document</span>
-        </button>
-
-    </form>
 </div>
 
 <div class="doc_view_area">
@@ -34,19 +36,11 @@
 </div>
 
 @code {
-    // public DocumentEntity SelectedDocument { get; set; } = new();
-    // private List<DocumentEntity> AvailableDocuments { get; set; } = new();
+
+    private bool loadDocumentIsBusy = false;
+
+    private IEnumerable<StoreDocument> documents { get; set; } = default!;
 
 }
 
     
-    @*
-
-
-            <DocumentSelectorCombo Title="Select a document:"
-                               ClickToLoadMessage="(Click the load button to load the available documents)"
-                               LoadDocumentsFuncAsync=""
-                               OnDocumentSelectedCallBack=""
-        >
-                </DocumentSelectorCombo>
-    *@

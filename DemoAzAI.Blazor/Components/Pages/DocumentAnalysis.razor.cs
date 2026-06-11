@@ -1,10 +1,8 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
-using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace DemoAzAI.Blazor.Components.Pages;

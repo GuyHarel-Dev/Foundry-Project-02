@@ -1,4 +1,6 @@
-﻿namespace DemoAzAI.Infrastructure.ExternalServices.Stores
+﻿using DemoAzAI.Domain.Entities;
+
+namespace DemoAzAI.Infrastructure.ExternalServices.Stores
 {
     public class FileStoreService: IFileStoreService
     {
@@ -8,11 +10,19 @@
             fileStorePath = path;
         }
 
-        public Task<IEnumerable<string>> GetAllDocuments()
+        public async Task<List<StoreDocument>> GetAllDocuments()
         {
-            var docList = Directory.EnumerateFiles(fileStorePath);
+            var files = Directory.EnumerateFiles(fileStorePath);
 
-            return Task.FromResult(docList);
+            var documents = new List<StoreDocument>();
+
+            foreach (var path in files) 
+            {
+                documents.Add(new StoreDocument { FilePath = path, FileName = Path.GetFileName(path) });
+            }
+
+
+            return documents;
 
         }
     }

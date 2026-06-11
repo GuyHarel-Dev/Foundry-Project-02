@@ -30,7 +30,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             initialized = true;
         }
 
-        public async Task<bool> SaveAsync(DocumentEntity document)
+        public async Task<bool> SaveAsync(StoreDocument document)
         {
             using var connection = new SqliteConnection(connectionString);
 
@@ -61,7 +61,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             return rows > 0;
         }
 
-        public async Task<List<DocumentEntity>> GetAllDocuments()
+        public async Task<List<StoreDocument>> GetAllDocuments()
         {
             throw new NotImplementedException();
         }

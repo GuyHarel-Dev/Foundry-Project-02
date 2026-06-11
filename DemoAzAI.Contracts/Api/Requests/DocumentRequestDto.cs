@@ -4,7 +4,7 @@ namespace DemoAzAI.Contracts.Api.Requests
 {
     public class DocumentRequestDto
     {
-        public DocumentEntity DocumentEntity { get; set; } = new();
+        public StoreDocument DocumentEntity { get; set; } = new();
 
         //public string FileName { get; set; } = string.Empty;
         //public string BytesHash { get; set; } = string.Empty;
