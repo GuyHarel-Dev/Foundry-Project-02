@@ -16,13 +16,13 @@
 <div class="document-selection-area">
     <div class="title">Select or upload a document:</div>
     <div class="select-document">
-        <button @onclick="LoadDocumentsAsync">Click to load available documents</button>
+        <button @onclick="LoadDocumentNamesAsync">Click to load available documents</button>
         <select class="select-document" @onchange="OnDocumentSelected">
-            @if (documents is not null && documents.Any())
+            @if (docNames is not null && docNames.Any())
             {
-                foreach (var doc in documents)
+                foreach (var name in docNames)
                 {
-                    <option value=@doc.FileName>@doc.FileName</option>
+                    <option value=@name>@name</option>
                 }
             }
          
@@ -32,14 +32,19 @@
 </div>
 
 <div class="doc_view_area">
-@*     <iframe src="@($"{SelectedDocument.FilePath}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"></iframe> *@
+    @if (docSelected is not null)
+    {
+        @* <p>iframe src="@($"{documendocSelectedtSelected.FilePath}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"</p> *@
+    }
+
 </div>
 
 @code {
 
     private bool loadDocumentIsBusy = false;
 
-    private IEnumerable<StoreDocument> documents { get; set; } = default!;
+    private IEnumerable<string> docFileNames { get; set; } = default!;
+    private string docFileNameSelected { get; set; } = default!;
 
 }
 

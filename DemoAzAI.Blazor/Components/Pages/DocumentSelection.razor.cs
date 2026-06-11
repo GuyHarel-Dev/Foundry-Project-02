@@ -14,25 +14,29 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         [Inject]
         private ApiClient apiClient { get; set; } = default!;
-        private async Task OnDocumentSelected(ChangeEventArgs e)
+        private void OnDocumentSelected(ChangeEventArgs e)
         {
-            //SelectedDocument = doc;
-            //UiState.DocumentSelection.SelectedDocument = SelectedDocument;
+            var docFileName = e.Value?.ToString();
+
+            if (string.IsNullOrEmpty(docFileName)) return;
+
+            if (docFileNames is null) return;
+
+            docFileNameSelected = docFileNames.FirstOrDefault(name => name == docFileName);
+
         }
 
-        private async Task LoadDocumentsAsync()
+        private async Task LoadDocumentNamesAsync()
         {
             try
             {
-
                 loadDocumentIsBusy = true;
 
-
-                var result = await apiClient.GetAsync<IEnumerable<StoreDocument>>("api/filestore/documents");
+                var result = await apiClient.GetAsync<IEnumerable<string>>("api/filestore/documents");
 
                 if (ApiClientResulIsOk(logger, result))
                 {
-                    documents = result.Value!;
+                    docFileNames = result.Value!;
                 }
 
             }
@@ -44,6 +48,12 @@ namespace DemoAzAI.Blazor.Components.Pages
             {
                 loadDocumentIsBusy = false;
             }
+        }
+
+        private Task DisplayDocument(string docFileName)
+        {
+
+            return Task.CompletedTask;
         }
 
         //private EventCallback<List<DocumentEntity>> OnLoadDocumentsAsync()

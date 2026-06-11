@@ -12,9 +12,9 @@ namespace WebApi.Controllers
     {
 
         [HttpGet("documents")]
-        public async Task<ActionResult<IEnumerable<StoreDocument>>> GetAvailableDocuments()
+        public async Task<ActionResult<IEnumerable<string>>> GetAvailableDocuments()
         {
-            var documents = await fileStoreService.GetAllDocuments();
+            var documents = await fileStoreService.GetAllDocumentNames();
 
             return Ok(documents);
         }

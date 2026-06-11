@@ -1,4 +1,5 @@
 ﻿using DemoAzAI.Domain.Entities;
+using System.Text;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Stores
 {
@@ -10,19 +11,23 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Stores
             fileStorePath = path;
         }
 
-        public async Task<List<StoreDocument>> GetAllDocuments()
+        //public async Task<Stream> GetDocumentStream(StoreDocument document)
+        //{
+
+        //}
+
+        public async Task<List<string>> GetAllDocumentNames()
         {
             var files = Directory.EnumerateFiles(fileStorePath);
-
-            var documents = new List<StoreDocument>();
+            var fileNames = new List<string> ();
 
             foreach (var path in files) 
             {
-                documents.Add(new StoreDocument { FilePath = path, FileName = Path.GetFileName(path) });
+                fileNames.Add(Path.GetFileName(path));
             }
 
 
-            return documents;
+            return fileNames;
 
         }
     }
