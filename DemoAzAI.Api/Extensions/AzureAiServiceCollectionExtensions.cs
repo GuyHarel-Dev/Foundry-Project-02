@@ -30,8 +30,7 @@ namespace WebApi.Extensions
                 endpoint: new Uri(endpoint),
                 tokenProvider: new DefaultAzureCredential());
 
-                Azure.AI.Extensions.OpenAI.
-                    ProjectResponsesClient responseClient = httpClient.ProjectOpenAIClient
+                Azure.AI.Extensions.OpenAI.ProjectResponsesClient responseClient = httpClient.ProjectOpenAIClient
                     .GetProjectResponsesClientForModel(modelName);
 
                 return responseClient;

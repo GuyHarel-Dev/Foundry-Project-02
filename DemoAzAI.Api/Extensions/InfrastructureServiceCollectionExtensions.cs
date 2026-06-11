@@ -1,6 +1,6 @@
-﻿using DemoAzAI.Abstractions.Repositories;
-using DemoAzAI.Infrastructure.ExternalServices.Repositories;
+﻿using DemoAzAI.Infrastructure.ExternalServices.Repositories;
 using DemoAzAI.Infrastructure.ExternalServices.Stores;
+using WebApi.Services.Interfaces;
 
 namespace WebApi.Extensions
 {
@@ -11,6 +11,21 @@ namespace WebApi.Extensions
         {
             services.AddSingleton<IDocumentAnalysisRepository, SqliteDocumentAnalysisRepository>();
             services.AddSingleton<IDocumentRepository, SqliteDocumentRepository>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddFileStoreService(this IServiceCollection services, IConfiguration config)
+        {
+
+            var fileStorePath = config["DemoAzAI:LocalFileVaultPath"]
+                ?? throw new InvalidOperationException("config: DemoAzAI:LocalFileVaultPath not configured");
+
+            services.AddSingleton(sp =>
+            {
+                var fileStoreService = new FileStoreService(fileStorePath);
+                return fileStoreService as IFileStoreService;
+            });
 
             return services;
         }

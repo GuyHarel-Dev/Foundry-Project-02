@@ -25,6 +25,7 @@ builder.Services.AddAzureAiServices(builder.Configuration);
 // Appication services
 builder.Services.AddApplicationServices();
 builder.Services.AddStoreServices();
+builder.Services.AddFileStoreService(builder.Configuration);
 
 
 var app = builder.Build();

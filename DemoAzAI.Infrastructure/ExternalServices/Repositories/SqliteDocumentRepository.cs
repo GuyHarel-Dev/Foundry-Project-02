@@ -1,6 +1,5 @@
 ﻿using Dapper;
-using DemoAzAI.Abstractions.Entities;
-using DemoAzAI.Abstractions.Repositories;
+using DemoAzAI.Domain.Entities;
 using Microsoft.Data.Sqlite;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories

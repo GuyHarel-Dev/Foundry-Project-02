@@ -1,5 +1,4 @@
-﻿using DemoAzAI.Abstractions.Entities;
-using DemoAzAI.Domain.Models.DocumentAnalysis;
+﻿using DemoAzAI.Domain.Entities;
 
 namespace DemoAzAI.Contracts.Api.Requests
 {

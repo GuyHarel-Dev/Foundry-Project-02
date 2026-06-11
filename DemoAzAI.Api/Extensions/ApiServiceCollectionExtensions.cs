@@ -4,7 +4,7 @@ using WebApi.Services.Interfaces;
 
 namespace WebApi.Extensions
 {
-    public static class ApplicationServiceCollectionExtensions
+    public static class ApiServiceCollectionExtensions
     {
         public static IServiceCollection AddApplicationServices(
             this IServiceCollection services)

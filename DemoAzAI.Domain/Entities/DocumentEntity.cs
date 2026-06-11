@@ -1,4 +1,4 @@
-﻿namespace DemoAzAI.Abstractions.Entities
+﻿namespace DemoAzAI.Domain.Entities
 {
     public class DocumentEntity
     {

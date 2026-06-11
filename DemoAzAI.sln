@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoAzAI.Infrastructure", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoAzAI.Contracts", "DemoAzAI.Contracts\DemoAzAI.Contracts.csproj", "{5DB520A1-2127-A14B-C7CA-9DA9B32ACA6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoAzAI.Abstractions", "DemoAzAI.Abstractions\DemoAzAI.Abstractions.csproj", "{8673E08A-923D-4BE9-876F-51FB3BFC0C65}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{5DB520A1-2127-A14B-C7CA-9DA9B32ACA6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DB520A1-2127-A14B-C7CA-9DA9B32ACA6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DB520A1-2127-A14B-C7CA-9DA9B32ACA6F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8673E08A-923D-4BE9-876F-51FB3BFC0C65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8673E08A-923D-4BE9-876F-51FB3BFC0C65}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8673E08A-923D-4BE9-876F-51FB3BFC0C65}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8673E08A-923D-4BE9-876F-51FB3BFC0C65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

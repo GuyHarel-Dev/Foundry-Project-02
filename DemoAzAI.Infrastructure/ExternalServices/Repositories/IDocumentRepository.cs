@@ -1,6 +1,6 @@
-﻿using DemoAzAI.Abstractions.Entities;
+﻿using DemoAzAI.Domain.Entities;
 
-namespace DemoAzAI.Abstractions.Repositories
+namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 {
     public interface IDocumentRepository
     {

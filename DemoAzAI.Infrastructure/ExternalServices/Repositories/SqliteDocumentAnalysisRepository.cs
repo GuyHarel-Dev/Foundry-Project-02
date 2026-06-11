@@ -1,11 +1,10 @@
 ﻿using Dapper;
-using DemoAzAI.Abstractions.Repositories;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.Data.Sqlite;
 using System.Text.Json;
 
-namespace DemoAzAI.Infrastructure.ExternalServices.Stores
+namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 {
     public class SqliteDocumentAnalysisRepository : IDocumentAnalysisRepository
     {
