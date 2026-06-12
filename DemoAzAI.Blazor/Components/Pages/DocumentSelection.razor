@@ -13,29 +13,6 @@
                  Description="Select a document from the document store.">
 </PageDescription>
 
-@* <object data="@($"api/documents/content/empty-pdf.pdf")"
-        type="application/pdf"
-        width="100"
-        height="800">
-</object> *@
-
-<button @onclick="Test"></button>
-
-<h1>@DocFileNameUrl()</h1>
-<object data="@DocFileNameUrl()"
-        type="application/pdf"
-        style="width:500px;height:300px">
-
-</object>
-@if (!string.IsNullOrEmpty(docFileNameSelected))
-{
-@*     <h1>test</h1>
-    <object data="@docFileNameSelectedUrl"
-            type="application/pdf"
-            style="width:500px;height:300px">
-    </object> *@
-}
-
 
 <div class="document-selection-area">
     <div class="title">Select or upload a document:</div>
@@ -55,10 +32,15 @@
 
 </div>
 
-<div class="doc_view_area">
+<div class="doc-view-area">
     @if (docFileNameSelected is not null)
     {
-        @* <p>iframe src="@($"{documendocSelectedtSelected.FilePath}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"</p> *@
+        @if (!string.IsNullOrEmpty(docFileNameSelected))
+        {
+            <object class="doc-view-object" data="@DocFileNameUrl()"
+                    type="application/pdf">
+            </object>
+        }
     }
 
 </div>
@@ -68,10 +50,8 @@
     private bool loadDocumentIsBusy = false;
 
     private IEnumerable<string> docFileNames { get; set; } = default!;
-    private string docFileNameSelected { get; set; } = default!;
+    private string? docFileNameSelected { get; set; } = default!;
  
-
-    private Stream fileStream;
 }
 
     

@@ -11,8 +11,6 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         private ILogger<DocumentSelection> logger { get; set; } = default!;
 
-        [Inject]
-        private IConfiguration configuration { get; set; }
 
         private void OnDocumentSelected(ChangeEventArgs e)
         {
@@ -26,23 +24,16 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         }
 
-        private string DocFileNameUrl ()
+        private string DocFileNameUrl()
         {
-            var baseUrl = configuration["FoundryWebApi:BaseUrl"] ?? "https://localhost:5001"; // Default URL if not specified in configuration
+            var url = string.Empty;
 
+            if (docFileNameSelected != null)
+            {
+                url = $"{apiClient.BaseClientUrl}/api/documents/content/{docFileNameSelected}";
+            }
 
-            return $"{baseUrl}/api/documents/content/empty-pdf.pdf";
-        }
-
-        private async Task Test()
-        {
-            //var result = await ApiClientGetAsync<Stream>("api/documents/content/empty-pdf.pdf", logger);
-
-            //var result = await apiClient.GetAsync<File>("api/documents/content/empty-pdf.pdf");
-
-
-            //fileStream = result.Value;
-
+            return url;
         }
 
         private async Task LoadDocumentNamesAsync()
@@ -75,22 +66,6 @@ namespace DemoAzAI.Blazor.Components.Pages
             return Task.CompletedTask;
         }
 
-        //private EventCallback<List<DocumentEntity>> OnLoadDocumentsAsync()
-        //{
-        //    var documents = new List<DocumentEntity>() {
-        //        new DocumentEntity { Id = "1", Name = "Empty PDF", FilePath = "/Pdf/empty-pdf.pdf" },
-        //        new DocumentEntity { Id = "2", Name = "Ocular Center Invoice", FilePath = "/Pdf/fake-occular-center.pdf" },
-        //        new DocumentEntity { Id = "3", Name = "Lamp Receipt", FilePath = "/Pdf/fake-lamp-receit.pdf" },
-        //        new DocumentEntity { Id = "4", Name = "Kayak Certificate", FilePath = "/Pdf/fake-kayak-certificate.pdf" }
-        //    };
-
-        //    //SelectedDocument = documents.First();
-
-        //    //UiState.DocumentSelection.AvailableDocuments = documents;
-        //    //UiState.DocumentSelection.SelectedDocument = SelectedDocument;
-
-        //    return documents;
-        //}
     }
 
 }
