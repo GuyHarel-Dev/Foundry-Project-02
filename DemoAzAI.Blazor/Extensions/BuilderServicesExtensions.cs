@@ -16,7 +16,7 @@ namespace UI.Extensions
             };
 
             services.AddScoped(sp =>
-              new ApiClient(httpClient));
+              new ApiClient(baseUrl, httpClient));
 
             return services;
         }

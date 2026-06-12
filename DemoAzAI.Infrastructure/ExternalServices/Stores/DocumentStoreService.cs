@@ -1,7 +1,4 @@
-﻿using DemoAzAI.Domain.Entities;
-using System.Text;
-
-namespace DemoAzAI.Infrastructure.ExternalServices.Stores
+﻿namespace DemoAzAI.Infrastructure.ExternalServices.Stores
 {
     public class DocumentStoreService: IDocumentStoreService
     {
@@ -11,10 +8,10 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Stores
             fileStorePath = path;
         }
 
-        //public async Task<Stream> GetDocumentStream(StoreDocument document)
-        //{
-
-        //}
+        public async Task<Stream> GetDocumentFileStream(string fileName)
+        {
+            return File.OpenRead($"{fileStorePath}/{fileName}");
+        }
 
         public async Task<List<string>> GetDocumentNames()
         {

@@ -13,11 +13,29 @@
                  Description="Select a document from the document store.">
 </PageDescription>
 
-@* <object data="@($"api/documents/content/{docFileNameSelected}")"
+@* <object data="@($"api/documents/content/empty-pdf.pdf")"
         type="application/pdf"
         width="100"
         height="800">
 </object> *@
+
+<button @onclick="Test"></button>
+
+<h1>@DocFileNameUrl()</h1>
+<object data="@DocFileNameUrl()"
+        type="application/pdf"
+        style="width:500px;height:300px">
+
+</object>
+@if (!string.IsNullOrEmpty(docFileNameSelected))
+{
+@*     <h1>test</h1>
+    <object data="@docFileNameSelectedUrl"
+            type="application/pdf"
+            style="width:500px;height:300px">
+    </object> *@
+}
+
 
 <div class="document-selection-area">
     <div class="title">Select or upload a document:</div>
@@ -51,7 +69,9 @@
 
     private IEnumerable<string> docFileNames { get; set; } = default!;
     private string docFileNameSelected { get; set; } = default!;
+ 
 
+    private Stream fileStream;
 }
 
     

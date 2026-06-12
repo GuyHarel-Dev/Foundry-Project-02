@@ -20,11 +20,11 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("content/{fileName}")]
-        public async Task<ActionResult<IEnumerable<string>>> GetDocumentFile(string fileName)
+        public async Task<IActionResult> GetDocumentFile(string fileName)
         {
-            var documents = await fileStoreService.GetDocumentNames();
+            var stream = await fileStoreService.GetDocumentFileStream(fileName);
 
-            return Ok(documents);
+            return File(stream, "application/pdf");
 
         }
     }
