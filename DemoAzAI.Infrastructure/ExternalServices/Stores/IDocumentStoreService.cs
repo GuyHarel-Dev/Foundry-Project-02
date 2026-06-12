@@ -2,9 +2,9 @@
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Stores
 {
-    public interface IFileStoreService
+    public interface IDocumentStoreService
     {
-        Task<List<string>> GetAllDocumentNames();
+        Task<List<string>> GetDocumentNames();
 
         //Task<Stream> GetDocumentFile(StoreDocument document);
     }

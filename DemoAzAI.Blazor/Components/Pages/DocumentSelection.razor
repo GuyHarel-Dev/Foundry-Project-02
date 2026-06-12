@@ -13,14 +13,20 @@
                  Description="Select a document from the document store.">
 </PageDescription>
 
+@* <object data="@($"api/documents/content/{docFileNameSelected}")"
+        type="application/pdf"
+        width="100"
+        height="800">
+</object> *@
+
 <div class="document-selection-area">
     <div class="title">Select or upload a document:</div>
     <div class="select-document">
         <button @onclick="LoadDocumentNamesAsync">Click to load available documents</button>
         <select class="select-document" @onchange="OnDocumentSelected">
-            @if (docNames is not null && docNames.Any())
+            @if (docFileNames is not null && docFileNames.Any())
             {
-                foreach (var name in docNames)
+                foreach (var name in docFileNames)
                 {
                     <option value=@name>@name</option>
                 }
@@ -32,7 +38,7 @@
 </div>
 
 <div class="doc_view_area">
-    @if (docSelected is not null)
+    @if (docFileNameSelected is not null)
     {
         @* <p>iframe src="@($"{documendocSelectedtSelected.FilePath}#toolbar=0&navpanes=0&scrollbar=0&view=FitH")"</p> *@
     }

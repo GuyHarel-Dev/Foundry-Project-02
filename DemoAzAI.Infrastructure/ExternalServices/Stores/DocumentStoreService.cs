@@ -3,10 +3,10 @@ using System.Text;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Stores
 {
-    public class FileStoreService: IFileStoreService
+    public class DocumentStoreService: IDocumentStoreService
     {
         private readonly string fileStorePath;
-        public FileStoreService(string path)
+        public DocumentStoreService(string path)
         {
             fileStorePath = path;
         }
@@ -16,7 +16,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Stores
 
         //}
 
-        public async Task<List<string>> GetAllDocumentNames()
+        public async Task<List<string>> GetDocumentNames()
         {
             var files = Directory.EnumerateFiles(fileStorePath);
             var fileNames = new List<string> ();

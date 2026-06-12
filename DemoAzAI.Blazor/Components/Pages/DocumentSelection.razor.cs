@@ -1,8 +1,5 @@
 
 using DemoAzAI.Blazor.Services.Api;
-using DemoAzAI.Contracts.Api.Requests;
-using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain.Entities;
 using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages
@@ -12,8 +9,6 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         private ILogger<DocumentSelection> logger { get; set; } = default!;
 
-        [Inject]
-        private ApiClient apiClient { get; set; } = default!;
         private void OnDocumentSelected(ChangeEventArgs e)
         {
             var docFileName = e.Value?.ToString();
@@ -32,9 +27,9 @@ namespace DemoAzAI.Blazor.Components.Pages
             {
                 loadDocumentIsBusy = true;
 
-                var result = await apiClient.GetAsync<IEnumerable<string>>("api/filestore/documents");
+                var result = await ApiClientGetAsync<IEnumerable<string>>("api/documents/names", logger);
 
-                if (ApiClientResulIsOk(logger, result))
+                if (result is not null)
                 {
                     docFileNames = result.Value!;
                 }

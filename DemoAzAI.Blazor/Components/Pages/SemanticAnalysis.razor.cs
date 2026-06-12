@@ -1,4 +1,5 @@
-﻿using DemoAzAI.Application;
+﻿using Azure;
+using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
@@ -43,16 +44,14 @@ namespace DemoAzAI.Blazor.Components.Pages
                     }
                 };
 
-                var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed/textlines", request);
+                var result = await ApiClientPostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed/textlines", request, logger);
 
-                if (ApiClientResulIsOk(logger, result))
+                if (result is not null)
                 {
-
-                    var response = result.Value;
-
-                    DocumentAnalysisTextChunkVectorized = response!.GetSummary();
+                    DocumentAnalysisTextChunkVectorized = result.Value!.GetSummary();
                 }
 
+  
             }
             catch (Exception ex)
             {
@@ -78,11 +77,10 @@ namespace DemoAzAI.Blazor.Components.Pages
                     Prompt = $"I need the following text to be prepared (chunked) for vectorisation:{DocumentAnalysisText}"
                 };
 
-                var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request);
+                var result = await ApiClientPostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request, logger);
 
-                if (ApiClientResulIsOk(logger, result))
+                if (result is not null)
                 {
-
                     var response = result.Value;
 
                     DocumentAnalysisTextChunk = response!.ChatResponse;
@@ -93,6 +91,7 @@ namespace DemoAzAI.Blazor.Components.Pages
                     }
                 }
 
+        
             }
             catch (Exception ex)
             {
@@ -149,21 +148,14 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 getDocumentResultsFromStoreIsBusy = true;
 
-                var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisEntity>>("api/store/document/analysis/results");
+                var result = await ApiClientGetAsync<IEnumerable<DocumentAnalysisEntity>>("api/store/document/analysis/results", logger);
 
-                if (ApiClientResulIsOk(logger, result))
+                if (result is not null) 
                 {
                     storedDocuments = result.Value!.ToList();
                     DocumentAnalysisText = storedDocuments.First().AnalysisResult.DocumentsFieldsContent;
                 }
-                    //if (result == null || result.Value is null)
-                    //{
-                    //    Logger.LogWarning($"No document retreived from store");
-                    //    return;
-                    //}
-
-
-
+    
 
                 }
             catch (Exception ex)

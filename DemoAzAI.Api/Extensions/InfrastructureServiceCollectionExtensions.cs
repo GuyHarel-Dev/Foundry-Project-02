@@ -23,8 +23,8 @@ namespace WebApi.Extensions
 
             services.AddSingleton(sp =>
             {
-                var fileStoreService = new FileStoreService(fileStorePath);
-                return fileStoreService as IFileStoreService;
+                var fileStoreService = new DocumentStoreService(fileStorePath);
+                return fileStoreService as IDocumentStoreService;
             });
 
             return services;
