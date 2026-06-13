@@ -120,7 +120,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             initialized = true;
         }
 
-        public async Task<bool> SaveAsync(string fileName,  DocumentAnalysisResult? result)
+        public async Task<bool> SaveAsync(string fileName,  DocumentAnalysisResult? result, string bytesHash)
         {
                 EnsureInitialized();
 
@@ -139,7 +139,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                     new
                     {
                         FileName = fileName,
-                        Hash = documentHash,
+                        Hash = bytesHash,
                         AnalysisResultJson = JsonSerializer.Serialize(result),
                         CreatedAt = DateTime.UtcNow
                     });

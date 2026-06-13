@@ -24,7 +24,7 @@ namespace DemoAzAI.Api.Controllers
 
             if (response is not null && request.SaveToStore)
             {
-                await documentAnalysisRepository.SaveAsync(request.FileName, response.DocumentAnalysisResult);
+                await documentAnalysisRepository.SaveAsync(request.FileName, response.DocumentAnalysisResult, response.BytesHash);
             }
 
             return Ok(response);

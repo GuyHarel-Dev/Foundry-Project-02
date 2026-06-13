@@ -38,7 +38,8 @@ namespace DemoAzAI.Api.Services
             var response = new DocumentAnalysisResponseDto
             {
                 FileName = request.FileName,
-                DocumentAnalysisResult = docAnalysisResult
+                DocumentAnalysisResult = docAnalysisResult,
+                BytesHash = Convert.ToHexString(options.BytesSource)
             };
 
 
