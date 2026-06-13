@@ -7,5 +7,7 @@ namespace DemoAzAI.Contracts.Api.Requests
 
         public string FileName { get; set; } = string.Empty;
 
+        public bool SaveToStore { get; set; } = false;
+
     }
 }

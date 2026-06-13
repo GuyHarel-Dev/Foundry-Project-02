@@ -1,7 +1,6 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Blazor.Services.PageStateContainers;
-using DemoAzAI.Blazor.Services.StateContainers;
 
 namespace UI.Extensions
 {

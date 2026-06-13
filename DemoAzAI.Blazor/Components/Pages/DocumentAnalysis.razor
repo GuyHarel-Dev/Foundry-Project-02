@@ -6,7 +6,7 @@
 @using DemoAzAI.Blazor.Services.PageStateContainers
 
 @inject ILogger<DocumentAnalysis> Logger
-@inject DocumentSelectionPageState DocumentSelectionPageState
+@* @inject DocumentSelectionPageState DocumentSelectionPageState *@
 
 
 <div class="title-area">
@@ -25,7 +25,7 @@
         <span>Select a document to Analyse:</span>
         <select @onchange="OnDocumentSelected">
 
-            @foreach (var doc in DocumentSelectionPageState.DocFileNames)
+            @foreach (var doc in docFileNames)
             {
                 <option value="@doc">@doc</option>
             }
@@ -37,10 +37,10 @@
         <div class="model-selection-area">
             <p>Select a model for the analysis:</p>
 
-            <label for="@SelectedModel">Available models:</label>
+            <label for="@selectedModel">Available models:</label>
 
             <select class="model-select"
-                    @bind="SelectedModel">
+                    @bind="selectedModel">
                 <option value="@_readModel">@_readModel</option>
                 <option value="@_layoutModel">@_layoutModel</option>
                 <option value="@_invoiceModel">@_invoiceModel</option>
@@ -98,7 +98,9 @@
     private bool sendDocumentAnalysisBusy;
     private bool storeDocumentAnalysisBusy;
 
-    private string SelectedModel { get; set; } = _readModel;
+    private List<string> docFileNames { get; set; } = new();
+
+    private string selectedModel { get; set; } = _readModel;
 
     private static string _readModel = "prebuilt-read";
     private static string _layoutModel = "prebuilt-layout";

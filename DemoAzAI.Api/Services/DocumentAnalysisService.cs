@@ -5,6 +5,7 @@ using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
+using DemoAzAI.Infrastructure.ExternalServices.Repositories;
 using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using System.Text;
 using System.Text.Json;
@@ -12,11 +13,12 @@ using System.Text.Json.Serialization;
 
 namespace DemoAzAI.Api.Services
 {
-    public class DocumentIntelligenceService(
+    public class DocumentAnalysisService(
             DocumentIntelligenceClient client,
             IDocumentStoreService fileStoreService,
-            ILogger<DocumentIntelligenceService> logger)
-        : IDocumentIntelligenceService
+            IDocumentAnalysisRepository documentAnalysisRepository,
+            ILogger<DocumentAnalysisService> logger)
+        : IDocumentAnalysisService
     {
         public async Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)
         {

@@ -45,7 +45,6 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             try
             {
-                loadDocumentIsBusy = true;
 
                 var result = await apiClient.GetAsync<IEnumerable<string>>("api/documents/names", logger);
 
@@ -60,10 +59,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             {
                 logger.LogError(ex, "Error while getting document results from store.");
             }
-            finally
-            {
-                loadDocumentIsBusy = false;
-            }
+   
         }
 
     }

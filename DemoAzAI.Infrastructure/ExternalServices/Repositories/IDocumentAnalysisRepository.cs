@@ -9,7 +9,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
         Task<DocumentAnalysisEntity?> GetByIdAsync(string id);
         Task<DocumentAnalysisEntity?> GetByHashAsync(string hash);
 
-        Task<bool> SaveAsync(string fileName, string documentHash, DocumentAnalysisResult result);
+        Task<bool> SaveAsync(string fileName, DocumentAnalysisResult? result);
 
         Task<bool> ExistsAsync(string hash);
     }

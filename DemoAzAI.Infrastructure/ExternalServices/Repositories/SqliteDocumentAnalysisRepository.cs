@@ -120,7 +120,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             initialized = true;
         }
 
-        public async Task<bool> SaveAsync(string fileName, string documentHash, DocumentAnalysisResult result)
+        public async Task<bool> SaveAsync(string fileName,  DocumentAnalysisResult? result)
         {
                 EnsureInitialized();
 

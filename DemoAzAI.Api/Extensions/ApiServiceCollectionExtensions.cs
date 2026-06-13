@@ -11,8 +11,8 @@ namespace WebApi.Extensions
         {
             services.AddScoped<IChatService, ChatService>();
 
-            services.AddScoped<IDocumentIntelligenceService,
-                DocumentIntelligenceService>();
+            services.AddScoped<IDocumentAnalysisService,
+                DocumentAnalysisService>();
 
             services.AddScoped<IEmbeddingService,
                 EmbeddingService>();

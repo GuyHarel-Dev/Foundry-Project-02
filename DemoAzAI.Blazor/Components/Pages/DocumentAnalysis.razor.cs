@@ -10,8 +10,6 @@ namespace DemoAzAI.Blazor.Components.Pages;
 
 public partial class DocumentAnalysis
 {
-    //[Inject]
-    //private IWebHostEnvironment Env { get; set; } = default!;
 
     [Inject]
     private ILogger<DocumentAnalysis> logger { get; set; } = default!;
@@ -22,9 +20,9 @@ public partial class DocumentAnalysis
     [Inject]
     private IExecutionStepTracer executionStepTracer { get; set; } = default!;
 
-    private async Task Test()
+    protected override async Task OnInitializedAsync()
     {
-
+        await LoadDocumentNamesAsync();
     }
 
     private async Task OnDocumentSelected(ChangeEventArgs e)
@@ -37,8 +35,9 @@ public partial class DocumentAnalysis
 
         var request = new DocumentAnalysisRequestDto()
         {
-            ModelName = SelectedModel,
-            FileName = Path.GetFileName(documentSelectedName)
+            ModelName = selectedModel,
+            FileName = Path.GetFileName(documentSelectedName),
+            SaveToStore = saveAnalysisToStore
         };
 
         try
@@ -76,6 +75,24 @@ public partial class DocumentAnalysis
         AddExecutionStep(executionStepTracer, $"Analysis completed for document {request.FileName} using model {request.ModelName}");
     }
 
+    private async Task LoadDocumentNamesAsync()
+    {
+        try
+        {
+            var result = await apiClient.GetAsync<IEnumerable<string>>("api/documents/names", logger);
+
+            if (result is not null)
+            {
+                docFileNames = result.Value!.ToList();
+            }
+
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error while getting document results from store.");
+        }
+
+    }
     private async Task SaveAnalysisToStore()
     {
 
