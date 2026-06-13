@@ -3,8 +3,10 @@
 @rendermode InteractiveServer
 
 @using DemoAzAI.Blazor.Components.Fragments
+@using DemoAzAI.Blazor.Services.PageStateContainers
 
 @inject ILogger<DocumentAnalysis> Logger
+@inject DocumentSelectionPageState DocumentSelectionPageState
 
 
 <div class="title-area">
@@ -18,6 +20,7 @@
 </div>
 
 
+<button @onclick="Test"></button>
 
 <div class="page-area">
     <div class="document-selected-area">

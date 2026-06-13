@@ -16,6 +16,7 @@ namespace UI
             // Add application services
             builder.Services.AddFoundryHttpClient(builder.Configuration);
             builder.Services.AddApplicationStepTracer();
+            builder.Services.AddPageStateContainer();
 
             var app = builder.Build();
 

@@ -21,6 +21,11 @@ public partial class DocumentAnalysis
     [Inject]
     private IExecutionStepTracer executionStepTracer { get; set; } = default!;
 
+    private async Task Test()
+    {
+
+    }
+
     private async Task OnDocumentSelected(ChangeEventArgs e)
     {
         if (e.Value == null)

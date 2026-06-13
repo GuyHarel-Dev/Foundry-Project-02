@@ -12,15 +12,20 @@ namespace DemoAzAI.Blazor.Components.Pages
         private ILogger<DocumentSelection> logger { get; set; } = default!;
 
 
+        protected override async Task OnInitializedAsync()
+        {
+            await LoadDocumentNamesAsync();
+        }
+
         private void OnDocumentSelected(ChangeEventArgs e)
         {
             var docFileName = e.Value?.ToString();
 
             if (string.IsNullOrEmpty(docFileName)) return;
 
-            if (docFileNames is null) return;
+            if (PageState.DocFileNames is null) return;
 
-            docFileNameSelected = docFileNames.FirstOrDefault(name => name == docFileName);
+            PageState.DocFileNameSelected = PageState.DocFileNames.FirstOrDefault(name => name == docFileName);
 
         }
 
@@ -28,9 +33,9 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             var url = string.Empty;
 
-            if (docFileNameSelected != null)
+            if (PageState.DocFileNameSelected != null)
             {
-                url = $"{apiClient.BaseClientUrl}/api/documents/content/{docFileNameSelected}";
+                url = $"{apiClient.BaseClientUrl}/api/documents/content/{PageState.DocFileNameSelected}";
             }
 
             return url;
@@ -46,7 +51,8 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 if (result is not null)
                 {
-                    docFileNames = result.Value!;
+                    PageState.DocFileNames = result.Value!;
+                    PageState.DocFileNameSelected = PageState.DocFileNames.First();
                 }
 
             }
@@ -58,12 +64,6 @@ namespace DemoAzAI.Blazor.Components.Pages
             {
                 loadDocumentIsBusy = false;
             }
-        }
-
-        private Task DisplayDocument(string docFileName)
-        {
-
-            return Task.CompletedTask;
         }
 
     }

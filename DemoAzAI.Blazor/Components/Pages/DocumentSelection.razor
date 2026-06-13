@@ -3,8 +3,9 @@
 @rendermode InteractiveServer
 
 @using DemoAzAI.Blazor.Components.Fragments
-@using DemoAzAI.Domain.Entities
+@using DemoAzAI.Blazor.Services.PageStateContainers
 
+@inject DocumentSelectionPageState PageState
 
 <PageTitle>Document Selection Page</PageTitle>
 
@@ -17,11 +18,10 @@
 <div class="document-selection-area">
     <div class="title">Select or upload a document:</div>
     <div class="select-document">
-        <button @onclick="LoadDocumentNamesAsync">Click to load available documents</button>
         <select class="select-document" @onchange="OnDocumentSelected">
-            @if (docFileNames is not null && docFileNames.Any())
+            @if (PageState.DocFileNames is not null && PageState.DocFileNames.Any())
             {
-                foreach (var name in docFileNames)
+                foreach (var name in PageState.DocFileNames)
                 {
                     <option value=@name>@name</option>
                 }
@@ -33,9 +33,9 @@
 </div>
 
 <div class="doc-view-area">
-    @if (docFileNameSelected is not null)
+    @if (PageState.DocFileNameSelected is not null)
     {
-        @if (!string.IsNullOrEmpty(docFileNameSelected))
+        @if (!string.IsNullOrEmpty(PageState.DocFileNameSelected))
         {
             <object class="doc-view-object" data="@DocFileNameUrl()"
                     type="application/pdf">
@@ -49,8 +49,6 @@
 
     private bool loadDocumentIsBusy = false;
 
-    private IEnumerable<string> docFileNames { get; set; } = default!;
-    private string? docFileNameSelected { get; set; } = default!;
  
 }
 
