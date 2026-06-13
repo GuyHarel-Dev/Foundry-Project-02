@@ -1,6 +1,7 @@
 ﻿using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
+using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoAzAI.Api.Controllers 
@@ -9,27 +10,23 @@ namespace DemoAzAI.Api.Controllers
     [ApiController]
     public class DocumentAnalysisController : ControllerBase
     {
-        private readonly IDocumentIntelligenceService _documentIntelligence;
+        private readonly IDocumentIntelligenceService documentIntelligenceService;
 
-        public DocumentAnalysisController(IDocumentIntelligenceService documentIntelligence)
+        public DocumentAnalysisController(IDocumentIntelligenceService documentIntelligenceService)
         {
-            _documentIntelligence = documentIntelligence;
+            this.documentIntelligenceService = documentIntelligenceService;
         }
 
-        [HttpPost("analyse")]
+        [HttpPost("analyze")]
         public async Task<ActionResult<DocumentAnalysisResponseDto>> AnalyzeDocument(
             [FromBody] DocumentAnalysisRequestDto request)
         {
 
-            //var response = await _documentIntelligence.AnalyzeDocumentAsync(request);
+            var response = await documentIntelligenceService.AnalyzeDocumentAsync(request);
 
-            //response.BytesHash = request.BytesHash;
-
-            //return Ok(response);
-
-            return Ok();
+            return Ok(response);
         }
 
-   
+
     }
 }

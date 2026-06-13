@@ -2,8 +2,8 @@
 {
     public class DocumentSelectionPageState
     {
-        public string? DocFileNameSelected { get; set; } = null;
-        public IEnumerable<string> DocFileNames { get; set; } = default!;
+        public string DocFileNameSelected { get; set; } = string.Empty;
+        public List<string> DocFileNames { get; set; } = new();
 
     }
 }

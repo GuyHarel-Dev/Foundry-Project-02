@@ -1,9 +1,11 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
+using Azure.Core;
 using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
+using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,57 +14,47 @@ namespace DemoAzAI.Api.Services
 {
     public class DocumentIntelligenceService(
             DocumentIntelligenceClient client,
+            IDocumentStoreService fileStoreService,
             ILogger<DocumentIntelligenceService> logger)
         : IDocumentIntelligenceService
     {
         public async Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)
         {
-            //var documentHash = request.BytesHash;
 
-            //logger.LogInformation($"Sending document {request.FileName} to analysis model");
+            logger.LogInformation($"Sending document {request.FileName} to analysis model");
 
-            var result = await SendAnalyseDocumentRequestAsync(request, cancellationToken);
+            var options = await CreateAnalyzeDocumentOptions(request);
+
+            Operation<AnalyzeResult> operation =
+                await client.AnalyzeDocumentAsync(
+                    WaitUntil.Completed,
+                    options,
+                    cancellationToken);
+
+            var docAnalysisResult = Map(request.ModelName, operation.Value);
+
+            var response = new DocumentAnalysisResponseDto
+            {
+                FileName = request.FileName,
+                DocumentAnalysisResult = docAnalysisResult
+            };
+
 
             logger.LogInformation($"Returning response");
 
-            return result;
+            return response;
+
         }
 
-        private AnalyzeDocumentOptions CreateAnalyzeDocumentOptions(DocumentAnalysisRequestDto doc)
+        private async Task<AnalyzeDocumentOptions> CreateAnalyzeDocumentOptions(DocumentAnalysisRequestDto request)
         {
-            //var modelName = doc.ModelName;
-            //var stream = new MemoryStream(doc.Bytes);
-            //var bytes = BinaryData.FromStream(stream);
+            var modelName = request.ModelName;
+            var fileStream = await fileStoreService.GetDocumentFileStreamAsync(request.FileName);
+            var bytes = BinaryData.FromStream(fileStream);
 
-            //return new AnalyzeDocumentOptions(
-            //    modelName,
-            //    bytes);
-
-            byte[] test = new byte[] { 113 };
-            return new AnalyzeDocumentOptions("", new Uri(""));
-        }
-
-        private async Task<DocumentAnalysisResponseDto> SendAnalyseDocumentRequestAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken)
-        {
-            //var options = CreateAnalyzeDocumentOptions(request);
-
-            //Operation<AnalyzeResult> operation =
-            //    await client.AnalyzeDocumentAsync(
-            //        WaitUntil.Completed,
-            //        options,
-            //        cancellationToken);
-
-            //var docAnalysisResult = Map(request.ModelName, operation.Value);
-
-            //var response = new DocumentAnalysisResponseDto
-            //{
-            //    FileName = request.FileName,
-            //    DocumentAnalysisResult = docAnalysisResult
-            //};
-
-            //return response;
-
-            return new DocumentAnalysisResponseDto();
+            return new AnalyzeDocumentOptions(
+                modelName,
+                bytes);
         }
 
         private DocumentAnalysisResult Map(string modelName, AnalyzeResult azureAnalysisResult)

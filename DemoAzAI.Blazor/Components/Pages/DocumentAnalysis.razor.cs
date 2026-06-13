@@ -1,5 +1,6 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
+using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
@@ -9,8 +10,8 @@ namespace DemoAzAI.Blazor.Components.Pages;
 
 public partial class DocumentAnalysis
 {
-    [Inject]
-    private IWebHostEnvironment Env { get; set; } = default!;
+    //[Inject]
+    //private IWebHostEnvironment Env { get; set; } = default!;
 
     [Inject]
     private ILogger<DocumentAnalysis> logger { get; set; } = default!;
@@ -28,67 +29,40 @@ public partial class DocumentAnalysis
 
     private async Task OnDocumentSelected(ChangeEventArgs e)
     {
-        if (e.Value == null)
+        documentSelectedName = e.Value?.ToString() ?? string.Empty;
+    }
+
+    private async Task OnAnalyzeDocument()
+    {
+
+        var request = new DocumentAnalysisRequestDto()
         {
-            return;
+            ModelName = SelectedModel,
+            FileName = Path.GetFileName(documentSelectedName)
+        };
+
+        try
+        {
+            sendDocumentAnalysisBusy = true;
+
+            var result = await apiClient.PostAsync<DocumentAnalysisRequestDto, DocumentAnalysisResponseDto>("api/document/analyze", request, logger);
+
+            if (result is not null)
+            {
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error while analyzing the document.");
+        }
+        finally
+        {
+            sendDocumentAnalysisBusy = false;
         }
 
-        var docId = e.Value.ToString();
-        //SelectedDocument = UiState.DocumentSelection.AvailableDocuments.First((doc) => doc.Id == docId);
-
     }
-
-    protected override async Task OnInitializedAsync()
-    {
-        //if (UiState.DocumentSelection.AvailableDocuments.Any())
-        //{
-        //    AvailableDocuments = UiState.DocumentSelection.AvailableDocuments;
-        //    if (UiState.DocumentSelection.SelectedDocument is not null)
-        //        SelectedDocument = UiState.DocumentSelection.SelectedDocument;
-        //}
-    }
-
-    //private bool IsDocumentSelected(DocumentEntity docInfo)
-    //{
-    //    return SelectedDocument.Id == docInfo.Id;
-    //}
-
-    //private async Task AnalyzeDocument()
-    //{
-    //    if (string.IsNullOrEmpty(SelectedDocument.FileName))
-    //    {
-    //        AddExecutionError(executionStepTracer, "Select a file for analysis");
-    //        return;
-    //    }
-
-    //    try
-    //    {
-
-    //        BeginAnalyseDocumentUiProcess();
-
-    //        var result = await SendAnalyzeDocumentRequest();
-
-    //        if (ApiClientResulIsOk(logger, result))
-    //        {
-    //            //UiState.DocumentAnalysis.DocumentAnalysis = result.Value;
-    //            DisplayDocument(result.Value!.DocumentAnalysisResult);
-
-    //            if (saveAnalysisToStore)
-    //                await SaveAnalysisToStore();
-
-    //        }
-
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        LogExecutionError(logger, ex, "Error while processing document for analysis.");
-    //    }
-    //    finally
-    //    {
-    //        EndAnalyseDocumentUiProcess();
-    //    }
-
-    //}
 
     private void BeginAnalyseDocumentUiProcess()
     {
@@ -103,24 +77,12 @@ public partial class DocumentAnalysis
     }
 
 
-    //private async Task<ApiClientResult<DocumentAnalysisResponseDto>> SendAnalyzeDocumentRequest()
-    //{
-
-    //    var request = new DocumentAnalysisRequestDto()
-    //    {
-    //        ModelName = SelectedModel,
-    //        FileName = Path.GetFileName(SelectedDocument.FileName),
-    //        Bytes = await File.ReadAllBytesAsync(Path.Combine(Env.WebRootPath, SelectedDocument.FilePath.TrimStart('/')))
-    //    };
-
-    //    request.BytesHash = Convert.ToHexString(SHA256.HashData(request.Bytes));
-
-    //    var result = await apiClient.PostAsync<DocumentAnalysisRequestDto,
-    //        DocumentAnalysisResponseDto>("api/document/analyse", request);
+    private async Task SendAnalyzeDocumentRequest()
+    {
 
 
-    //    return result;
-    //}
+
+    }
 
     private async Task SaveAnalysisToStore()
     {

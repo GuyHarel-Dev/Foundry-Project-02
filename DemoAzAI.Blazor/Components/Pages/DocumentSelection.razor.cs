@@ -51,7 +51,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 if (result is not null)
                 {
-                    PageState.DocFileNames = result.Value!;
+                    PageState.DocFileNames = result.Value!.ToList();
                     PageState.DocFileNameSelected = PageState.DocFileNames.First();
                 }
 

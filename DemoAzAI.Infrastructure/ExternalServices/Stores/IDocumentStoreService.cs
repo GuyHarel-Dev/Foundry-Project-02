@@ -6,6 +6,6 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Stores
     {
         Task<List<string>> GetDocumentNames();
 
-        Task<Stream> GetDocumentFileStream(string fileName);
+        Task<Stream> GetDocumentFileStreamAsync(string fileName);
     }
 }

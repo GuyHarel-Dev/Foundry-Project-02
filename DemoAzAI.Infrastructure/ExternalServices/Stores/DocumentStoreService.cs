@@ -8,7 +8,7 @@
             fileStorePath = path;
         }
 
-        public async Task<Stream> GetDocumentFileStream(string fileName)
+        public async Task<Stream> GetDocumentFileStreamAsync(string fileName)
         {
             return File.OpenRead($"{fileStorePath}/{fileName}");
         }

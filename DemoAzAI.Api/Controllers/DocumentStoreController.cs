@@ -22,7 +22,7 @@ namespace WebApi.Controllers
         [HttpGet("content/{fileName}")]
         public async Task<IActionResult> GetDocumentFile(string fileName)
         {
-            var stream = await fileStoreService.GetDocumentFileStream(fileName);
+            var stream = await fileStoreService.GetDocumentFileStreamAsync(fileName);
 
             return File(stream, "application/pdf");
 

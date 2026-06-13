@@ -20,16 +20,15 @@
 </div>
 
 
-<button @onclick="Test"></button>
-
 <div class="page-area">
     <div class="document-selected-area">
         <span>Select a document to Analyse:</span>
         <select @onchange="OnDocumentSelected">
-@*             @foreach (var doc in UiState.DocumentSelection.AvailableDocuments)
+
+            @foreach (var doc in DocumentSelectionPageState.DocFileNames)
             {
-                <option value="@doc.Id" selected="@IsDocumentSelected(doc)">@doc.FileName</option>
-            } *@
+                <option value="@doc">@doc</option>
+            }
 
         </select>
     </div>
@@ -50,7 +49,7 @@
         </div>
 
         <div class="analyse-store-document-area">
-@*             <form @onsubmit="AnalyzeDocument">
+            <form @onsubmit="OnAnalyzeDocument">
 
                 <button type="submit" class="ask-button" disabled="@sendDocumentAnalysisBusy">
                     <span>Analyse document</span>
@@ -69,7 +68,7 @@
                     <LoadingPanel Message="Saving document analysis to application store..." />
                 }
 
-            </form> *@
+            </form>
         </div>
     </div>
 
@@ -100,14 +99,12 @@
 
     private string SelectedModel { get; set; } = _readModel;
 
-    // private DocumentEntity SelectedDocument { get; set; } = new();
-    // private List<DocumentEntity> AvailableDocuments { get; set; } = new();
-
     private static string _readModel = "prebuilt-read";
     private static string _layoutModel = "prebuilt-layout";
     private static string _invoiceModel = "prebuilt-invoice";
     private static string _receiptModel = "prebuilt-receipt";
 
+    private string documentSelectedName = string.Empty;
     private string documentExtractedText = string.Empty;
     private string documentExtractedSections = string.Empty;
     private bool saveAnalysisToStore { get; set; } = false;
