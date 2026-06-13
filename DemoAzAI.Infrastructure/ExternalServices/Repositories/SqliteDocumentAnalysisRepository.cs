@@ -14,7 +14,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 
         public async Task<DocumentAnalysisEntity?> GetByIdAsync(string id)
         {
-           EnsureInitialized();
+            EnsureInitialized();
 
             using var connection =
                 new SqliteConnection(connectionString);
@@ -120,31 +120,32 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             initialized = true;
         }
 
-        public async Task<bool> SaveAsync(string fileName,  DocumentAnalysisResult? result, string bytesHash)
+        public async Task<bool> SaveAsync(string fileName, DocumentAnalysisResult? result, string bytesHash)
         {
-                EnsureInitialized();
 
-                using var connection =
-                    new SqliteConnection(connectionString);
+            EnsureInitialized();
 
-                string sql = """
+            using var connection =
+                new SqliteConnection(connectionString);
+
+            string sql = """
                     INSERT INTO DocumentAnalysisResults
                     (FileName, Hash, AnalysisResultJson, CreatedAt)
                     VALUES
                     (@FileName, @Hash, @AnalysisResultJson, @CreatedAt);
                     """;
 
-                var status = await connection.ExecuteAsync(
-                    sql,
-                    new
-                    {
-                        FileName = fileName,
-                        Hash = bytesHash,
-                        AnalysisResultJson = JsonSerializer.Serialize(result),
-                        CreatedAt = DateTime.UtcNow
-                    });
+            var status = await connection.ExecuteAsync(
+                sql,
+                new
+                {
+                    FileName = fileName,
+                    Hash = bytesHash,
+                    AnalysisResultJson = JsonSerializer.Serialize(result),
+                    CreatedAt = DateTime.UtcNow
+                });
 
-                return status > 0;
+            return status > 0;
         }
 
 

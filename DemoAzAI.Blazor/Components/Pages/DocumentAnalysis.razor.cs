@@ -48,7 +48,7 @@ public partial class DocumentAnalysis
 
             if (response is not null && response.Value is not null)
             {
-                DisplayDocument(response.Value.DocumentAnalysisResult);
+                DisplayResponse(response.Value);
             }
 
         }
@@ -93,66 +93,17 @@ public partial class DocumentAnalysis
         }
 
     }
-    private async Task SaveAnalysisToStore()
+
+    private void DisplayResponse(DocumentAnalysisResponseDto response)
     {
+        if (response.DocumentAnalysisResult is null)
+        {
+            documentAnalysisError = response.DocumentAnalysisStatus;
+            return;
+        }
 
-        //if (UiState.DocumentAnalysis.DocumentAnalysis is null)
-        //{
-        //    AddExecutionError(executionStepTracer, "No document analysis available to save to store");
-        //    return;
-        //}
+        var result = response.DocumentAnalysisResult;
 
-        //try
-        //{
-        //    var analysis = UiState.DocumentAnalysis.DocumentAnalysis;
-
-        //    BeginStoreDocumentAnalysisUiProcess(analysis);
-
-        //    var request = new StoredDocumentAnalysisRequestDto()
-        //    {
-        //        FileName = analysis.FileName,
-        //        BytesHash = analysis.BytesHash,
-        //        DocumentAnalysisResult = analysis.DocumentAnalysisResult
-        //    };
-
-        //    var result = await apiClient.PostAsync<StoredDocumentAnalysisRequestDto,
-        //        StoredDocumentAnalysisResponseDto>("api/store/document/analysis", request);
-
-        //    if (ApiClientResulIsOk(logger, result))
-        //    {
-
-
-        //    }
-
-        //}
-        //catch (Exception ex)
-        //{
-        //    Logger.LogError(ex, "Error while saving document analysis to store.");
-        //}
-        //finally
-        //{
-        //    EndStoreDocumentAnalysisUiProcess();
-        //}
-
-    }
-
-    private void BeginStoreDocumentAnalysisUiProcess(DocumentAnalysisResponseDto analysis)
-    {
-        storeDocumentAnalysisBusy = true;
-        AddExecutionStep(executionStepTracer, $"Saving document analysis for {analysis.FileName} to store.");
-    }
-
-    private void EndStoreDocumentAnalysisUiProcess()
-    {
-        storeDocumentAnalysisBusy = false;
-        AddExecutionStep(executionStepTracer, $"Document saved to store.");
-    }
-
-    private void DisplayDocument(DocumentAnalysisResult? result)
-    {
-        if (result == null) return;
-
-        documentExtractedText = result.DocContent;  //StateContainer.DocContent = result.DocContent;
 
         StringBuilder sb = new StringBuilder();
 
@@ -169,6 +120,7 @@ public partial class DocumentAnalysis
         sb.AppendLine(result.DocumentsFieldsContent);
 
         documentExtractedSections = sb.ToString();
+
 
     }
 

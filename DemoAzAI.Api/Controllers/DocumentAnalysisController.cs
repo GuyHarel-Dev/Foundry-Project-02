@@ -10,8 +10,7 @@ namespace DemoAzAI.Api.Controllers
     [Route("api/document")]
     [ApiController]
     public class DocumentAnalysisController (
-            IDocumentAnalysisService documentAnalysisService,
-            IDocumentAnalysisRepository documentAnalysisRepository
+            IDocumentAnalysisService documentAnalysisService
         ) : ControllerBase
     {
 
@@ -21,11 +20,6 @@ namespace DemoAzAI.Api.Controllers
         {
 
             var response = await documentAnalysisService.AnalyzeDocumentAsync(request);
-
-            if (response is not null && request.SaveToStore)
-            {
-                await documentAnalysisRepository.SaveAsync(request.FileName, response.DocumentAnalysisResult, response.BytesHash);
-            }
 
             return Ok(response);
         }

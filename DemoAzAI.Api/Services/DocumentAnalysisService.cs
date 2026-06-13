@@ -26,6 +26,12 @@ namespace DemoAzAI.Api.Services
             logger.LogInformation($"Sending document {request.FileName} to analysis model");
 
             var options = await CreateAnalyzeDocumentOptions(request);
+            var docHash = Convert.ToHexString(options.BytesSource);
+
+            if (request.SaveToStore && await documentAnalysisRepository.ExistsAsync(docHash))
+            {
+                return new DocumentAnalysisResponseDto { DocumentAnalysisStatus = "Document was not store: already exists" };
+            }
 
             Operation<AnalyzeResult> operation =
                 await client.AnalyzeDocumentAsync(
@@ -39,11 +45,16 @@ namespace DemoAzAI.Api.Services
             {
                 FileName = request.FileName,
                 DocumentAnalysisResult = docAnalysisResult,
-                BytesHash = Convert.ToHexString(options.BytesSource)
+                BytesHash = docHash
             };
 
 
-            logger.LogInformation($"Returning response");
+            logger.LogInformation($"Response received response");
+
+            if (request.SaveToStore)
+            {
+                await documentAnalysisRepository.SaveAsync(request.FileName, response.DocumentAnalysisResult, response.BytesHash);
+            }
 
             return response;
 

@@ -9,6 +9,7 @@ namespace DemoAzAI.Contracts.Api.Responses
         public string BytesHash { get; set; } = string.Empty;
         public DocumentAnalysisResult? DocumentAnalysisResult { get; set; }
 
+        public string DocumentAnalysisStatus { get; set; } = string.Empty;
  
     }
 }

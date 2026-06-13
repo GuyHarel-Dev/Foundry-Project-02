@@ -90,6 +90,15 @@
         </div>
     </div>
 
+    <div class="document-analysis-error-area">
+
+        <div class="document-error-text">
+            <label for="documentExtractedText">Analysis error:</label>
+            <textarea>@documentAnalysisError</textarea>
+        </div>
+
+    </div>
+
 </div>
 
 
@@ -110,6 +119,8 @@
     private string documentSelectedName = string.Empty;
     private string documentExtractedText = string.Empty;
     private string documentExtractedSections = string.Empty;
+    private string documentAnalysisError = string.Empty;
+
     private bool saveAnalysisToStore { get; set; } = false;
 
 
