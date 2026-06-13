@@ -43,13 +43,13 @@ public partial class DocumentAnalysis
 
         try
         {
-            sendDocumentAnalysisBusy = true;
+            BeginAnalyseDocumentUiProcess(request);
 
-            var result = await apiClient.PostAsync<DocumentAnalysisRequestDto, DocumentAnalysisResponseDto>("api/document/analyze", request, logger);
+            var response = await apiClient.PostAsync<DocumentAnalysisRequestDto, DocumentAnalysisResponseDto>("api/document/analyze", request, logger);
 
-            if (result is not null)
+            if (response is not null && response.Value is not null)
             {
-
+                DisplayDocument(response.Value.DocumentAnalysisResult);
             }
 
         }
@@ -59,29 +59,21 @@ public partial class DocumentAnalysis
         }
         finally
         {
-            sendDocumentAnalysisBusy = false;
+            EndAnalyseDocumentUiProcess(request);
         }
 
     }
 
-    private void BeginAnalyseDocumentUiProcess()
+    private void BeginAnalyseDocumentUiProcess(DocumentAnalysisRequestDto request)
     {
         sendDocumentAnalysisBusy = true;
-        //AddExecutionStep(executionStepTracer, $"Starting analysis for document {SelectedDocument.FileName} using model {SelectedModel}");
+        AddExecutionStep(executionStepTracer, $"Starting analysis for document {request.FileName} using model {request.ModelName}");
     }
 
-    private void EndAnalyseDocumentUiProcess()
+    private void EndAnalyseDocumentUiProcess(DocumentAnalysisRequestDto request)
     {
         sendDocumentAnalysisBusy = false;
-        //AddExecutionStep(executionStepTracer, $"Analysis completed for document {SelectedDocument.FileName} using model {SelectedModel}");
-    }
-
-
-    private async Task SendAnalyzeDocumentRequest()
-    {
-
-
-
+        AddExecutionStep(executionStepTracer, $"Analysis completed for document {request.FileName} using model {request.ModelName}");
     }
 
     private async Task SaveAnalysisToStore()
@@ -162,29 +154,5 @@ public partial class DocumentAnalysis
         documentExtractedSections = sb.ToString();
 
     }
-
-    private string ExtractStatistics(DocumentAnalysisResponseDto? response)
-    {
-        if (response is null || response.DocumentAnalysisResult is null)
-            return "No response data to extract statistics.";
-
-        string str = "";
-
-        str += $"PageCount: {response.DocumentAnalysisResult.PageCount}\n";
-        str += $"ParagraphCount: {response.DocumentAnalysisResult.ParagraphCount}\n";
-        str += $"TableCount: {response.DocumentAnalysisResult.TableCount}\n";
-        str += $"FigureCount: {response.DocumentAnalysisResult.FigureCount}\n";
-        str += $"SectionCount: {response.DocumentAnalysisResult.SectionCount}\n";
-        str += $"LanguagesCount: {response.DocumentAnalysisResult.LanguagesCount}\n";
-        str += $"LanguagesCount: {response.DocumentAnalysisResult.LanguagesCount}\n";
-
-        // Derived statistics
-        str += $"CharacterCount : {response.DocumentAnalysisResult.DocContent.Length}\n";
-        str += $"WordCount : {response.DocumentAnalysisResult.DocContent.Split(' ').Length}\n";
-
-        return str;
-
-    }
-
 
 }
