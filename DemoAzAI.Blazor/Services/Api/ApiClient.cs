@@ -51,7 +51,7 @@
             if (result.Value is null)
             {
                 if (logger != null)
-                    logger.LogError($"Api Get {apiRoute} returned no value");
+                    logger.LogError($"Api {apiRoute} error: {result.ErrorMessage}, status:{result.StatusCode}");
 
                 return false;
             }
@@ -59,7 +59,7 @@
             if (result.IsSuccess == false)
             {
                 if (logger != null)
-                    logger.LogError($"Api Get {apiRoute} returned error message {result.ErrorMessage}");
+                    logger.LogError($"Api {apiRoute} returned error message {result.ErrorMessage}");
 
                 return false;
             }

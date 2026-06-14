@@ -1,8 +1,7 @@
 ﻿using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Infrastructure.ExternalServices.Repositories;
-using DemoAzAI.Infrastructure.ExternalServices.Stores;
+using DemoAzAI.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoAzAI.Api.Controllers 
@@ -15,7 +14,7 @@ namespace DemoAzAI.Api.Controllers
     {
 
         [HttpPost("analyze")]
-        public async Task<ActionResult<DocumentAnalysisResponseDto>> AnalyzeDocument(
+        public async Task<ActionResult<DocumentAnalysisResponseDto>> AnalyzeDocumentAsync(
             [FromBody] DocumentAnalysisRequestDto request)
         {
 
@@ -23,6 +22,13 @@ namespace DemoAzAI.Api.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet("analysis/results")]
+        public async Task<IEnumerable<DocumentAnalysisEntity>> GetDocumentAnalysisResultsAsync()
+        {
+            return await documentAnalysisService.GetAnalysisResultsFromStoreAsync();
+        }
+
 
 
     }

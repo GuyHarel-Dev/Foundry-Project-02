@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using DemoAzAI.Domain.Entities;
-using DemoAzAI.Domain.Models.DocumentAnalysis;
+using DemoAzAI.Domain.Models;
 using Microsoft.Data.Sqlite;
 using System.Text.Json;
 

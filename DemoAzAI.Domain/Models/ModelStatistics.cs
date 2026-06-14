@@ -1,4 +1,4 @@
-﻿namespace DemoAzAI.Domain
+﻿namespace DemoAzAI.Domain.Models
 {
     public record ModelStatistics
     (

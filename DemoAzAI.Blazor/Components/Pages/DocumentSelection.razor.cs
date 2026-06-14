@@ -11,10 +11,9 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         private ILogger<DocumentSelection> logger { get; set; } = default!;
 
-
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await LoadDocumentNamesAsync();
+            await GetDocumentNamesAsync();
         }
 
         private void OnDocumentSelected(ChangeEventArgs e)
@@ -41,7 +40,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             return url;
         }
 
-        private async Task LoadDocumentNamesAsync()
+        private async Task GetDocumentNamesAsync()
         {
             try
             {

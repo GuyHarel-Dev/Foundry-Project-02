@@ -1,4 +1,4 @@
-﻿using DemoAzAI.Domain;
+﻿using DemoAzAI.Domain.Models;
 
 namespace DemoAzAI.Contracts.Api.Responses
 {

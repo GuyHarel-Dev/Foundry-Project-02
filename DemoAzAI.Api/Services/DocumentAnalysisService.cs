@@ -4,7 +4,8 @@ using Azure.Core;
 using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain.Models.DocumentAnalysis;
+using DemoAzAI.Domain.Entities;
+using DemoAzAI.Domain.Models;
 using DemoAzAI.Infrastructure.ExternalServices.Repositories;
 using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using System.Text;
@@ -20,6 +21,12 @@ namespace DemoAzAI.Api.Services
             ILogger<DocumentAnalysisService> logger)
         : IDocumentAnalysisService
     {
+        public async Task<IEnumerable<DocumentAnalysisEntity>> GetAnalysisResultsFromStoreAsync()
+        {
+            return await documentAnalysisRepository.GetAllAsync();
+
+
+        }
         public async Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)
         {
 
@@ -60,10 +67,12 @@ namespace DemoAzAI.Api.Services
 
         }
 
+
+
         private async Task<AnalyzeDocumentOptions> CreateAnalyzeDocumentOptions(DocumentAnalysisRequestDto request)
         {
             var modelName = request.ModelName;
-            var fileStream = await fileStoreService.GetDocumentFileStreamAsync(request.FileName);
+            var fileStream = fileStoreService.GetDocumentFileStream(request.FileName);
             var bytes = BinaryData.FromStream(fileStream);
 
             return new AnalyzeDocumentOptions(

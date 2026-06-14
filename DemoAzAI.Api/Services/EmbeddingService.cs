@@ -1,6 +1,6 @@
 ﻿using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain;
+using DemoAzAI.Domain.Models;
 using OpenAI.Embeddings;
 using System.ClientModel;
 using WebApi.Services.Interfaces;

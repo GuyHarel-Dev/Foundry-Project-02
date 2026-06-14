@@ -1,5 +1,5 @@
 ﻿using DemoAzAI.Domain.Entities;
-using DemoAzAI.Domain.Models.DocumentAnalysis;
+using DemoAzAI.Domain.Models;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 {

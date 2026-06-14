@@ -19,9 +19,9 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         ILogger<TextPreparation> logger { get; set; } = default!;
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await GetDocumentResultsFromStore();
+            await GetDocumentResultsAsync();
         }
 
         private async Task OnDocumentSelected(ChangeEventArgs e)
@@ -89,7 +89,7 @@ namespace DemoAzAI.Blazor.Components.Pages
         }
 
 
-        private async Task GetDocumentResultsFromStore()
+        private async Task GetDocumentResultsAsync()
         {
             try
             {

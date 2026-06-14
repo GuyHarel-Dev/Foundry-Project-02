@@ -8,12 +8,12 @@
             fileStorePath = path;
         }
 
-        public async Task<Stream> GetDocumentFileStreamAsync(string fileName)
+        public Stream GetDocumentFileStream(string fileName)
         {
             return File.OpenRead($"{fileStorePath}/{fileName}");
         }
 
-        public async Task<List<string>> GetDocumentNames()
+        public List<string> GetDocumentFileNames()
         {
             var files = Directory.EnumerateFiles(fileStorePath);
             var fileNames = new List<string> ();

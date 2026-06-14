@@ -1,4 +1,4 @@
-﻿namespace DemoAzAI.Domain.Models.DocumentAnalysis
+﻿namespace DemoAzAI.Domain.Models
 {
     public class DocumentAnalysisResult
     {

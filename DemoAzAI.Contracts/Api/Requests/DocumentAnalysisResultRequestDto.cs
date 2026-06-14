@@ -2,7 +2,7 @@
 
 namespace DemoAzAI.Contracts.Api.Requests
 {
-    public class DocumentRequestDto
+    public class DocumentAnalysisResultRequestDto
     {
         public StoreDocument DocumentEntity { get; set; } = new();
 

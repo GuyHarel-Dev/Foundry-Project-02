@@ -1,5 +1,4 @@
-﻿using DemoAzAI.Domain.Models.DocumentAnalysis;
-
+﻿using DemoAzAI.Domain.Models;
 
 namespace DemoAzAI.Contracts.Api.Responses
 {

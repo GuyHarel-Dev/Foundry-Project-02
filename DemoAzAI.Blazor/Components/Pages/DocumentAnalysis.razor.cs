@@ -2,7 +2,6 @@
 using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain.Models.DocumentAnalysis;
 using Microsoft.AspNetCore.Components;
 using System.Text;
 
@@ -20,9 +19,9 @@ public partial class DocumentAnalysis
     [Inject]
     private IExecutionStepTracer executionStepTracer { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await LoadDocumentNamesAsync();
+        await GetDocumentNamesAsync();
     }
 
     private async Task OnDocumentSelected(ChangeEventArgs e)
@@ -75,7 +74,7 @@ public partial class DocumentAnalysis
         AddExecutionStep(executionStepTracer, $"Analysis completed for document {request.FileName} using model {request.ModelName}");
     }
 
-    private async Task LoadDocumentNamesAsync()
+    private async Task GetDocumentNamesAsync()
     {
         try
         {

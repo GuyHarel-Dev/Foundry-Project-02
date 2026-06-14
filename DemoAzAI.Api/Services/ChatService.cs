@@ -3,6 +3,7 @@ using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain;
+using DemoAzAI.Domain.Models;
 using OpenAI.Responses;
 using System.ClientModel;
 
