@@ -16,12 +16,19 @@
     }
 
     .page-area .document-analysis-result-area {
-        height: 30%;
+        height: 65%;
     }
 
-    .page-area .document-analysis-error-area {
+        .page-area .document-analysis-result-area .document-extracted-text {
+            height: 50%;
+        }
+
+        .page-area .document-analysis-result-area .document-extracted-sections {
+            height: 50%;
+        }
+/*    .page-area .document-analysis-error-area {
         height: 30%;
-    }
+    }*/
 
 
     .page-area .document-selected-area,

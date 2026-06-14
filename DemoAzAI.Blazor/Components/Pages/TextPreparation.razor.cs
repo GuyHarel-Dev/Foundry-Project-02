@@ -1,5 +1,4 @@
 using DemoAzAI.Application;
-using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
@@ -10,9 +9,6 @@ namespace DemoAzAI.Blazor.Components.Pages
 {
     public partial class TextPreparation
     {
-
-        [Inject]
-        private ApiClient apiClient { get; set; } = default!;
 
         [Inject]
         private IExecutionStepTracer executionStepTracer { get; set; } = default!;

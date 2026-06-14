@@ -1,15 +1,20 @@
-﻿<div class="description_area">
-    <div class="title">
-        <div>@Title</div>
-    </div>
+﻿<div class="page-area column_display">
 
-    <div class="model">
-        <div>@Model</div>
-    </div>
+    <div class="page-info ">
+        <div class="title">
+            <div>@Title</div>
+        </div>
 
-    <div class="description">
-        <div>@Description</div>
+        <div class="model">
+            <div>@Model</div>
+        </div>
+
+        <div class="description">
+            <div>@Description</div>
+        </div>
     </div>
+    <div class="@GetPageStateClass()">Page Status</div>
+
 </div>
 
 @code {
@@ -19,4 +24,6 @@
     public string Model { get; set; } = "Model";
     [Parameter]
     public string Description { get; set; } = "Description";
+    [Parameter]
+    public string PageState { get; set; } = "Description";
 }

@@ -1,4 +1,4 @@
-﻿.description_area {
+﻿.page-area {
     background-color: #300c4d;
     font-size: 16px;
     border: 1px solid #d0d0d0;
@@ -6,16 +6,27 @@
     padding: 1px;
     color: white;
     font-size: 14px;
-    margin-bottom:10px;
+    margin-bottom: 10px;
 }
-    .description_area .title {
-       font-size: 20px;
+
+.column_display {
+    display: flex;
+    gap: 20px;
+}
+
+.page-area .page-info {
+    width: 95%;
+}
+
+.page-area .page-status {
+    width: 5%;
+}
+
+    .page-error {
+        background-color: red;
+        border: 2px solid red;
     }
 
-    .description_area .model {
+    .page-ok {
+        background-color: green;
     }
-
-    .description_area .description {
-
-    }
-

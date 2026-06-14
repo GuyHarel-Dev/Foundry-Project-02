@@ -39,6 +39,9 @@ public partial class DocumentAnalysis
 
         var docInfo = await GetDocumentAnalysisByNameAsync(documentSelectedName);
 
+        documentExtractedText = string.Empty;
+        documentExtractedSections = string.Empty;
+
         if (docInfo != null)
         {
             documentExtractedText = docInfo.AnalysisResult.DocContent;
