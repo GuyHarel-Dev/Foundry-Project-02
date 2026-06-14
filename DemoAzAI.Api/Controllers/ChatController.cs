@@ -13,7 +13,7 @@ namespace DemoAzAI.Api.Controllers
         ) : ControllerBase
     {
 
-        [HttpPost("sendprompt")]
+        [HttpPost("prompt/response")]
         public async Task<ActionResult<ChatResponseDto>> SendPrompt([FromBody] ChatRequestDto request)
         {
              if (string.IsNullOrWhiteSpace(request.Prompt))

@@ -1,4 +1,5 @@
 using DemoAzAI.Blazor.Services.Api;
+using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages
@@ -15,7 +16,7 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             if (firstRender)
             {
-                await GetDocumentNamesAsync();
+                await GetDocumentInfosAsync();
                 StateHasChanged();
             }
         }
@@ -24,37 +25,32 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             var docFileName = e.Value?.ToString();
 
-            if (string.IsNullOrEmpty(docFileName)) return;
+            selectedDocumentInfo = storedDocumentInfo.Where(doc => doc.FileName == docFileName).FirstOrDefault();
 
-            if (PageState.DocFileNames is null) return;
-
-            PageState.DocFileNameSelected = PageState.DocFileNames.FirstOrDefault(name => name == docFileName);
 
         }
 
-        private string DocFileNameUrl()
+        private string GetDocumentInfoApiRoute()
         {
             var url = string.Empty;
 
-            if (PageState.DocFileNameSelected != null)
+            if (selectedDocumentInfo != null)
             {
-                url = $"{apiClient.BaseClientUrl}/api/documents/content/{PageState.DocFileNameSelected}";
+                url = $"{apiClient.BaseClientUrl}/api/document-store/stream/{selectedDocumentInfo.FileName}";
             }
 
             return url;
-        }
 
-        private async Task GetDocumentNamesAsync()
+        }
+        private async Task GetDocumentInfosAsync()
         {
             try
             {
+                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document-store", logger);
 
-                var result = await apiClient.GetAsync<IEnumerable<string>>("api/documents/names", logger);
-
-                if (result is not null)
+                if (result is not null && result.Value is not null)
                 {
-                    PageState.DocFileNames = result.Value!.ToList();
-                    PageState.DocFileNameSelected = PageState.DocFileNames.First();
+                    storedDocumentInfo = [.. result.Value];
                 }
 
             }

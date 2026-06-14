@@ -5,7 +5,6 @@ using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
@@ -39,7 +38,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 getDocumentResultsFromStoreIsBusy = true;
 
-                var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisInfo>>("api/document/analysis", logger);
+                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document/analysis", logger);
 
                 if (result is not null)
                 {
@@ -82,7 +81,6 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             try
             {
-
                 var result = await apiClient.GetAsync<DocumentAnalysisEntity>($"api/document/analysis/{docId}", logger);
 
                 if (result is not null)
@@ -91,7 +89,6 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                     return response;
                 }
-
             }
             catch (Exception ex)
             {
@@ -118,7 +115,7 @@ namespace DemoAzAI.Blazor.Components.Pages
                     Prompt = $"I need the following text to be prepared (chunked) for vectorisation:{documentAnalysisText}"
                 };
 
-                var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request, logger);
+                var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/prompt/response", request, logger);
 
                 if (result is not null)
                 {

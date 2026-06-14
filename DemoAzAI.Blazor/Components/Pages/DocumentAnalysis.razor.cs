@@ -2,6 +2,7 @@
 using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
+using DemoAzAI.Domain.Entities;
 using Microsoft.AspNetCore.Components;
 using System.Text;
 
@@ -66,6 +67,31 @@ public partial class DocumentAnalysis
 
     }
 
+    private async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string docId)
+    {
+        try
+        {
+            var result = await apiClient.GetAsync<DocumentAnalysisEntity>($"api/document/analysis/{docId}", logger);
+
+            if (result is not null)
+            {
+                var response = result.Value;
+
+                return response;
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error while getting document analysis from store.");
+        }
+        finally
+        {
+
+        }
+
+        return null;
+
+    }
     private void BeginAnalyseDocumentUiProcess(DocumentAnalysisRequestDto request)
     {
         sendDocumentAnalysisBusy = true;

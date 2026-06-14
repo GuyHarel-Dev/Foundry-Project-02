@@ -1,24 +1,25 @@
-﻿using DemoAzAI.Infrastructure.ExternalServices.Stores;
+﻿using DemoAzAI.Domain.Models;
+using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    [Route("api/documents")]
+    [Route("api/document-store")]
     [ApiController]
     public class DocumentStoreController(
             IDocumentStoreService fileStoreService
         ) : ControllerBase
     {
 
-        [HttpGet("names")]
-        public async Task<ActionResult<IEnumerable<string>>> GetDocumentNames()
+        [HttpGet()]
+        public async Task<ActionResult<IEnumerable<DocumentInfo>>> GetDocumentNames()
         {
-            var documents = fileStoreService.GetDocumentFileNames();
+            var documents = fileStoreService.GetDocumentFileInfos();
 
             return Ok(documents);
         }
 
-        [HttpGet("content/{fileName}")]
+        [HttpGet("stream/{fileName}")]
         public async Task<IActionResult> GetDocumentFile(string fileName)
         {
             var stream = fileStoreService.GetDocumentFileStream(fileName);

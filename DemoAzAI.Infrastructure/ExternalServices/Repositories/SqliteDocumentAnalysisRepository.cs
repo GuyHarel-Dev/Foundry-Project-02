@@ -49,7 +49,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             };
         }
 
-        public async Task<IEnumerable<DocumentAnalysisInfo>> GetDocumentAnalysisAsync()
+        public async Task<IEnumerable<DocumentInfo>> GetDocumentAnalysisAsync()
         {
             EnsureInitialized();
 
@@ -65,9 +65,9 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 """;
 
             var rows =
-                await connection.QueryAsync<DocumentAnalysisInfo>(sql);
+                await connection.QueryAsync<DocumentInfo>(sql);
 
-            return rows.Select(r => new DocumentAnalysisInfo
+            return rows.Select(r => new DocumentInfo
             {
                 Id = r.Id.ToString(),
                 FileName = r.FileName

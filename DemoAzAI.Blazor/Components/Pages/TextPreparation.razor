@@ -69,7 +69,7 @@
     private bool sendTextEmbeddingRequestBusy { get; set; } = false;
     private bool getDocumentResultsFromStoreIsBusy { get; set; } = false;
 
-    private List<DocumentAnalysisInfo> storedDocuments { get; set; } = new();
+    private List<DocumentInfo> storedDocuments { get; set; } = new();
 
     private string? documentAnalysisText { get; set; } = string.Empty;
     private string documentAnalysisTextChunk { get; set; } = string.Empty;

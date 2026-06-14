@@ -86,7 +86,7 @@
                 Prompt = question
             };
 
-            var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request);
+            var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/prompt/response", request);
 
             if (result == null || result.Value is null)
             {

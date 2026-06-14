@@ -4,6 +4,7 @@
 
 @using DemoAzAI.Blazor.Components.Fragments
 @using DemoAzAI.Blazor.Services.PageStateContainers
+@using DemoAzAI.Domain.Models
 
 @inject DocumentSelectionPageState PageState
 
@@ -19,34 +20,34 @@
     <div class="title">Select or upload a document:</div>
     <div class="select-document">
         <select class="select-document" @onchange="OnDocumentSelected">
-            @if (PageState.DocFileNames is not null && PageState.DocFileNames.Any())
+            @if (storedDocumentInfo is not null)
             {
-                foreach (var name in PageState.DocFileNames)
+                foreach (var info in storedDocumentInfo)
                 {
-                    <option value=@name>@name</option>
+                    <option value=@info.FileName>@info.FileName</option>
                 }
             }
-         
+
         </select>
     </div>
 
 </div>
 
+
 <div class="doc-view-area">
-    @if (PageState.DocFileNameSelected is not null)
+    @if (selectedDocumentInfo is not null)
     {
-        @if (!string.IsNullOrEmpty(PageState.DocFileNameSelected))
-        {
-            <object class="doc-view-object" data="@DocFileNameUrl()"
-                    type="application/pdf">
-            </object>
-        }
+        <object class="doc-view-object" data="@GetDocumentInfoApiRoute()"
+                type="application/pdf">
+        </object>
     }
 
 </div>
 
 @code {
 
+    private List<DocumentInfo> storedDocumentInfo { get; set; } = new();
+    private DocumentInfo? selectedDocumentInfo { get; set; }
 }
 
     

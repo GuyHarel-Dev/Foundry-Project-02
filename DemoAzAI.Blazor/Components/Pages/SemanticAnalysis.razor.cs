@@ -77,7 +77,7 @@ namespace DemoAzAI.Blazor.Components.Pages
                     Prompt = $"I need the following text to be prepared (chunked) for vectorisation:{DocumentAnalysisText}"
                 };
 
-                var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request, logger);
+                var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/prompt/response", request, logger);
 
                 if (result is not null)
                 {

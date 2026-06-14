@@ -5,7 +5,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 {
     public interface IDocumentAnalysisRepository
     {
-        Task<IEnumerable<DocumentAnalysisInfo>> GetDocumentAnalysisAsync();
+        Task<IEnumerable<DocumentInfo>> GetDocumentAnalysisAsync();
         Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id);
         Task<DocumentAnalysisEntity?> GetDocumentAnalysisByHashAsync(string hash);
 

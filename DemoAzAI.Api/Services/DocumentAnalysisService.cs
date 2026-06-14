@@ -28,7 +28,7 @@ namespace DemoAzAI.Api.Services
 
         }
 
-        public async Task<IEnumerable<DocumentAnalysisInfo>> GetDocumentAnalysisAsync()
+        public async Task<IEnumerable<DocumentInfo>> GetDocumentAnalysisAsync()
         {
             return await documentAnalysisRepository.GetDocumentAnalysisAsync();
         }

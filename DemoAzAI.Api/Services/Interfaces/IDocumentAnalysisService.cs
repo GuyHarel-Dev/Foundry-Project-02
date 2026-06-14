@@ -8,7 +8,7 @@ namespace DemoAzAI.Api.Services.Interfaces
     public interface IDocumentAnalysisService
     {
         Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto doc, CancellationToken cancellationToken = default);
-        Task<IEnumerable<DocumentAnalysisInfo>> GetDocumentAnalysisAsync();
+        Task<IEnumerable<DocumentInfo>> GetDocumentAnalysisAsync();
 
         Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id);
     }

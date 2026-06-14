@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DemoAzAI.Api.Controllers 
 {
-    [Route("api/document")]
+    [Route("api/document-analysis")]
     [ApiController]
     public class DocumentAnalysisController (
             IDocumentAnalysisService documentAnalysisService
@@ -25,7 +25,7 @@ namespace DemoAzAI.Api.Controllers
         }
 
         [HttpGet("analysis")]
-        public async Task<IEnumerable<DocumentAnalysisInfo>> GetDocumentAnalysisAsync()
+        public async Task<IEnumerable<DocumentInfo>> GetDocumentAnalysisAsync()
         {
             return await documentAnalysisService.GetDocumentAnalysisAsync();
         }

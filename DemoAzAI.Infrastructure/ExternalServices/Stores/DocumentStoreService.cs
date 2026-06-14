@@ -1,4 +1,6 @@
-﻿namespace DemoAzAI.Infrastructure.ExternalServices.Stores
+﻿using DemoAzAI.Domain.Models;
+
+namespace DemoAzAI.Infrastructure.ExternalServices.Stores
 {
     public class DocumentStoreService: IDocumentStoreService
     {
@@ -13,18 +15,22 @@
             return File.OpenRead($"{fileStorePath}/{fileName}");
         }
 
-        public List<string> GetDocumentFileNames()
+        public List<DocumentInfo> GetDocumentFileInfos()
         {
             var files = Directory.EnumerateFiles(fileStorePath);
-            var fileNames = new List<string> ();
+            var docInfos = new List<DocumentInfo> ();
 
             foreach (var path in files) 
             {
-                fileNames.Add(Path.GetFileName(path));
+                docInfos.Add(new DocumentInfo 
+                { 
+                    FileName = Path.GetFileName(path), 
+                    FileUrl = path 
+                });
             }
 
 
-            return fileNames;
+            return docInfos;
 
         }
     }
