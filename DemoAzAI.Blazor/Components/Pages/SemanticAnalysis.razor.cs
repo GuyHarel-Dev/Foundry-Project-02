@@ -190,7 +190,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             // api/embedding/search/store
 
 
-            await RefreshUI();
+            await RefreshUIAsync();
         }
 
         private async Task EmbedTextLines()

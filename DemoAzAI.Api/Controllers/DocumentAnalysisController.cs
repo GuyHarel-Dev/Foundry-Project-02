@@ -2,6 +2,7 @@
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
+using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoAzAI.Api.Controllers 
@@ -23,13 +24,17 @@ namespace DemoAzAI.Api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("analysis/results")]
-        public async Task<IEnumerable<DocumentAnalysisEntity>> GetDocumentAnalysisResultsAsync()
+        [HttpGet("analysis")]
+        public async Task<IEnumerable<DocumentAnalysisInfo>> GetDocumentAnalysisAsync()
         {
-            return await documentAnalysisService.GetAnalysisResultsFromStoreAsync();
+            return await documentAnalysisService.GetDocumentAnalysisAsync();
         }
 
-
+        [HttpGet("analysis/{id}")]
+        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
+        {
+            return await documentAnalysisService.GetDocumentAnalysisByIdAsync(id);
+        }
 
     }
 }

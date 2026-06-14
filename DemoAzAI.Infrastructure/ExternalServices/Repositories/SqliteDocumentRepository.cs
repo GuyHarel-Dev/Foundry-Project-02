@@ -18,7 +18,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 new SqliteConnection(connectionString);
 
             connection.Execute("""
-                CREATE TABLE IF NOT EXISTS DocumentAnalysisResults (
+                CREATE TABLE IF NOT EXISTS DocumentAnalysis (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     FileName TEXT NOT NULL UNIQUE,
                     Hash TEXT NOT NULL UNIQUE,

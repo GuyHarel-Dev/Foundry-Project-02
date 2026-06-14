@@ -12,7 +12,8 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 
         private bool initialized = false;
 
-        public async Task<DocumentAnalysisEntity?> GetByIdAsync(string id)
+
+        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
         {
             EnsureInitialized();
 
@@ -26,7 +27,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                     Hash,
                     CreatedAt,
                     AnalysisResultJson
-                FROM DocumentAnalysisResults
+                FROM DocumentAnalysis
                 WHERE Id = @IdParam
                 """;
 
@@ -48,7 +49,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             };
         }
 
-        public async Task<IEnumerable<DocumentAnalysisEntity>> GetAllAsync()
+        public async Task<IEnumerable<DocumentAnalysisInfo>> GetDocumentAnalysisAsync()
         {
             EnsureInitialized();
 
@@ -58,29 +59,22 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             string sql = """
                 SELECT
                     Id,
-                    FileName,
-                    Hash,
-                    CreatedAt,
-                    AnalysisResultJson
-                FROM DocumentAnalysisResults
+                    FileName
+                FROM DocumentAnalysis
                 ORDER BY Id DESC;
                 """;
 
             var rows =
-                await connection.QueryAsync<DocumentAnalysisEntity>(sql);
+                await connection.QueryAsync<DocumentAnalysisInfo>(sql);
 
-            return rows.Select(r => new DocumentAnalysisEntity
+            return rows.Select(r => new DocumentAnalysisInfo
             {
                 Id = r.Id.ToString(),
-                FileName = r.FileName,
-                CreatedAt = r.CreatedAt,
-                Hash = r.Hash,
-                AnalysisResult = JsonSerializer.Deserialize<DocumentAnalysisResult>(
-                    r.AnalysisResultJson)!
+                FileName = r.FileName
             });
         }
 
-        public async Task<bool> ExistsAsync(string hash)
+        public async Task<bool> DocumentAnalysisExistsAsync(string hash)
         {
             EnsureInitialized();
 
@@ -88,7 +82,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 
             const string sql = """
                 SELECT COUNT(1)
-                FROM DocumentAnalysisResults
+                FROM DocumentAnalysis
                 WHERE Hash = @Hash;
                 """;
 
@@ -108,7 +102,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 new SqliteConnection(connectionString);
 
             connection.Execute("""
-                CREATE TABLE IF NOT EXISTS DocumentAnalysisResults (
+                CREATE TABLE IF NOT EXISTS DocumentAnalysis (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     FileName TEXT NOT NULL UNIQUE,
                     Hash TEXT NOT NULL UNIQUE,
@@ -120,7 +114,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             initialized = true;
         }
 
-        public async Task<bool> SaveAsync(string fileName, DocumentAnalysisResult? result, string bytesHash)
+        public async Task<bool> SaveDocumentAnalysisAsync(string fileName, DocumentAnalysisResult? result, string bytesHash)
         {
 
             EnsureInitialized();
@@ -129,7 +123,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 new SqliteConnection(connectionString);
 
             string sql = """
-                    INSERT INTO DocumentAnalysisResults
+                    INSERT INTO DocumentAnalysis
                     (FileName, Hash, AnalysisResultJson, CreatedAt)
                     VALUES
                     (@FileName, @Hash, @AnalysisResultJson, @CreatedAt);
@@ -149,7 +143,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
         }
 
 
-        Task<DocumentAnalysisEntity?> IDocumentAnalysisRepository.GetByHashAsync(string hash)
+        Task<DocumentAnalysisEntity?> IDocumentAnalysisRepository.GetDocumentAnalysisByHashAsync(string hash)
         {
             throw new NotImplementedException();
         }

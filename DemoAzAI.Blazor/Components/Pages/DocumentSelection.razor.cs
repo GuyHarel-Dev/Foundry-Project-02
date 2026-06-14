@@ -13,7 +13,11 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await GetDocumentNamesAsync();
+            if (firstRender)
+            {
+                await GetDocumentNamesAsync();
+                StateHasChanged();
+            }
         }
 
         private void OnDocumentSelected(ChangeEventArgs e)

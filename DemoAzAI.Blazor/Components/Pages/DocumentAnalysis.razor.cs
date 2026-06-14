@@ -21,7 +21,11 @@ public partial class DocumentAnalysis
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await GetDocumentNamesAsync();
+        if (firstRender)
+        {
+            await GetDocumentNamesAsync();
+            StateHasChanged();
+        }
     }
 
     private async Task OnDocumentSelected(ChangeEventArgs e)

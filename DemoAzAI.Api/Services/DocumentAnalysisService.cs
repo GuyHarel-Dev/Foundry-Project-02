@@ -21,12 +21,18 @@ namespace DemoAzAI.Api.Services
             ILogger<DocumentAnalysisService> logger)
         : IDocumentAnalysisService
     {
-        public async Task<IEnumerable<DocumentAnalysisEntity>> GetAnalysisResultsFromStoreAsync()
-        {
-            return await documentAnalysisRepository.GetAllAsync();
 
+        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
+        {
+            return await documentAnalysisRepository.GetDocumentAnalysisByIdAsync(id);
 
         }
+
+        public async Task<IEnumerable<DocumentAnalysisInfo>> GetDocumentAnalysisAsync()
+        {
+            return await documentAnalysisRepository.GetDocumentAnalysisAsync();
+        }
+
         public async Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)
         {
 
@@ -35,7 +41,7 @@ namespace DemoAzAI.Api.Services
             var options = await CreateAnalyzeDocumentOptions(request);
             var docHash = Convert.ToHexString(options.BytesSource);
 
-            if (request.SaveToStore && await documentAnalysisRepository.ExistsAsync(docHash))
+            if (request.SaveToStore && await documentAnalysisRepository.DocumentAnalysisExistsAsync(docHash))
             {
                 return new DocumentAnalysisResponseDto { DocumentAnalysisStatus = "Document was not store: already exists" };
             }
@@ -60,7 +66,7 @@ namespace DemoAzAI.Api.Services
 
             if (request.SaveToStore)
             {
-                await documentAnalysisRepository.SaveAsync(request.FileName, response.DocumentAnalysisResult, response.BytesHash);
+                await documentAnalysisRepository.SaveDocumentAnalysisAsync(request.FileName, response.DocumentAnalysisResult, response.BytesHash);
             }
 
             return response;

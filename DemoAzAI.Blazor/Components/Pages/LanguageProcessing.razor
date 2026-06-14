@@ -78,7 +78,7 @@
             AddExecutionStep(StepTracer, $"{nameof(SendQuestion)}: Sending question to chat model");
 
             executionSteps = StepTracer.GetSteps();
-            await RefreshUI();
+            await RefreshUIAsync();
 
             var request = new ChatRequestDto()
             {

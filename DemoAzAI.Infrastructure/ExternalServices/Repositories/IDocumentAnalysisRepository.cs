@@ -5,12 +5,12 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 {
     public interface IDocumentAnalysisRepository
     {
-        Task<IEnumerable<DocumentAnalysisEntity>> GetAllAsync();
-        Task<DocumentAnalysisEntity?> GetByIdAsync(string id);
-        Task<DocumentAnalysisEntity?> GetByHashAsync(string hash);
+        Task<IEnumerable<DocumentAnalysisInfo>> GetDocumentAnalysisAsync();
+        Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id);
+        Task<DocumentAnalysisEntity?> GetDocumentAnalysisByHashAsync(string hash);
 
-        Task<bool> SaveAsync(string fileName, DocumentAnalysisResult? result, string BytesHash);
+        Task<bool> SaveDocumentAnalysisAsync(string fileName, DocumentAnalysisResult? result, string BytesHash);
 
-        Task<bool> ExistsAsync(string hash);
+        Task<bool> DocumentAnalysisExistsAsync(string hash);
     }
 }

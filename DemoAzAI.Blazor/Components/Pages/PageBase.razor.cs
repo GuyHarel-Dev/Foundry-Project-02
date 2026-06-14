@@ -13,7 +13,7 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
         }
 
-        protected async Task RefreshUI()
+        protected async Task RefreshUIAsync()
         {
             await InvokeAsync(StateHasChanged);
             await Task.Yield();

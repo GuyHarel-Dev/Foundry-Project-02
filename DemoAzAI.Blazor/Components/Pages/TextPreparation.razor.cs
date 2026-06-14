@@ -3,6 +3,7 @@ using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
+using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages
@@ -19,9 +20,42 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         ILogger<TextPreparation> logger { get; set; } = default!;
 
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await GetDocumentResultsAsync();
+            if (firstRender)
+            {
+                await GetDocumentResultsAsync();
+                StateHasChanged();
+            }
+
+        }
+
+        private async Task GetDocumentResultsAsync()
+        {
+            try
+            {
+
+                getDocumentResultsFromStoreIsBusy = true;
+
+                var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisInfo>>("api/document/analysis/results", logger);
+
+                if (result is not null)
+                {
+                    storedDocuments = result.Value!.ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error while getting document results from store.");
+            }
+            finally
+            {
+                getDocumentResultsFromStoreIsBusy = false;
+            }
+
+
         }
 
         private async Task OnDocumentSelected(ChangeEventArgs e)
@@ -31,10 +65,35 @@ namespace DemoAzAI.Blazor.Components.Pages
                 return;
             }
 
-            var docId = e.Value.ToString();
+            var doc = e.Value as DocumentAnalysisInfo;
+            var test = await GetDocumentAnalysisByIdAsync(doc.Id);
+        }
 
-            DocumentAnalysisText = storedDocuments.First(doc => doc.Id == docId).AnalysisResult.DocumentsFieldsContent;
-            DocumentAnalysisTextChunk = string.Empty;
+        private async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string docId)
+        {
+            try
+            {
+
+                var result = await apiClient.GetAsync<DocumentAnalysisEntity>($"api/document/analysis/result/{docId}", logger);
+
+                if (result is not null)
+                {
+                    var response = result.Value;
+
+                    return response;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error while getting document analysis from store.");
+            }
+            finally
+            {
+
+            }
+
+            return null;
         }
 
         private async Task SendTextPreparationRequest()
@@ -71,51 +130,14 @@ namespace DemoAzAI.Blazor.Components.Pages
             }
             finally
             {
-                EndSendTextPreparationProcess();
+                sendTextPreparationRequestBusy = false;
             }
 
         }
 
-        private void BeginSendTextPreparationProcess()
-        {
-            sendTextPreparationRequestBusy = true;
-            //AddExecutionStep(executionStepTracer, $"Starting analysis for document {SelectedDocument.FileName} using model {SelectedModel}");
-        }
-
-        private void EndSendTextPreparationProcess()
-        {
-            sendTextPreparationRequestBusy = false;
-            //AddExecutionStep(executionStepTracer, $"Analysis completed for document {SelectedDocument.FileName} using model {SelectedModel}");
-        }
 
 
-        private async Task GetDocumentResultsAsync()
-        {
-            try
-            {
 
-                getDocumentResultsFromStoreIsBusy = true;
-
-                var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisEntity>>("api/store/document/analysis/results", logger);
-
-                if (result is not null)
-                {
-                    storedDocuments = result.Value!.ToList();
-                    DocumentAnalysisText = storedDocuments.First().AnalysisResult.DocumentsFieldsContent;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error while getting document results from store.");
-            }
-            finally
-            {
-                getDocumentResultsFromStoreIsBusy = false;
-            }
-
-
-        }
         private async Task EmbedTextLines()
         {
 
