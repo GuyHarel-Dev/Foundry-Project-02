@@ -14,7 +14,7 @@ namespace DemoAzAI.Api.Controllers
         ) : ControllerBase
     {
 
-        [HttpPost("analyze")]
+        [HttpPost()]
         public async Task<ActionResult<DocumentAnalysisResponseDto>> AnalyzeDocumentAsync(
             [FromBody] DocumentAnalysisRequestDto request)
         {
@@ -24,16 +24,16 @@ namespace DemoAzAI.Api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("analysis")]
+        [HttpGet("all-analysis")]
         public async Task<IEnumerable<DocumentInfo>> GetDocumentAnalysisAsync()
         {
-            return await documentAnalysisService.GetDocumentAnalysisAsync();
+            return await documentAnalysisService.GetAllDocumentAnalysisAsync();
         }
 
-        [HttpGet("analysis/{id}")]
-        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
+        [HttpGet("analysis/{fileName}")]
+        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string fileName)
         {
-            return await documentAnalysisService.GetDocumentAnalysisByIdAsync(id);
+            return await documentAnalysisService.GetDocumentAnalysisByNameAsync(fileName);
         }
 
     }

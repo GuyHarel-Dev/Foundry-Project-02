@@ -22,15 +22,15 @@ namespace DemoAzAI.Api.Services
         : IDocumentAnalysisService
     {
 
-        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
+        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
         {
-            return await documentAnalysisRepository.GetDocumentAnalysisByIdAsync(id);
+            return await documentAnalysisRepository.GetDocumentAnalysisByNameAsync(fileName);
 
         }
 
-        public async Task<IEnumerable<DocumentInfo>> GetDocumentAnalysisAsync()
+        public async Task<IEnumerable<DocumentInfo>> GetAllDocumentAnalysisAsync()
         {
-            return await documentAnalysisRepository.GetDocumentAnalysisAsync();
+            return await documentAnalysisRepository.GetAllDocumentAnalysisAsync();
         }
 
         public async Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)

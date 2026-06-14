@@ -13,7 +13,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
         private bool initialized = false;
 
 
-        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
+        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
         {
             EnsureInitialized();
 
@@ -28,12 +28,12 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                     CreatedAt,
                     AnalysisResultJson
                 FROM DocumentAnalysis
-                WHERE Id = @IdParam
+                WHERE FileName = @IdParam
                 """;
 
             var row = await connection.QuerySingleOrDefaultAsync<DocumentAnalysisEntity>(
                 sql,
-                new { IdParam = id });
+                new { IdParam = fileName });
 
             if (row == null)
                 return null;
@@ -49,7 +49,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             };
         }
 
-        public async Task<IEnumerable<DocumentInfo>> GetDocumentAnalysisAsync()
+        public async Task<IEnumerable<DocumentInfo>> GetAllDocumentAnalysisAsync()
         {
             EnsureInitialized();
 

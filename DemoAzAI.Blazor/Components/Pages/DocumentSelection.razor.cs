@@ -6,8 +6,6 @@ namespace DemoAzAI.Blazor.Components.Pages
 {
     public partial class DocumentSelection
     {
-        [Inject]
-        public ApiClient apiClient { get; set; } = default!;
 
         [Inject]
         private ILogger<DocumentSelection> logger { get; set; } = default!;
@@ -16,7 +14,11 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             if (firstRender)
             {
-                await GetDocumentInfosAsync();
+                 var storeInfos = await GetAllDocumentInfosFromStoreAsync(logger);
+
+                if (storeInfos != null)
+                    storedDocumentInfo = [.. storeInfos];
+
                 StateHasChanged();
             }
         }
@@ -42,24 +44,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             return url;
 
         }
-        private async Task GetDocumentInfosAsync()
-        {
-            try
-            {
-                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document-store", logger);
 
-                if (result is not null && result.Value is not null)
-                {
-                    storedDocumentInfo = [.. result.Value];
-                }
-
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error while getting document results from store.");
-            }
-   
-        }
 
     }
 

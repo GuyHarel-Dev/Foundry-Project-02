@@ -3,7 +3,7 @@
 @rendermode InteractiveServer
 
 @using DemoAzAI.Blazor.Components.Fragments
-@using DemoAzAI.Blazor.Services.PageStateContainers
+@using DemoAzAI.Domain.Models
 
 @inject ILogger<DocumentAnalysis> Logger
 @* @inject DocumentSelectionPageState DocumentSelectionPageState *@
@@ -25,9 +25,9 @@
         <span>Select a document to Analyse:</span>
         <select @onchange="OnDocumentSelected">
 
-            @foreach (var doc in docFileNames)
+            @foreach (var doc in storedDocumentInfo)
             {
-                <option value="@doc">@doc</option>
+                <option value="@doc.FileName">@doc.FileName</option>
             }
 
         </select>
@@ -107,7 +107,7 @@
     private bool sendDocumentAnalysisBusy;
     private bool storeDocumentAnalysisBusy;
 
-    private List<string> docFileNames { get; set; } = new();
+    private List<DocumentInfo> storedDocumentInfo { get; set; } = new();
 
     private string selectedModel { get; set; } = _readModel;
 

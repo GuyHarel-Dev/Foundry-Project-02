@@ -24,7 +24,11 @@ public partial class DocumentAnalysis
     {
         if (firstRender)
         {
-            await GetDocumentNamesAsync();
+            var storeInfos = await GetAllDocumentInfosFromStoreAsync(logger);
+
+            if (storeInfos != null)
+                storedDocumentInfo = [.. storeInfos];
+
             StateHasChanged();
         }
     }
@@ -32,6 +36,14 @@ public partial class DocumentAnalysis
     private async Task OnDocumentSelected(ChangeEventArgs e)
     {
         documentSelectedName = e.Value?.ToString() ?? string.Empty;
+
+        var docInfo = await GetDocumentAnalysisByNameAsync(documentSelectedName);
+
+        if (docInfo != null)
+        {
+            documentExtractedText = docInfo.AnalysisResult.DocContent;
+            documentExtractedSections = docInfo.AnalysisResult.DocumentsFieldsContent;
+        }
     }
 
     private async Task OnAnalyzeDocument()
@@ -67,11 +79,11 @@ public partial class DocumentAnalysis
 
     }
 
-    private async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string docId)
+    private async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
     {
         try
         {
-            var result = await apiClient.GetAsync<DocumentAnalysisEntity>($"api/document/analysis/{docId}", logger);
+            var result = await apiClient.GetAsync<DocumentAnalysisEntity>($"api/document-analysis/analysis/{fileName}", logger);
 
             if (result is not null)
             {
@@ -102,25 +114,6 @@ public partial class DocumentAnalysis
     {
         sendDocumentAnalysisBusy = false;
         AddExecutionStep(executionStepTracer, $"Analysis completed for document {request.FileName} using model {request.ModelName}");
-    }
-
-    private async Task GetDocumentNamesAsync()
-    {
-        try
-        {
-            var result = await apiClient.GetAsync<IEnumerable<string>>("api/documents/names", logger);
-
-            if (result is not null)
-            {
-                docFileNames = result.Value!.ToList();
-            }
-
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error while getting document results from store.");
-        }
-
     }
 
     private void DisplayResponse(DocumentAnalysisResponseDto response)
