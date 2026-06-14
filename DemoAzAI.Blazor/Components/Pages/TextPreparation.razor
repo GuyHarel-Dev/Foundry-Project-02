@@ -37,12 +37,12 @@
         <div class="content-area">
             <div class="document-text-area">
                 <label for="DocumentAnalysisText">Text from document analysis:</label>
-                <textarea>@DocumentAnalysisText</textarea>
+                <textarea>@documentAnalysisText</textarea>
             </div>
 
             <div class="document-chunk-area">
                 <label>Text prepared for vectorization (chunking):</label>
-                <textarea>@DocumentAnalysisTextChunk</textarea>
+                <textarea>@documentAnalysisTextChunk</textarea>
 
                 <form @onsubmit="SendTextPreparationRequest">
 
@@ -71,10 +71,10 @@
 
     private List<DocumentAnalysisInfo> storedDocuments { get; set; } = new();
 
-    private string DocumentAnalysisText { get; set; } = string.Empty;
-    private string DocumentAnalysisTextChunk { get; set; } = string.Empty;
-    private string DocumentAnalysisTextChunkStatistics { get; set; } = string.Empty;
-    private string DocumentAnalysisTextChunkVectorized { get; set; } = string.Empty;
+    private string? documentAnalysisText { get; set; } = string.Empty;
+    private string documentAnalysisTextChunk { get; set; } = string.Empty;
+    private string documentAnalysisTextChunkStatistics { get; set; } = string.Empty;
+    private string documentAnalysisTextChunkVectorized { get; set; } = string.Empty;
 
     private static string TextToEmbedDefault = @"Cats are playful pets
 Dogs are loyal animals

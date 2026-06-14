@@ -5,6 +5,7 @@ using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
@@ -38,7 +39,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 getDocumentResultsFromStoreIsBusy = true;
 
-                var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisInfo>>("api/document/analysis/results", logger);
+                var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisInfo>>("api/document/analysis", logger);
 
                 if (result is not null)
                 {
@@ -65,8 +66,16 @@ namespace DemoAzAI.Blazor.Components.Pages
                 return;
             }
 
-            var doc = e.Value as DocumentAnalysisInfo;
-            var test = await GetDocumentAnalysisByIdAsync(doc.Id);
+            var docId = e.Value.ToString();
+
+            if (docId != null)
+            {
+                var doc = await GetDocumentAnalysisByIdAsync(docId);
+
+                documentAnalysisText = doc?.AnalysisResult.DocContent;
+
+            }
+
         }
 
         private async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string docId)
@@ -74,7 +83,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             try
             {
 
-                var result = await apiClient.GetAsync<DocumentAnalysisEntity>($"api/document/analysis/result/{docId}", logger);
+                var result = await apiClient.GetAsync<DocumentAnalysisEntity>($"api/document/analysis/{docId}", logger);
 
                 if (result is not null)
                 {
@@ -106,7 +115,7 @@ namespace DemoAzAI.Blazor.Components.Pages
                 var request = new ChatRequestDto()
                 {
                     SystemPrompt = "Just supply the text required, no dialog or explanation",
-                    Prompt = $"I need the following text to be prepared (chunked) for vectorisation:{DocumentAnalysisText}"
+                    Prompt = $"I need the following text to be prepared (chunked) for vectorisation:{documentAnalysisText}"
                 };
 
                 var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/sendprompt", request, logger);
@@ -115,11 +124,11 @@ namespace DemoAzAI.Blazor.Components.Pages
                 {
                     var response = result.Value;
 
-                    DocumentAnalysisTextChunk = response!.ChatResponse;
+                    documentAnalysisTextChunk = response!.ChatResponse;
 
                     if (response.ModelStatistics != null)
                     {
-                        DocumentAnalysisTextChunkStatistics = response.ModelStatistics.ToString();
+                        documentAnalysisTextChunkStatistics = response.ModelStatistics.ToString();
                     }
                 }
 
