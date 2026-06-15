@@ -1,7 +1,6 @@
 ﻿using DemoAzAI.Blazor.Services;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain.Entities;
 using Microsoft.AspNetCore.Components;
 using System.Text;
 

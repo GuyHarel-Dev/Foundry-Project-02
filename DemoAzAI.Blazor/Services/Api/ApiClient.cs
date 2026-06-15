@@ -38,7 +38,7 @@
         {
             var result = await HttpClientPostAsync<TRequest, TResponse>(apiRoute, request);
 
-            if (ApiClientResultValid(apiRoute, result, logger))
+            if (ApiClientResultValid(apiRoute, result, logger, errorMessages))
             {
                 return result;
             }

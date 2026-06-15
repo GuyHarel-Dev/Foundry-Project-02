@@ -13,7 +13,8 @@
 
 <PageDescription Title="Semantic Analysis"
                  Model="AI Model: text-embedding-3-small (OpenAI)"
-                 Description="Description: Generates semantic representations used for knowledge retrieval, similarity matching, and intelligent search.">
+                 Description="Description: Generates semantic representations used for knowledge retrieval, similarity matching, and intelligent search."
+                 PageLog="@GetPageBaseExecutionErrorsString()">
 </PageDescription>
 
 <div class="page-area">
@@ -34,16 +35,12 @@
         <label>Prepare document result text for vectorization:</label>
 
         <div class="content-area">
-            <div class="document-text-area">
-                <label for="DocumentAnalysisText">Text from document analysis:</label>
-                <textarea>@DocumentAnalysisText</textarea>
-            </div>
 
             <div class="document-chunk-area">
-                <label>Text prepared for vectorization (chunking):</label>
-                <textarea>@DocumentAnalysisTextChunk</textarea>
+                <label>Text prepared for vectorization:</label>
+                <textarea @bind="documentAnalysisTextChunk"></textarea>
 
-                <form @onsubmit="SendTextPreparationRequest">
+                <form @onsubmit="SendTextEmbeddingRequest">
 
                     <button type="submit" class="ask-button">
                         <span>Send text preparation request</span>
@@ -51,11 +48,11 @@
 
                     @if (sendTextPreparationRequestBusy)
                     {
-                        <LoadingPanel Message="Sending text preparation request to api..." />
+                        <LoadingPanel Message="Sending text embedding request to api..." />
                     }
                 </form>
-                <label>Vectorization request statistics:</label>
-                <textarea>@DocumentAnalysisTextChunkStatistics</textarea>
+@*                 <label>Vectorization request statistics:</label>
+                <textarea>@DocumentAnalysisTextChunkStatistics</textarea> *@
 
             </div>
 
@@ -66,7 +63,7 @@
 
     <div class="vectorize-document-text-area">
         <label>Vectorize text for cosinus similarity search</label>
-        <textarea>@DocumentAnalysisTextChunkVectorized</textarea>
+        <textarea>@documentAnalysisTextChunk</textarea>
 
         <form @onsubmit="SendTextEmbeddingRequest">
 
@@ -93,9 +90,10 @@
 
     private List<DocumentAnalysisEntity> storedDocuments { get; set; } = new();
 
-    private string DocumentAnalysisText { get; set; } = string.Empty;
-    private string DocumentAnalysisTextChunk { get; set; } = string.Empty;
-    private string DocumentAnalysisTextChunkStatistics { get; set; } = string.Empty;
-    private string DocumentAnalysisTextChunkVectorized { get; set; } = string.Empty;
+    private string documentAnalysisTextChunk { get; set; } = "abcd";
+    private string vectorizedText { get; set; } = string.Empty;
+
+    // private string DocumentAnalysisTextChunkStatistics { get; set; } = string.Empty;
+    // private string DocumentAnalysisTextChunkVectorized { get; set; } = string.Empty;
 
 }

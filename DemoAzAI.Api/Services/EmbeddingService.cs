@@ -48,12 +48,12 @@ namespace DemoAzAI.Api.Services
 
         public async Task<EmbeddingResponseDto> EmbedTextLinesAsync(EmbeddingRequestDto request, CancellationToken cancellationToken = default)
         {
-            var textLines = request.TextLines.ToArray();
+            var textLines = request.TextLines;
 
-            logger.LogInformation("Starting embedding generation for {Count} text lines.", textLines.Length);
+            logger.LogInformation("Starting embedding generation for {Count} text lines.", textLines.Count);
 
             ClientResult<OpenAIEmbeddingCollection> result = await embeddingClient
-                .GenerateEmbeddingsAsync(textLines, cancellationToken: cancellationToken);
+                .GenerateEmbeddingsAsync(request.TextLines, cancellationToken: cancellationToken);
 
             EmbeddingResponseDto response = new();
 
@@ -68,8 +68,6 @@ namespace DemoAzAI.Api.Services
                 response.TextEmbeddings.Add(embeddedChunk);
             }
 
-            //if (request.AddEmbeddingsToStore)
-            //    AddNewEmbeddingsToStore(response.TextEmbeddings);
 
             return response;
 

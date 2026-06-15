@@ -1,7 +1,5 @@
-﻿using DemoAzAI.Application.AI;
-using DemoAzAI.Contracts.Api.Requests;
+﻿using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Services.Interfaces;
 
