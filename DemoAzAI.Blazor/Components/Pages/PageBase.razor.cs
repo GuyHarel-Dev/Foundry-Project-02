@@ -1,7 +1,7 @@
-﻿using DemoAzAI.Application;
-using DemoAzAI.Blazor.Services.Api;
+﻿using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Components;
+using System.Text;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
@@ -10,7 +10,8 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         public ApiClient apiClient { get; set; } = default!;
 
-        public string executionSteps { get; set; } = string.Empty;
+        public List<string> PageBaseExecutionSteps { get; set; } = new();
+        public List<string> PageBaseExecutionErrors { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
@@ -22,41 +23,26 @@ namespace DemoAzAI.Blazor.Components.Pages
             await Task.Yield();
         }
 
-        public void AddExecutionError(IExecutionStepTracer executionStepTracer, string title)
+        public string GetPageBaseExecutionErrorsString()
         {
-            executionSteps = executionStepTracer.AddUiStep($"Error: {title}");
-
-        }
-        public void AddExecutionStep(IExecutionStepTracer executionStepTracer, string title)
-        {
-            executionSteps = executionStepTracer.AddUiStep(title);
-        }
-
-        public void LogExecutionError(ILogger logger, Exception ex, string title)
-        {
-            logger.LogError(ex, title);
-
-        }
-
-        public async Task<IEnumerable<DocumentInfo>?> GetAllDocumentInfosFromStoreAsync(ILogger logger)
-        {
-            try
+            var sb = new StringBuilder();
+            foreach (string msg in PageBaseExecutionErrors)
             {
-                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document-store", logger);
-
-                if (result is not null && result.Value is not null)
-                {
-                   return [.. result.Value];
-                }
-
+                sb.AppendLine(msg);
             }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error while getting document results from store.");
-            }
-
-            return null;
+            return sb.ToString();
         }
+
+        public void AddExecutionError(string title)
+        {
+            PageBaseExecutionErrors.Add($"{title}");
+
+        }
+        public void AddExecutionStep(string title)
+        {
+            PageBaseExecutionSteps.Add($"{title}");
+        }
+
 
     }
 }

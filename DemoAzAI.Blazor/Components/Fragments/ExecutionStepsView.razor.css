@@ -1,8 +1,0 @@
-﻿.log-container {
-}
-    .log-container textarea {
-        margin: 0;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        font-family: Consolas, monospace;
-    }

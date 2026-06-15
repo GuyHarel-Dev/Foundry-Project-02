@@ -1,8 +1,8 @@
 ﻿namespace DemoAzAI.Blazor.Services.Api
 {
-    public sealed class  ApiClient
+    public sealed class ApiClient
     {
-        public  string BaseClientUrl { get; } 
+        public string BaseClientUrl { get; }
 
         private readonly HttpClient httpClient;
 
@@ -12,11 +12,14 @@
             httpClient = http;
         }
 
-        public async Task<ApiClientResult<TResponse>?> GetAsync<TResponse>(string apiRoute, ILogger? logger = null)
+        public async Task<ApiClientResult<TResponse>?> GetAsync<TResponse>
+            (string apiRoute,
+            ILogger? logger = null,
+            List<string>? errorMessages = null)
         {
             var result = await HttpClientGetAsync<TResponse>(apiRoute);
 
-            if (ApiClientResultValid(apiRoute, result, logger))
+            if (ApiClientResultValid(apiRoute, result, logger, errorMessages))
             {
                 return result;
             }
@@ -26,7 +29,12 @@
         }
 
 
-        public async Task<ApiClientResult<TResponse>?> PostAsync<TRequest, TResponse>(string apiRoute, TRequest request, ILogger? logger = null)
+        public async Task<ApiClientResult<TResponse>?> PostAsync<TRequest, TResponse>
+            (string apiRoute,
+            TRequest request,
+            ILogger? logger = null,
+            List<string>? errorMessages = null
+            )
         {
             var result = await HttpClientPostAsync<TRequest, TResponse>(apiRoute, request);
 
@@ -38,33 +46,45 @@
             return null;
         }
 
-        private bool ApiClientResultValid<TResponse>(string apiRoute, ApiClientResult<TResponse> result, ILogger? logger = null)
+        private bool ApiClientResultValid<TResponse>
+            (string apiRoute,
+            ApiClientResult<TResponse>
+            result,
+            ILogger? logger = null,
+            List<string>? errorMessages = null)
         {
             if (result is null)
             {
-                if (logger != null)
-                    logger.LogError($"Api Get {apiRoute} returned no result");
+                LogError($"Api Get {apiRoute} returned no result", logger, errorMessages);
 
                 return false;
             }
 
             if (result.Value is null)
             {
-                if (logger != null)
-                    logger.LogError($"Api {apiRoute} error: {result.ErrorMessage}, status:{result.StatusCode}");
+                LogError($"Api {apiRoute} error: {result.ErrorMessage}, status:{result.StatusCode}", logger, errorMessages);
 
                 return false;
             }
 
             if (result.IsSuccess == false)
             {
-                if (logger != null)
-                    logger.LogError($"Api {apiRoute} returned error message {result.ErrorMessage}");
+                LogError($"Api {apiRoute} returned error message {result.ErrorMessage}", logger, errorMessages);
 
                 return false;
             }
 
             return true;
+        }
+
+        private void LogError(string message, ILogger? logger = null, List<string>? errorMessages = null)
+        {
+            if (logger != null)
+                logger.LogError(message);
+
+            if (errorMessages != null)
+                errorMessages.Add(message);
+
         }
 
         public async Task<ApiClientResult<TResponse>> HttpClientGetAsync<TResponse>(
@@ -98,6 +118,7 @@
                 }
                 var value = await response.Content.ReadFromJsonAsync<TResponse>(
                     cancellationToken: cancellationToken);
+
                 return ApiClientResult<TResponse>.Success(value);
             }
             catch (HttpRequestException ex)

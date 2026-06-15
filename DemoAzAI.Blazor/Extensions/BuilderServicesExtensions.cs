@@ -1,4 +1,5 @@
 ﻿using DemoAzAI.Application;
+using DemoAzAI.Blazor.Services;
 using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Blazor.Services.PageStateContainers;
 
@@ -22,19 +23,15 @@ namespace UI.Extensions
             return services;
         }
 
-        public static IServiceCollection AddApplicationStepTracer(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IExecutionStepTracer, ExecutionStepTracer>();
-
-            return services;
-        }
-
-        public static IServiceCollection AddPageStateContainer(this IServiceCollection services)
-        {
+            services.AddScoped<IDocumentService, DocumentService>();
             services.AddScoped<DocumentSelectionPageState>();
 
             return services;
         }
+
 
     }
 }

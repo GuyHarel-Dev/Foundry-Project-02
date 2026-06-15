@@ -1,4 +1,5 @@
 using DemoAzAI.Application;
+using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
@@ -10,8 +11,8 @@ namespace DemoAzAI.Blazor.Components.Pages
     public partial class TextPreparation
     {
 
-        [Inject]
-        private IExecutionStepTracer executionStepTracer { get; set; } = default!;
+        //[Inject]
+        //private IExecutionStepTracer executionStepTracer { get; set; } = default!;
 
         [Inject]
         ILogger<TextPreparation> logger { get; set; } = default!;
@@ -34,7 +35,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 getDocumentResultsFromStoreIsBusy = true;
 
-                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document/analysis", logger);
+                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document/analysis", logger, PageBaseExecutionErrors);
 
                 if (result is not null)
                 {
@@ -53,6 +54,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
 
         }
+
 
         private async Task OnDocumentSelected(ChangeEventArgs e)
         {

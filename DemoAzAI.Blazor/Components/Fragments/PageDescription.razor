@@ -1,4 +1,4 @@
-﻿<div class="page-area column_display">
+﻿<div class="page-area" >
 
     <div class="page-info ">
         <div class="title">
@@ -13,8 +13,10 @@
             <div>@Description</div>
         </div>
     </div>
-    <div class="@GetPageStateClass()">Page Status</div>
 
+    <div class="@GetPageLogClass()">
+        <textarea>@PageLog</textarea>
+    </div>
 </div>
 
 @code {
@@ -26,4 +28,6 @@
     public string Description { get; set; } = "Description";
     [Parameter]
     public string PageState { get; set; } = "Description";
+    [Parameter]
+    public string PageLog { get; set; } = string.Empty;
 }

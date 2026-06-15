@@ -1,5 +1,4 @@
-﻿using DemoAzAI.Application;
-using DemoAzAI.Blazor.Services.Api;
+﻿using DemoAzAI.Blazor.Services;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
@@ -15,16 +14,13 @@ public partial class DocumentAnalysis
     private ILogger<DocumentAnalysis> logger { get; set; } = default!;
 
     [Inject]
-    private ApiClient apiClient { get; set; } = default!;
-
-    [Inject]
-    private IExecutionStepTracer executionStepTracer { get; set; } = default!;
+    private IDocumentService documentService { get; set; } = default!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            var storeInfos = await GetAllDocumentInfosFromStoreAsync(logger);
+            var storeInfos = await documentService.GetAllDocumentInfosFromStoreAsync(logger, PageBaseExecutionErrors);
 
             if (storeInfos != null)
                 storedDocumentInfo = [.. storeInfos];
@@ -32,6 +28,7 @@ public partial class DocumentAnalysis
             StateHasChanged();
         }
     }
+
 
     private async Task OnDocumentSelected(ChangeEventArgs e)
     {
@@ -61,9 +58,11 @@ public partial class DocumentAnalysis
 
         try
         {
-            BeginAnalyseDocumentUiProcess(request);
+            sendDocumentAnalysisBusy = true;
 
-            var response = await apiClient.PostAsync<DocumentAnalysisRequestDto, DocumentAnalysisResponseDto>("api/document/analyze", request, logger);
+            var response = await apiClient.PostAsync<DocumentAnalysisRequestDto, DocumentAnalysisResponseDto>
+                ("api/document/analyze", 
+                request, logger, PageBaseExecutionErrors);
 
             if (response is not null && response.Value is not null)
             {
@@ -77,7 +76,7 @@ public partial class DocumentAnalysis
         }
         finally
         {
-            EndAnalyseDocumentUiProcess(request);
+            sendDocumentAnalysisBusy = false;
         }
 
     }
@@ -86,7 +85,9 @@ public partial class DocumentAnalysis
     {
         try
         {
-            var result = await apiClient.GetAsync<DocumentAnalysisEntity>($"api/document-analysis/analysis/{fileName}", logger);
+            var result = await apiClient.GetAsync<DocumentAnalysisEntity>
+                ($"api/document-analysis/analysis/{fileName}", 
+                logger, PageBaseExecutionErrors);
 
             if (result is not null)
             {
@@ -106,17 +107,6 @@ public partial class DocumentAnalysis
 
         return null;
 
-    }
-    private void BeginAnalyseDocumentUiProcess(DocumentAnalysisRequestDto request)
-    {
-        sendDocumentAnalysisBusy = true;
-        AddExecutionStep(executionStepTracer, $"Starting analysis for document {request.FileName} using model {request.ModelName}");
-    }
-
-    private void EndAnalyseDocumentUiProcess(DocumentAnalysisRequestDto request)
-    {
-        sendDocumentAnalysisBusy = false;
-        AddExecutionStep(executionStepTracer, $"Analysis completed for document {request.FileName} using model {request.ModelName}");
     }
 
     private void DisplayResponse(DocumentAnalysisResponseDto response)

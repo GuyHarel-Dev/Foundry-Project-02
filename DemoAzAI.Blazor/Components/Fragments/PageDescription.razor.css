@@ -9,11 +9,6 @@
     margin-bottom: 10px;
 }
 
-.column_display {
-    display: flex;
-    gap: 20px;
-}
-
 .page-area .page-info {
     width: 95%;
 }
@@ -22,11 +17,10 @@
     width: 5%;
 }
 
-    .page-error {
-        background-color: red;
-        border: 2px solid red;
+    .page-area .page-log-visible {
+        display: block;
     }
 
-    .page-ok {
-        background-color: green;
+    .page-area .page-log-invisible {
+        display:none;
     }

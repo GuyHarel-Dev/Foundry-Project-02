@@ -14,7 +14,9 @@
 
     <PageDescription Title="Document Analysis Page"
                      Model="Ai service: Document Intelligence / Form Recognizer (Microsoft Azure)"
-                     Description="Description: Intelligent document analysis service.">
+                     Description="Description: Intelligent document analysis service."
+                     PageLog="@GetPageBaseExecutionErrorsString()">
+        
     </PageDescription>
 
 </div>
@@ -73,7 +75,7 @@
     </div>
 
     <div class="execution-steps-area">
-        <ExecutionStepsView ExecutionSteps="@executionSteps"></ExecutionStepsView>
+@*         <ExecutionStepsView ExecutionSteps="@executionSteps"></ExecutionStepsView> *@
 
     </div>
 

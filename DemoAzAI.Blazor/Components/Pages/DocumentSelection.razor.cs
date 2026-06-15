@@ -1,5 +1,4 @@
-using DemoAzAI.Blazor.Services.Api;
-using DemoAzAI.Domain.Models;
+using DemoAzAI.Blazor.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages
@@ -10,11 +9,14 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         private ILogger<DocumentSelection> logger { get; set; } = default!;
 
+        [Inject]
+        private IDocumentService documentService { get; set; } = default!;
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
-                 var storeInfos = await GetAllDocumentInfosFromStoreAsync(logger);
+                 var storeInfos = await documentService.GetAllDocumentInfosFromStoreAsync(logger, PageBaseExecutionErrors);
 
                 if (storeInfos != null)
                     storedDocumentInfo = [.. storeInfos];
