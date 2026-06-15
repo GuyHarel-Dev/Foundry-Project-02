@@ -38,11 +38,14 @@ public partial class DocumentAnalysis
         documentExtractedText = string.Empty;
         documentExtractedSections = string.Empty;
 
-        if (docInfo != null)
+        if (docInfo is null)
         {
-            documentExtractedText = docInfo.DocumentAnalysisResult.DocContent;
-            documentExtractedSections = docInfo.DocumentAnalysisResult.DocumentsFieldsContent;
+            pageLogger.Add($"Document selected: {documentSelectedName} was not found in the document result service. Start a document analysis to add to the repository");
+            return;
         }
+
+        documentExtractedText = docInfo.DocumentAnalysisResult?.DocContent;
+        documentExtractedSections = docInfo.DocumentAnalysisResult?.DocumentsFieldsContent;
     }
 
     private async Task OnAnalyzeDocument()
@@ -60,7 +63,7 @@ public partial class DocumentAnalysis
             sendDocumentAnalysisBusy = true;
 
             var response = await apiClient.PostAsync<DocumentAnalysisRequestDto, DocumentAnalysisResponseDto>
-                ("api/document/analyze", 
+                ("api/document-analysis", 
                 request, logger, pageLogger);
 
             if (response is not null && response.Value is not null)

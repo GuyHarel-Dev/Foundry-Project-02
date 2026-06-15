@@ -116,7 +116,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             });
         }
 
-        public async Task<bool> DocumentAnalysisExistsAsync(string BytesHash)
+        public async Task<bool> DocumentAnalysisExistsAsync(string fileName)
         {
             EnsureInitialized();
 
@@ -125,12 +125,12 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             const string sql = """
                 SELECT COUNT(1)
                 FROM DocumentAnalysis
-                WHERE BytesHash = @BytesHash;
+                WHERE FileName = @fileName;
                 """;
 
             var count = await connection.ExecuteScalarAsync<long>(
                 sql,
-                new { BytesHash = BytesHash });
+                new { fileName = fileName });
 
             return count > 0;
         }

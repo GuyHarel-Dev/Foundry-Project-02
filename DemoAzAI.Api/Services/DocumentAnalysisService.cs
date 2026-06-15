@@ -30,17 +30,12 @@ namespace DemoAzAI.Api.Services
 
         public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
         {
-            var doc = await documentAnalysisRepository.GetDocumentAnalysisByNameAsync(fileName);
+            var exists = await documentAnalysisRepository.DocumentAnalysisExistsAsync(fileName);
 
-            if (doc == null)
-            {
-                var msg = $"fileName not found: {fileName}";
-                logger.LogError(msg);
-                throw new ArgumentNullException(msg);
-            }
+            if (!exists)
+                LogAndThrow<ArgumentException>($"fileName not found: {fileName}");
 
-
-            return doc;
+            return await documentAnalysisRepository.GetDocumentAnalysisByNameAsync(fileName);
         }
 
         public async Task<IEnumerable<DocumentInfo>> GetAllDocumentAnalysisAsync()
@@ -88,8 +83,16 @@ namespace DemoAzAI.Api.Services
 
         }
 
+        private async Task<bool> DocumentAnalysisExistsAsync(string fileName)
+        {
+            return await documentAnalysisRepository.DocumentAnalysisExistsAsync(fileName);
+        }
 
-
+        private void LogAndThrow<T>(string message) where T : Exception 
+        {
+            logger.LogError(message);
+            throw new Exception(message);
+        }
         private async Task<AnalyzeDocumentOptions> CreateAnalyzeDocumentOptions(DocumentAnalysisRequestDto request)
         {
             var modelName = request.ModelName;
