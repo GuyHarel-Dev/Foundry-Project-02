@@ -16,7 +16,7 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             if (firstRender)
             {
-                 var storeInfos = await documentService.GetAllDocumentInfosFromStoreAsync(logger, PageBaseExecutionErrors);
+                 var storeInfos = await documentService.GetAllDocumentInfosFromStoreAsync(logger, pageLogger);
 
                 if (storeInfos != null)
                     storedDocumentInfo = [.. storeInfos];

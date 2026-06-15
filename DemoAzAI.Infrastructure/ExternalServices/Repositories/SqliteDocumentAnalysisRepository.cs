@@ -13,6 +13,42 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
         private bool initialized = false;
 
 
+        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
+        {
+            EnsureInitialized();
+
+            using var connection =
+                new SqliteConnection(connectionString);
+
+            string sql = """
+                SELECT
+                    Id,
+                    FileName,
+                    Hash,
+                    CreatedAt,
+                    AnalysisResultJson
+                FROM DocumentAnalysis
+                WHERE Id = @IdParam
+                """;
+
+            var row = await connection.QuerySingleOrDefaultAsync<DocumentAnalysisEntity>(
+                sql,
+                new { IdParam = id });
+
+            if (row == null)
+                return null;
+
+            return new DocumentAnalysisEntity
+            {
+                Id = row.Id,
+                FileName = row.FileName,
+                Hash = row.Hash,
+                CreatedAt = row.CreatedAt,
+                AnalysisResult =
+                    JsonSerializer.Deserialize<DocumentAnalysisResult>(row.AnalysisResultJson)!
+            };
+
+        }
         public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
         {
             EnsureInitialized();

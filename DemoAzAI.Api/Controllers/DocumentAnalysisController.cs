@@ -24,14 +24,21 @@ namespace DemoAzAI.Api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("all-analysis")]
+        [HttpGet()]
         public async Task<IEnumerable<DocumentInfo>> GetDocumentAnalysisAsync()
         {
             return await documentAnalysisService.GetAllDocumentAnalysisAsync();
         }
 
-        [HttpGet("analysis/{fileName}")]
-        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string fileName)
+
+        [HttpGet("id/{id}")]
+        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
+        {
+            return await documentAnalysisService.GetDocumentAnalysisByIdAsync(id);
+        }
+
+        [HttpGet("filename/{fileName}")]
+        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
         {
             return await documentAnalysisService.GetDocumentAnalysisByNameAsync(fileName);
         }

@@ -22,6 +22,12 @@ namespace DemoAzAI.Api.Services
         : IDocumentAnalysisService
     {
 
+        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
+        {
+            return await documentAnalysisRepository.GetDocumentAnalysisByIdAsync(id);
+
+        }
+
         public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
         {
             return await documentAnalysisRepository.GetDocumentAnalysisByNameAsync(fileName);

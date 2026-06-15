@@ -20,7 +20,7 @@ public partial class DocumentAnalysis
     {
         if (firstRender)
         {
-            var storeInfos = await documentService.GetAllDocumentInfosFromStoreAsync(logger, PageBaseExecutionErrors);
+            var storeInfos = await documentService.GetAllDocumentInfosFromStoreAsync(logger, pageLogger);
 
             if (storeInfos != null)
                 storedDocumentInfo = [.. storeInfos];
@@ -34,7 +34,7 @@ public partial class DocumentAnalysis
     {
         documentSelectedName = e.Value?.ToString() ?? string.Empty;
 
-        var docInfo = await GetDocumentAnalysisByNameAsync(documentSelectedName);
+        var docInfo = await documentService.GetDocumentAnalysisByNameAsync(documentSelectedName, logger, pageLogger);
 
         documentExtractedText = string.Empty;
         documentExtractedSections = string.Empty;
@@ -62,7 +62,7 @@ public partial class DocumentAnalysis
 
             var response = await apiClient.PostAsync<DocumentAnalysisRequestDto, DocumentAnalysisResponseDto>
                 ("api/document/analyze", 
-                request, logger, PageBaseExecutionErrors);
+                request, logger, pageLogger);
 
             if (response is not null && response.Value is not null)
             {
@@ -81,33 +81,7 @@ public partial class DocumentAnalysis
 
     }
 
-    private async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
-    {
-        try
-        {
-            var result = await apiClient.GetAsync<DocumentAnalysisEntity>
-                ($"api/document-analysis/analysis/{fileName}", 
-                logger, PageBaseExecutionErrors);
 
-            if (result is not null)
-            {
-                var response = result.Value;
-
-                return response;
-            }
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error while getting document analysis from store.");
-        }
-        finally
-        {
-
-        }
-
-        return null;
-
-    }
 
     private void DisplayResponse(DocumentAnalysisResponseDto response)
     {

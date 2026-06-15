@@ -10,6 +10,7 @@ namespace DemoAzAI.Api.Services.Interfaces
         Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto doc, CancellationToken cancellationToken = default);
         Task<IEnumerable<DocumentInfo>> GetAllDocumentAnalysisAsync();
 
-        Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string id);
+        Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName);
+        Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id);
     }
 }

@@ -11,7 +11,7 @@ namespace DemoAzAI.Blazor.Components.Pages
         public ApiClient apiClient { get; set; } = default!;
 
         public List<string> PageBaseExecutionSteps { get; set; } = new();
-        public List<string> PageBaseExecutionErrors { get; set; } = new();
+        public List<string> pageLogger { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
@@ -26,7 +26,7 @@ namespace DemoAzAI.Blazor.Components.Pages
         public string GetPageBaseExecutionErrorsString()
         {
             var sb = new StringBuilder();
-            foreach (string msg in PageBaseExecutionErrors)
+            foreach (string msg in pageLogger)
             {
                 sb.AppendLine(msg);
             }
@@ -35,7 +35,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         public void AddExecutionError(string title)
         {
-            PageBaseExecutionErrors.Add($"{title}");
+            pageLogger.Add($"{title}");
 
         }
         public void AddExecutionStep(string title)

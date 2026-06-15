@@ -35,7 +35,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 getDocumentResultsFromStoreIsBusy = true;
 
-                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document/analysis", logger, PageBaseExecutionErrors);
+                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document-analysis", logger, pageLogger);
 
                 if (result is not null)
                 {
@@ -79,7 +79,7 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             try
             {
-                var result = await apiClient.GetAsync<DocumentAnalysisEntity>($"api/document/analysis/{docId}", logger);
+                var result = await apiClient.GetAsync<DocumentAnalysisEntity>($"api/document-analysis/id/{docId}", logger, pageLogger);
 
                 if (result is not null)
                 {
