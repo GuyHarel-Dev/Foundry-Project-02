@@ -40,8 +40,8 @@ public partial class DocumentAnalysis
 
         if (docInfo != null)
         {
-            documentExtractedText = docInfo.AnalysisResult.DocContent;
-            documentExtractedSections = docInfo.AnalysisResult.DocumentsFieldsContent;
+            documentExtractedText = docInfo.DocumentAnalysisResult.DocContent;
+            documentExtractedSections = docInfo.DocumentAnalysisResult.DocumentsFieldsContent;
         }
     }
 

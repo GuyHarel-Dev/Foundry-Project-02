@@ -69,7 +69,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             {
                 var doc = await GetDocumentAnalysisByIdAsync(docId);
 
-                documentAnalysisText = doc?.AnalysisResult.DocContent;
+                documentAnalysisText = doc?.DocumentAnalysisResult.DocContent;
 
             }
 

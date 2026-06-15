@@ -6,7 +6,7 @@ using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
-using DemoAzAI.Infrastructure.ExternalServices.Repositories;
+using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using DemoAzAI.Infrastructure.ExternalServices.Stores;
 using System.Text;
 using System.Text.Json;
@@ -30,8 +30,17 @@ namespace DemoAzAI.Api.Services
 
         public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
         {
-            return await documentAnalysisRepository.GetDocumentAnalysisByNameAsync(fileName);
+            var doc = await documentAnalysisRepository.GetDocumentAnalysisByNameAsync(fileName);
 
+            if (doc == null)
+            {
+                var msg = $"fileName not found: {fileName}";
+                logger.LogError(msg);
+                throw new ArgumentNullException(msg);
+            }
+
+
+            return doc;
         }
 
         public async Task<IEnumerable<DocumentInfo>> GetAllDocumentAnalysisAsync()

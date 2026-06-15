@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
+using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using Microsoft.Data.Sqlite;
 using System.Text.Json;
 
@@ -8,11 +9,14 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 {
     public class SqliteDocumentAnalysisRepository : IDocumentAnalysisRepository
     {
-        private readonly string connectionString = "Data Source=document_analysis.db";
+        private readonly string connectionString = string.Empty;
 
         private bool initialized = false;
 
-
+        public SqliteDocumentAnalysisRepository(string repositoryPath)
+        {
+            connectionString = $"Data Source={repositoryPath}/document_analysis.db";
+        }
         public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
         {
             EnsureInitialized();
@@ -24,7 +28,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 SELECT
                     Id,
                     FileName,
-                    Hash,
+                    BytesHash,
                     CreatedAt,
                     AnalysisResultJson
                 FROM DocumentAnalysis
@@ -38,15 +42,17 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             if (row == null)
                 return null;
 
-            return new DocumentAnalysisEntity
+            var doc =  new DocumentAnalysisEntity
             {
                 Id = row.Id,
                 FileName = row.FileName,
-                Hash = row.Hash,
+                BytesHash = row.BytesHash,
                 CreatedAt = row.CreatedAt,
-                AnalysisResult =
-                    JsonSerializer.Deserialize<DocumentAnalysisResult>(row.AnalysisResultJson)!
+                DocumentAnalysisResultJson = row.DocumentAnalysisResultJson,
+                DocumentAnalysisResult = JsonSerializer.Deserialize<DocumentAnalysisResult>(row.DocumentAnalysisResultJson)
             };
+
+            return doc;
 
         }
         public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
@@ -60,7 +66,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 SELECT
                     Id,
                     FileName,
-                    Hash,
+                    BytesHash,
                     CreatedAt,
                     AnalysisResultJson
                 FROM DocumentAnalysis
@@ -78,10 +84,10 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             {
                 Id = row.Id,
                 FileName = row.FileName,
-                Hash = row.Hash,
+                BytesHash = row.BytesHash,
                 CreatedAt = row.CreatedAt,
-                AnalysisResult =
-                    JsonSerializer.Deserialize<DocumentAnalysisResult>(row.AnalysisResultJson)!
+                DocumentAnalysisResult =
+                    JsonSerializer.Deserialize<DocumentAnalysisResult>(row.DocumentAnalysisResultJson)!
             };
         }
 
@@ -110,7 +116,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             });
         }
 
-        public async Task<bool> DocumentAnalysisExistsAsync(string hash)
+        public async Task<bool> DocumentAnalysisExistsAsync(string BytesHash)
         {
             EnsureInitialized();
 
@@ -119,12 +125,12 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             const string sql = """
                 SELECT COUNT(1)
                 FROM DocumentAnalysis
-                WHERE Hash = @Hash;
+                WHERE BytesHash = @BytesHash;
                 """;
 
             var count = await connection.ExecuteScalarAsync<long>(
                 sql,
-                new { Hash = hash });
+                new { BytesHash = BytesHash });
 
             return count > 0;
         }
@@ -141,7 +147,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 CREATE TABLE IF NOT EXISTS DocumentAnalysis (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     FileName TEXT NOT NULL UNIQUE,
-                    Hash TEXT NOT NULL UNIQUE,
+                    BytesHash TEXT NOT NULL UNIQUE,
                     AnalysisResultJson TEXT NOT NULL,
                     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
                 );
@@ -160,9 +166,9 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 
             string sql = """
                     INSERT INTO DocumentAnalysis
-                    (FileName, Hash, AnalysisResultJson, CreatedAt)
+                    (FileName, BytesHash, AnalysisResultJson, CreatedAt)
                     VALUES
-                    (@FileName, @Hash, @AnalysisResultJson, @CreatedAt);
+                    (@FileName, @BytesHash, @AnalysisResultJson, @CreatedAt);
                     """;
 
             var status = await connection.ExecuteAsync(
@@ -170,7 +176,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 new
                 {
                     FileName = fileName,
-                    Hash = bytesHash,
+                    BytesHash = bytesHash,
                     AnalysisResultJson = JsonSerializer.Serialize(result),
                     CreatedAt = DateTime.UtcNow
                 });

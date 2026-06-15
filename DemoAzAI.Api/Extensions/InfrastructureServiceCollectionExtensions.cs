@@ -1,15 +1,23 @@
 ﻿using DemoAzAI.Infrastructure.ExternalServices.Repositories;
+using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using DemoAzAI.Infrastructure.ExternalServices.Stores;
-using WebApi.Services.Interfaces;
 
 namespace WebApi.Extensions
 {
     public static class InfrastructureServiceCollectionExtensions
     {
-        public static IServiceCollection AddStoreServices(
-            this IServiceCollection services)
+        public static IServiceCollection AddRepositoryServices(this IServiceCollection services, IConfiguration config)
         {
-            services.AddSingleton<IDocumentAnalysisRepository, SqliteDocumentAnalysisRepository>();
+            var repositoryPath = config["DemoAzAI:LocalRepositoryPath"]
+                ?? throw new InvalidOperationException("config: DemoAzAI:LocalRepositoryPath not configured");
+
+            services.AddSingleton(sp =>
+            {
+                var repositoryService = new SqliteDocumentAnalysisRepository(repositoryPath);
+                return repositoryService as IDocumentAnalysisRepository;
+
+            });
+
             services.AddSingleton<IDocumentRepository, SqliteDocumentRepository>();
 
             return services;

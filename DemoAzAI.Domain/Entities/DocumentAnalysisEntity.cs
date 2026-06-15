@@ -2,17 +2,11 @@
 
 namespace DemoAzAI.Domain.Entities
 {
-    public class DocumentAnalysisEntity
+    public class DocumentAnalysisEntity : DocumentEntity
     {
-        public string Id { get; set; } = string.Empty;
+        public DocumentAnalysisResult? DocumentAnalysisResult { get; set; } = default!;
 
-        public string Hash { get; set; } = string.Empty;
-        public string FileName { get; set; } = string.Empty;
-
-        public DateTime CreatedAt { get; set; }
-
-        public string AnalysisResultJson { get; set; } = string.Empty;
-        public DocumentAnalysisResult AnalysisResult { get; set; } = default!;
+        public string DocumentAnalysisResultJson { get; set; } = string.Empty;
 
         public override string ToString()
         {

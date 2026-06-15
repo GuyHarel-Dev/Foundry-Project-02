@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using DemoAzAI.Domain.Entities;
+using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using Microsoft.Data.Sqlite;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
@@ -30,7 +31,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             initialized = true;
         }
 
-        public async Task<bool> SaveAsync(StoreDocument document)
+        public async Task<bool> SaveAsync(DocumentEntity document)
         {
             using var connection = new SqliteConnection(connectionString);
 
@@ -61,7 +62,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             return rows > 0;
         }
 
-        public async Task<List<StoreDocument>> GetAllDocuments()
+        public async Task<List<DocumentEntity>> GetAllDocuments()
         {
             throw new NotImplementedException();
         }

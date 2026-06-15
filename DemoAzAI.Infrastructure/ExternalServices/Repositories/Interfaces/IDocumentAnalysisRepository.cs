@@ -1,7 +1,7 @@
 ﻿using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 
-namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
+namespace DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces
 {
     public interface IDocumentAnalysisRepository
     {
