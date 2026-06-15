@@ -109,8 +109,8 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 var request = new ChatRequestDto()
                 {
-                    SystemPrompt = "Just supply the text required, no dialog or explanation",
-                    Prompt = $"I need the following text to be prepared (chunked) for vectorisation:{documentAnalysisText}"
+                    SystemPrompt = "You are a text chunking service. You analyse the given prompt and extract the semantically relevant name and value pairs.Just supply the answer, simple text line, no json, no dialog or explanation",
+                    Prompt = $"{documentAnalysisText}"
                 };
 
                 var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/prompt/response", request, logger);
