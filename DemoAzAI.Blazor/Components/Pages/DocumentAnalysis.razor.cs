@@ -35,14 +35,13 @@ public partial class DocumentAnalysis
 
         var response = await documentService.GetDocumentAnalysisByNameAsync(documentSelectedName, logger, pageLogger);
 
-        if (response is null)
+        if (response?.DocumentAnalysisEntity is null)
         {
             pageLogger.Add($"Document selected: {documentSelectedName} was not found in the document result service. Start a document analysis to add to the repository");
             return;
         }
 
-        documentExtractedText = response.DocumentAnalysisEntity?.DocumentAnalysisResult?.DocContent;
-        documentExtractedSections = response.DocumentAnalysisEntity?.DocumentAnalysisResult?.DocumentsFieldsContent;
+        DisplayResponse(response);
     }
 
     private async Task OnAnalyzeDocument()
@@ -84,6 +83,8 @@ public partial class DocumentAnalysis
 
     private void DisplayResponse(DocumentAnalysisResponseDto response)
     {
+        documentExtractedText = response.DocumentAnalysisEntity?.DocumentAnalysisResult?.DocContent;
+
         var entity = response.DocumentAnalysisEntity;
 
         if (entity is null || entity.DocumentAnalysisResult is null)

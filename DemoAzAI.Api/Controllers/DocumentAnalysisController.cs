@@ -4,6 +4,7 @@ using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using static Dapper.SqlMapper;
 
 namespace DemoAzAI.Api.Controllers 
 {
@@ -18,9 +19,13 @@ namespace DemoAzAI.Api.Controllers
         public async Task<ActionResult<DocumentAnalysisResponseDto>> AnalyzeDocumentAsync(
             [FromBody] DocumentAnalysisRequestDto request)
         {
-            var response = await documentAnalysisService.AnalyzeDocumentAsync(request.ModelName, request.FileName, request.SaveToStore);
+            var entity = await documentAnalysisService.AnalyzeDocumentAsync(request.ModelName, request.FileName, request.SaveToStore);
 
-            return Ok(response);
+            return Ok(new DocumentAnalysisResponseDto
+            {
+                DocumentAnalysisEntity = entity,
+
+            });
         }
 
         [HttpGet()]
