@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DemoAzAI.Api.Controllers 
 {
-    [Route("api/document-analysis")]
+    [Route("api/document")]
     [ApiController]
-    public class DocumentAnalysisController (
+    public class DocumentController (
             IDocumentAnalysisService documentAnalysisService
         ) : ControllerBase
     {
 
-        [HttpPost()]
+        [HttpPost("analysis")]
         public async Task<ActionResult<DocumentAnalysisResponseDto>> AnalyzeDocumentAsync(
             [FromBody] DocumentAnalysisRequestDto request)
         {
@@ -26,14 +26,14 @@ namespace DemoAzAI.Api.Controllers
             });
         }
 
-        [HttpGet()]
+        [HttpGet("analysis")]
         public async Task<IEnumerable<DocumentInfo>> GetDocumentAnalysisAsync()
         {
             return await documentAnalysisService.GetAllDocumentAnalysisAsync();
         }
 
 
-        [HttpGet("id/{id}")]
+        [HttpGet("analysis/id/{id}")]
         public async Task<DocumentAnalysisResponseDto?> GetDocumentAnalysisByIdAsync(string id)
         {
             var entity = await documentAnalysisService.GetDocumentAnalysisByIdAsync(id);
@@ -44,7 +44,7 @@ namespace DemoAzAI.Api.Controllers
             };
         }
 
-        [HttpGet("filename/{fileName}")]
+        [HttpGet("analysis/filename/{fileName}")]
         public async Task<DocumentAnalysisResponseDto?> GetDocumentAnalysisByNameAsync(string fileName)
         {
             var entity = await documentAnalysisService.GetDocumentAnalysisByNameAsync(fileName);

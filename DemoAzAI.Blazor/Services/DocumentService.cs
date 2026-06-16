@@ -35,7 +35,7 @@ namespace DemoAzAI.Blazor.Services
             try
             {
                 var result = await apiClient.GetAsync<DocumentAnalysisResponseDto>
-                    ($"api/document-analysis/filename/{fileName}",
+                    ($"api/document/analysis/filename/{fileName}",
                     logger, pageLogger);
 
                 if (result?.Value != null)

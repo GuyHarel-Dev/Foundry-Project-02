@@ -60,22 +60,13 @@
 
             <div class="display-knowledge">
                 <label>Knowledge groups (chunks) extracted:</label>
-
                 <textarea>@documentKnowledgeChunks</textarea>
+                <label>Knowledge extraction statistics:</label>
+                <textarea>@documentKnowledgeChunksStatistics</textarea>
             </div>
 
         </div>
 
-        @*         <div class="content-area">
-
-            <div class="document-chunk-area">
-
-
-
-
-            </div>
-
-        </div> *@
     </div>
 
 </div>
@@ -83,15 +74,12 @@
 @code {
 
     private bool sendKnowledgeExtractionRequestBusy { get; set; } = false;
-    // private bool sendTextEmbeddingRequestBusy { get; set; } = false;
-    // private bool getDocumentResultsFromStoreIsBusy { get; set; } = false;
 
     private List<DocumentInfo> storedDocuments { get; set; } = new();
 
     private string? documentText { get; set; } = string.Empty;
     private string? documentKnowledgeChunks { get; set; } = string.Empty;
     private string? documentKnowledgeChunksStatistics { get; set; } = string.Empty;
-    // private string? documentTextChunkVectorized { get; set; } = string.Empty;
 
     private bool saveKnowledgeChunksToStore { get; set; } = false;
 

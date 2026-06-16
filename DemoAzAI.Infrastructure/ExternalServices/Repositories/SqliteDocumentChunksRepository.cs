@@ -5,10 +5,16 @@ using Microsoft.Data.Sqlite;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 {
-    public class SqliteDocumentChunkingRepository : IDocumentRepository
+    public class SqliteDocumentChunksRepository : IDocumentChunksRepository
     {
-        private readonly string connectionString = "Data Source=document.db";
-        private bool initialized;
+        private readonly string connectionString = string.Empty;
+
+        private bool initialized = false;
+
+        public SqliteDocumentChunksRepository(string repositoryPath)
+        {
+            connectionString = $"Data Source={repositoryPath}/document_chunks.db";
+        }
 
         private void EnsureInitialized()
         {
@@ -19,11 +25,10 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 new SqliteConnection(connectionString);
 
             connection.Execute("""
-                CREATE TABLE IF NOT EXISTS DocumentAnalysis (
+                CREATE TABLE IF NOT EXISTS DocumentChunks (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     FileName TEXT NOT NULL UNIQUE,
-                    Hash TEXT NOT NULL UNIQUE,
-                    AnalysisResultJson TEXT NOT NULL,
+                    Chunks TEXT NOT NULL UNIQUE,
                     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
                 );
                 """);
@@ -31,28 +36,26 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             initialized = true;
         }
 
-        public async Task<bool> SaveAsync(DocumentEntity document)
+        public async Task<bool> SaveAsync(DocumentChunkEntity document)
         {
             using var connection = new SqliteConnection(connectionString);
 
+            EnsureInitialized();
+
             var rows = await connection.ExecuteAsync(
                 """
-            INSERT INTO Documents
+            INSERT INTO DocumentChunks
             (
                 Id,
                 FileName,
-                DisplayName,
-                FileType,
-                RelativePath,
+                Chunks,
                 CreatedUtc
             )
             VALUES
             (
                 @Id,
                 @FileName,
-                @DisplayName,
-                @FileType,
-                @RelativePath,
+                @Chunks,
                 datetime('now')
             )
             """,
@@ -62,7 +65,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             return rows > 0;
         }
 
-        public async Task<List<DocumentEntity>> GetAllDocuments()
+        public async Task<List<DocumentChunkEntity>> GetDocumentChunksAsync(string fileName)
         {
             throw new NotImplementedException();
         }

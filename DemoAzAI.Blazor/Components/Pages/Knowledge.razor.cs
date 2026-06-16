@@ -33,7 +33,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 sendKnowledgeExtractionRequestBusy = true;
 
-                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document-analysis", logger, pageLogger);
+                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document/analysis", logger, pageLogger);
 
                 if (result is not null)
                 {
@@ -77,7 +77,7 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             try
             {
-                var result = await apiClient.GetAsync<DocumentAnalysisResponseDto>($"api/document-analysis/id/{docId}", logger, pageLogger);
+                var result = await apiClient.GetAsync<DocumentAnalysisResponseDto>($"api/document/analysis/id/{docId}", logger, pageLogger);
                 
                 return result?.Value?.DocumentAnalysisEntity;
             }
@@ -99,7 +99,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             {
                 sendKnowledgeExtractionRequestBusy = true;
 
-                var request = new ChatRequestDto()
+                var request = new DocumentKnowledgeRequestDto()
                 {
                     SystemPrompt = """
                     You are a text chunking service. 
@@ -108,13 +108,14 @@ namespace DemoAzAI.Blazor.Components.Pages
                     Just supply the answer, simple text line, no json, no dialog or explanation
                     """,
 
-                    Prompt = $"{documentText}"
+                    DocumentText = $"{documentText}",
+                    SaveToStore = saveKnowledgeChunksToStore
                 };
 
-                var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/prompt/response", request, logger);
+                //var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/prompt/response", request, logger);
 
-                documentKnowledgeChunks = result?.Value?.ChatResponse;
-                documentKnowledgeChunksStatistics = result?.Value?.ModelStatistics?.ToString();
+                //documentKnowledgeChunks = result?.Value?.ChatResponse;
+                //documentKnowledgeChunksStatistics = result?.Value?.ModelStatistics?.ToString();
 
                 if (documentKnowledgeChunks != null && saveKnowledgeChunksToStore)
                 {
