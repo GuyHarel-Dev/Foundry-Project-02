@@ -16,7 +16,7 @@ namespace DemoAzAI.Api.Controllers
         [HttpPost("prompt/response")]
         public async Task<ActionResult<ChatResponseDto>> SendPrompt([FromBody] ChatRequestDto request)
         {
-             if (string.IsNullOrWhiteSpace(request.Prompt))
+            if (string.IsNullOrWhiteSpace(request.Prompt))
             {
                 return BadRequest("Prompt text cannot be empty.");
             }

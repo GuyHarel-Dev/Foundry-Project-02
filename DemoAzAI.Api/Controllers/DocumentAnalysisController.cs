@@ -1,10 +1,8 @@
 ﻿using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using static Dapper.SqlMapper;
 
 namespace DemoAzAI.Api.Controllers 
 {

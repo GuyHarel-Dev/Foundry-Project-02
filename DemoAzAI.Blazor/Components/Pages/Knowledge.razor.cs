@@ -1,3 +1,4 @@
+using Azure;
 using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
@@ -8,14 +9,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
-    public partial class TextPreparation
+    public partial class Knowledge
     {
 
-        //[Inject]
-        //private IExecutionStepTracer executionStepTracer { get; set; } = default!;
-
         [Inject]
-        ILogger<TextPreparation> logger { get; set; } = default!;
+        ILogger<Knowledge> logger { get; set; } = default!;
 
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -67,9 +65,9 @@ namespace DemoAzAI.Blazor.Components.Pages
 
             if (docId != null)
             {
-                var doc = await GetDocumentAnalysisByIdAsync(docId);
+                var entity = await GetDocumentAnalysisByIdAsync(docId);
 
-                documentAnalysisText = doc?.DocumentAnalysisResult.DocContent;
+                documentText = entity?.DocumentAnalysisResult?.DocContent;
 
             }
 
@@ -79,14 +77,9 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             try
             {
-                var result = await apiClient.GetAsync<DocumentAnalysisEntity>($"api/document-analysis/id/{docId}", logger, pageLogger);
-
-                if (result is not null)
-                {
-                    var response = result.Value;
-
-                    return response;
-                }
+                var result = await apiClient.GetAsync<DocumentAnalysisResponseDto>($"api/document-analysis/id/{docId}", logger, pageLogger);
+                
+                return result?.Value?.DocumentAnalysisEntity;
             }
             catch (Exception ex)
             {
@@ -104,27 +97,28 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             try
             {
-
                 sendTextPreparationRequestBusy = true;
 
                 var request = new ChatRequestDto()
                 {
-                    SystemPrompt = "You are a text chunking service. You analyse the given prompt and extract the semantically relevant name and value pairs.Just supply the answer, simple text line, no json, no dialog or explanation",
-                    Prompt = $"{documentAnalysisText}"
+                    SystemPrompt = """
+                    You are a text chunking service. 
+                    You analyse the given prompt and extract the semantically relevant name and value pairs.
+                    Each name and value pair separated by a colon, on a separe line.
+                    Just supply the answer, simple text line, no json, no dialog or explanation
+                    """,
+
+                    Prompt = $"{documentText}"
                 };
 
                 var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/prompt/response", request, logger);
 
-                if (result is not null)
+                documentTextChunk = result?.Value?.ChatResponse;
+                documentTextChunkStatistics = result?.Value?.ModelStatistics?.ToString();
+
+                if (documentTextChunk != null && saveDocumentTextChunkToStore)
                 {
-                    var response = result.Value;
-
-                    documentAnalysisTextChunk = response!.ChatResponse;
-
-                    if (response.ModelStatistics != null)
-                    {
-                        documentAnalysisTextChunkStatistics = response.ModelStatistics.ToString();
-                    }
+                    await SaveDocumentTextChunkToStore(documentTextChunk);
                 }
 
             }
@@ -139,7 +133,10 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         }
 
+        private async Task SaveDocumentTextChunkToStore(string documentTextChunk)
+        {
 
+        }
 
 
         private async Task EmbedTextLines()

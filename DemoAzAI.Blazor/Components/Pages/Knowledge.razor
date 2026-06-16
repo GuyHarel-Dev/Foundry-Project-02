@@ -1,4 +1,4 @@
-﻿@page "/text-preparation"
+﻿@page "/knowledge"
 @inherits BasePage
 @rendermode InteractiveServer
 
@@ -39,12 +39,10 @@
         <div class="content-area">
             <div class="document-text-area">
                 <label for="DocumentAnalysisText">Text from document analysis:</label>
-                <textarea>@documentAnalysisText</textarea>
+                <textarea>@documentText</textarea>
             </div>
 
             <div class="document-chunk-area">
-                <label>Text prepared for vectorization (chunking):</label>
-                <textarea>@documentAnalysisTextChunk</textarea>
 
                 <form @onsubmit="SendTextPreparationRequest">
 
@@ -57,6 +55,12 @@
                         <LoadingPanel Message="Sending text preparation request to api..." />
                     }
                 </form>
+
+                <label for="saveAnalysisToStore">Save analysis to store</label>
+                <input type="checkbox" @bind="saveDocumentTextChunkToStore" />
+
+                <label>Text prepared for vectorization (chunking):</label>
+                <textarea>@documentTextChunk</textarea>
 
             </div>
 
@@ -73,13 +77,11 @@
 
     private List<DocumentInfo> storedDocuments { get; set; } = new();
 
-    private string? documentAnalysisText { get; set; } = string.Empty;
-    private string documentAnalysisTextChunk { get; set; } = string.Empty;
-    private string documentAnalysisTextChunkStatistics { get; set; } = string.Empty;
-    private string documentAnalysisTextChunkVectorized { get; set; } = string.Empty;
+    private string? documentText { get; set; } = string.Empty;
+    private string? documentTextChunk { get; set; } = string.Empty;
+    private string? documentTextChunkStatistics { get; set; } = string.Empty;
+    private string? documentTextChunkVectorized { get; set; } = string.Empty;
 
-    private static string TextToEmbedDefault = @"Cats are playful pets
-Dogs are loyal animals
-Pizza is delicious
-Machine learning uses vectors";
+    private bool saveDocumentTextChunkToStore { get; set; } = false;
+
 }

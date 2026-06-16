@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
-    public partial class DocumentSelection
+    public partial class Document
     {
 
         [Inject]
-        private ILogger<DocumentSelection> logger { get; set; } = default!;
+        private ILogger<Document> logger { get; set; } = default!;
 
         [Inject]
         private IDocumentService documentService { get; set; } = default!;

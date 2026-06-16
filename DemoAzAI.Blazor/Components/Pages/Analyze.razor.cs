@@ -6,11 +6,11 @@ using System.Text;
 
 namespace DemoAzAI.Blazor.Components.Pages;
 
-public partial class DocumentAnalysis
+public partial class Analyze
 {
 
     [Inject]
-    private ILogger<DocumentAnalysis> logger { get; set; } = default!;
+    private ILogger<Analyze> logger { get; set; } = default!;
 
     [Inject]
     private IDocumentService documentService { get; set; } = default!;

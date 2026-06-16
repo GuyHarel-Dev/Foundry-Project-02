@@ -2,16 +2,15 @@
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using Microsoft.AspNetCore.Components;
-using System.Net.WebSockets;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
-    public partial class SemanticAnalysis
+    public partial class Semantic
     {
 
 
         [Inject]
-        private ILogger<SemanticAnalysis> logger { get; set; } = default!;
+        private ILogger<Semantic> logger { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
