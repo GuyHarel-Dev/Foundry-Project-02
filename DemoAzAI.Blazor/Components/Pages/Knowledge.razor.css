@@ -1,14 +1,9 @@
 .page-area {
-    width: 100%;
-    height: 80vh;
+
 }
 
-    .page-area .prepare-document-text-area {
-        height: 60%;
-    }
-
-    .page-area .select-document-text-area,
-    .page-area .prepare-document-text-area {
+    .page-area .select-document-area,
+    .page-area .knowledge-area {
         background-color: #300c4d;
         border: 1px solid #d0d0d0;
         border-radius: 6px;
@@ -19,17 +14,19 @@
         margin-bottom: 10px;
     }
 
-        .page-area .prepare-document-text-area .content-area {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
+    .page-area .knowledge-area {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+        .page-area .knowledge-area .document-text-area {
+            width: 50%;
+
         }
 
-        .page-area .prepare-document-text-area .document-text-area {
+        .page-area .knowledge-area .document-extract-area {
             width: 50%;
-            height: 300px;
+ 
         }
 
-        .page-area .prepare-document-text-area .document-chunk-area {
-            width: 50%;
-        }

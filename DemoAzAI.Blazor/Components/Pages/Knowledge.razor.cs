@@ -31,7 +31,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             try
             {
 
-                getDocumentResultsFromStoreIsBusy = true;
+                sendKnowledgeExtractionRequestBusy = true;
 
                 var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document-analysis", logger, pageLogger);
 
@@ -47,7 +47,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             }
             finally
             {
-                getDocumentResultsFromStoreIsBusy = false;
+                sendKnowledgeExtractionRequestBusy = false;
             }
 
 
@@ -93,11 +93,11 @@ namespace DemoAzAI.Blazor.Components.Pages
             return null;
         }
 
-        private async Task SendTextPreparationRequest()
+        private async Task ExtractKnowledgeFromText()
         {
             try
             {
-                sendTextPreparationRequestBusy = true;
+                sendKnowledgeExtractionRequestBusy = true;
 
                 var request = new ChatRequestDto()
                 {
@@ -113,12 +113,12 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/prompt/response", request, logger);
 
-                documentTextChunk = result?.Value?.ChatResponse;
-                documentTextChunkStatistics = result?.Value?.ModelStatistics?.ToString();
+                documentKnowledgeChunks = result?.Value?.ChatResponse;
+                documentKnowledgeChunksStatistics = result?.Value?.ModelStatistics?.ToString();
 
-                if (documentTextChunk != null && saveDocumentTextChunkToStore)
+                if (documentKnowledgeChunks != null && saveKnowledgeChunksToStore)
                 {
-                    await SaveDocumentTextChunkToStore(documentTextChunk);
+                    await SaveDocumentTextChunkToStore(documentKnowledgeChunks);
                 }
 
             }
@@ -128,7 +128,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             }
             finally
             {
-                sendTextPreparationRequestBusy = false;
+                sendKnowledgeExtractionRequestBusy = false;
             }
 
         }
