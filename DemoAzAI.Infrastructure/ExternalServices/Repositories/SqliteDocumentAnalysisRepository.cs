@@ -3,6 +3,7 @@ using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using Microsoft.Data.Sqlite;
+using SQLitePCL;
 using System.Text.Json;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
@@ -17,6 +18,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
         {
             connectionString = $"Data Source={repositoryPath}/document_analysis.db";
         }
+
         public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
         {
             EnsureInitialized();
@@ -35,26 +37,19 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 WHERE Id = @IdParam
                 """;
 
-            var row = await connection.QuerySingleOrDefaultAsync<DocumentAnalysisEntity>(
+            var entity = await connection.QuerySingleOrDefaultAsync<DocumentAnalysisEntity>(
                 sql,
                 new { IdParam = id });
 
-            if (row == null)
-                return null;
-
-            var doc =  new DocumentAnalysisEntity
+            if (entity != null && entity.AnalysisResultJson != null)
             {
-                Id = row.Id,
-                FileName = row.FileName,
-                BytesHash = row.BytesHash,
-                CreatedAt = row.CreatedAt,
-                DocumentAnalysisResultJson = row.DocumentAnalysisResultJson,
-                DocumentAnalysisResult = JsonSerializer.Deserialize<DocumentAnalysisResult>(row.DocumentAnalysisResultJson)
-            };
+                entity.DocumentAnalysisResult = JsonSerializer.Deserialize<DocumentAnalysisResult>(entity.AnalysisResultJson);
+            }
 
-            return doc;
+            return entity;
 
         }
+
         public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
         {
             EnsureInitialized();
@@ -73,22 +68,16 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 WHERE FileName = @IdParam
                 """;
 
-            var row = await connection.QuerySingleOrDefaultAsync<DocumentAnalysisEntity>(
+            var entity = await connection.QuerySingleOrDefaultAsync<DocumentAnalysisEntity>(
                 sql,
                 new { IdParam = fileName });
 
-            if (row == null)
-                return null;
-
-            return new DocumentAnalysisEntity
+            if (entity != null && entity.AnalysisResultJson != null)
             {
-                Id = row.Id,
-                FileName = row.FileName,
-                BytesHash = row.BytesHash,
-                CreatedAt = row.CreatedAt,
-                DocumentAnalysisResult =
-                    JsonSerializer.Deserialize<DocumentAnalysisResult>(row.DocumentAnalysisResultJson)!
-            };
+                entity.DocumentAnalysisResult = JsonSerializer.Deserialize<DocumentAnalysisResult>(entity.AnalysisResultJson);
+            }
+
+            return entity;
         }
 
         public async Task<IEnumerable<DocumentInfo>> GetAllDocumentAnalysisAsync()
@@ -135,31 +124,15 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             return count > 0;
         }
 
-        private void EnsureInitialized()
-        {
-            if (initialized)
-                return;
-
-            using var connection =
-                new SqliteConnection(connectionString);
-
-            connection.Execute("""
-                CREATE TABLE IF NOT EXISTS DocumentAnalysis (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    FileName TEXT NOT NULL UNIQUE,
-                    BytesHash TEXT NOT NULL UNIQUE,
-                    AnalysisResultJson TEXT NOT NULL,
-                    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-                );
-                """);
-
-            initialized = true;
-        }
-
         public async Task<bool> SaveDocumentAnalysisAsync(string fileName, DocumentAnalysisResult? result, string bytesHash)
         {
 
             EnsureInitialized();
+
+            if (await DocumentAnalysisExistsAsync(fileName))
+            {
+                await DeleteDocumentAnalysisAsync(fileName);
+            }
 
             using var connection =
                 new SqliteConnection(connectionString);
@@ -184,6 +157,50 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             return status > 0;
         }
 
+        public async Task<bool> DeleteDocumentAnalysisAsync(string fileName)
+        {
+
+            EnsureInitialized();
+
+            using var connection =
+                new SqliteConnection(connectionString);
+
+            string sql = """
+                    DELETE FROM DocumentAnalysis
+                    WHERE FileName = @fileName;
+                    """;
+
+            var status = await connection.ExecuteAsync(
+                sql,
+                new
+                {
+                    fileName = fileName
+                });
+
+            return status > 0;
+
+        }
+        private void EnsureInitialized()
+        {
+            if (initialized)
+                return;
+
+            using var connection =
+                new SqliteConnection(connectionString);
+
+            connection.Execute("""
+                CREATE TABLE IF NOT EXISTS DocumentAnalysis (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    FileName TEXT NOT NULL UNIQUE,
+                    BytesHash TEXT NOT NULL UNIQUE,
+                    AnalysisResultJson TEXT NOT NULL,
+                    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+                """);
+
+            initialized = true;
+
+        }
 
         Task<DocumentAnalysisEntity?> IDocumentAnalysisRepository.GetDocumentAnalysisByHashAsync(string hash)
         {

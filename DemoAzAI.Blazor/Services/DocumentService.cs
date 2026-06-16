@@ -1,4 +1,5 @@
 ﻿using DemoAzAI.Blazor.Services.Api;
+using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 
@@ -29,19 +30,17 @@ namespace DemoAzAI.Blazor.Services
             return null;
         }
 
-        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName, ILogger? logger, List<string>? pageLogger)
+        public async Task<DocumentAnalysisResponseDto?> GetDocumentAnalysisByNameAsync(string fileName, ILogger? logger, List<string>? pageLogger)
         {
             try
             {
-                var result = await apiClient.GetAsync<DocumentAnalysisEntity>
+                var result = await apiClient.GetAsync<DocumentAnalysisResponseDto>
                     ($"api/document-analysis/filename/{fileName}",
                     logger, pageLogger);
 
-                if (result is not null)
+                if (result?.Value != null)
                 {
-                    var response = result.Value;
-
-                    return response;
+                    return result.Value;
                 }
             }
             catch (Exception ex)

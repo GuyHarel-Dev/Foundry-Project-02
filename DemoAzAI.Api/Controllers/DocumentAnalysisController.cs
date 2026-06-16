@@ -18,8 +18,7 @@ namespace DemoAzAI.Api.Controllers
         public async Task<ActionResult<DocumentAnalysisResponseDto>> AnalyzeDocumentAsync(
             [FromBody] DocumentAnalysisRequestDto request)
         {
-
-            var response = await documentAnalysisService.AnalyzeDocumentAsync(request);
+            var response = await documentAnalysisService.AnalyzeDocumentAsync(request.ModelName, request.FileName, request.SaveToStore);
 
             return Ok(response);
         }
@@ -32,15 +31,25 @@ namespace DemoAzAI.Api.Controllers
 
 
         [HttpGet("id/{id}")]
-        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
+        public async Task<DocumentAnalysisResponseDto?> GetDocumentAnalysisByIdAsync(string id)
         {
-            return await documentAnalysisService.GetDocumentAnalysisByIdAsync(id);
+            var entity = await documentAnalysisService.GetDocumentAnalysisByIdAsync(id);
+
+            return new DocumentAnalysisResponseDto
+            {
+                DocumentAnalysisEntity = entity,
+            };
         }
 
         [HttpGet("filename/{fileName}")]
-        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
+        public async Task<DocumentAnalysisResponseDto?> GetDocumentAnalysisByNameAsync(string fileName)
         {
-            return await documentAnalysisService.GetDocumentAnalysisByNameAsync(fileName);
+            var entity = await documentAnalysisService.GetDocumentAnalysisByNameAsync(fileName);
+
+            return new DocumentAnalysisResponseDto
+            {
+                DocumentAnalysisEntity = entity,
+            };
         }
 
     }

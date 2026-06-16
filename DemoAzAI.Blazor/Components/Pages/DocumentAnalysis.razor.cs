@@ -33,19 +33,16 @@ public partial class DocumentAnalysis
     {
         documentSelectedName = e.Value?.ToString() ?? string.Empty;
 
-        var docInfo = await documentService.GetDocumentAnalysisByNameAsync(documentSelectedName, logger, pageLogger);
+        var response = await documentService.GetDocumentAnalysisByNameAsync(documentSelectedName, logger, pageLogger);
 
-        documentExtractedText = string.Empty;
-        documentExtractedSections = string.Empty;
-
-        if (docInfo is null)
+        if (response is null)
         {
             pageLogger.Add($"Document selected: {documentSelectedName} was not found in the document result service. Start a document analysis to add to the repository");
             return;
         }
 
-        documentExtractedText = docInfo.DocumentAnalysisResult?.DocContent;
-        documentExtractedSections = docInfo.DocumentAnalysisResult?.DocumentsFieldsContent;
+        documentExtractedText = response.DocumentAnalysisEntity?.DocumentAnalysisResult?.DocContent;
+        documentExtractedSections = response.DocumentAnalysisEntity?.DocumentAnalysisResult?.DocumentsFieldsContent;
     }
 
     private async Task OnAnalyzeDocument()
@@ -87,13 +84,15 @@ public partial class DocumentAnalysis
 
     private void DisplayResponse(DocumentAnalysisResponseDto response)
     {
-        if (response.DocumentAnalysisResult is null)
+        var entity = response.DocumentAnalysisEntity;
+
+        if (entity is null || entity.DocumentAnalysisResult is null)
         {
             documentAnalysisError = response.DocumentAnalysisStatus;
             return;
         }
 
-        var result = response.DocumentAnalysisResult;
+        var result = entity.DocumentAnalysisResult;
 
 
         StringBuilder sb = new StringBuilder();

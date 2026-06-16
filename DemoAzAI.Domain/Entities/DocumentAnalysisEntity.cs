@@ -6,7 +6,7 @@ namespace DemoAzAI.Domain.Entities
     {
         public DocumentAnalysisResult? DocumentAnalysisResult { get; set; } = default!;
 
-        public string DocumentAnalysisResultJson { get; set; } = string.Empty;
+        public string AnalysisResultJson { get; set; } = string.Empty;
 
         public override string ToString()
         {

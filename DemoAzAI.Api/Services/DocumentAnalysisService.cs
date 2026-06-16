@@ -1,6 +1,5 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
-using Azure.Core;
 using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
@@ -25,17 +24,12 @@ namespace DemoAzAI.Api.Services
         public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
         {
             return await documentAnalysisRepository.GetDocumentAnalysisByIdAsync(id);
-
         }
 
         public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
         {
-            var exists = await documentAnalysisRepository.DocumentAnalysisExistsAsync(fileName);
-
-            if (!exists)
-                LogAndThrow<ArgumentException>($"fileName not found: {fileName}");
-
             return await documentAnalysisRepository.GetDocumentAnalysisByNameAsync(fileName);
+
         }
 
         public async Task<IEnumerable<DocumentInfo>> GetAllDocumentAnalysisAsync()
@@ -43,60 +37,45 @@ namespace DemoAzAI.Api.Services
             return await documentAnalysisRepository.GetAllDocumentAnalysisAsync();
         }
 
-        public async Task<DocumentAnalysisResponseDto> AnalyzeDocumentAsync(DocumentAnalysisRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<DocumentAnalysisEntity> AnalyzeDocumentAsync(string modelName, string fileName, bool saveToStore)
         {
 
-            logger.LogInformation($"Sending document {request.FileName} to analysis model");
+            logger.LogInformation($"Sending document {fileName} to analysis model");
 
-            var options = await CreateAnalyzeDocumentOptions(request);
+            var options = await CreateAnalyzeDocumentOptions(modelName, fileName);
             var docHash = Convert.ToHexString(options.BytesSource);
-
-            if (request.SaveToStore && await documentAnalysisRepository.DocumentAnalysisExistsAsync(docHash))
-            {
-                return new DocumentAnalysisResponseDto { DocumentAnalysisStatus = "Document was not store: already exists" };
-            }
 
             Operation<AnalyzeResult> operation =
                 await client.AnalyzeDocumentAsync(
                     WaitUntil.Completed,
-                    options,
-                    cancellationToken);
+                    options);
 
-            var docAnalysisResult = Map(request.ModelName, operation.Value);
-
-            var response = new DocumentAnalysisResponseDto
+            var entity = new DocumentAnalysisEntity
             {
-                FileName = request.FileName,
-                DocumentAnalysisResult = docAnalysisResult,
-                BytesHash = docHash
+                FileName = fileName,
+                BytesHash = docHash,
+                DocumentAnalysisResult = Map(modelName, operation.Value)
             };
-
 
             logger.LogInformation($"Response received response");
 
-            if (request.SaveToStore)
+            if (saveToStore)
             {
-                await documentAnalysisRepository.SaveDocumentAnalysisAsync(request.FileName, response.DocumentAnalysisResult, response.BytesHash);
+                await documentAnalysisRepository.SaveDocumentAnalysisAsync(
+                    entity.FileName,
+                    entity.DocumentAnalysisResult,
+                    entity.BytesHash);
+
+                logger.LogInformation($"Document analysis saved to store response");
             }
 
-            return response;
+            return entity;
 
         }
 
-        private async Task<bool> DocumentAnalysisExistsAsync(string fileName)
+        private async Task<AnalyzeDocumentOptions> CreateAnalyzeDocumentOptions(string modelName, string fileName)
         {
-            return await documentAnalysisRepository.DocumentAnalysisExistsAsync(fileName);
-        }
-
-        private void LogAndThrow<T>(string message) where T : Exception 
-        {
-            logger.LogError(message);
-            throw new Exception(message);
-        }
-        private async Task<AnalyzeDocumentOptions> CreateAnalyzeDocumentOptions(DocumentAnalysisRequestDto request)
-        {
-            var modelName = request.ModelName;
-            var fileStream = fileStoreService.GetDocumentFileStream(request.FileName);
+            var fileStream = fileStoreService.GetDocumentFileStream(fileName);
             var bytes = BinaryData.FromStream(fileStream);
 
             return new AnalyzeDocumentOptions(

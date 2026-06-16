@@ -1,12 +1,11 @@
-﻿using DemoAzAI.Domain.Models;
+﻿using DemoAzAI.Domain.Entities;
+using DemoAzAI.Domain.Models;
 
 namespace DemoAzAI.Contracts.Api.Responses
 {
     public class DocumentAnalysisResponseDto
     {
-        public string FileName { get; set; } = string.Empty;
-        public string BytesHash { get; set; } = string.Empty;
-        public DocumentAnalysisResult? DocumentAnalysisResult { get; set; }
+        public DocumentAnalysisEntity? DocumentAnalysisEntity { get; set; }
 
         public string DocumentAnalysisStatus { get; set; } = string.Empty;
  
