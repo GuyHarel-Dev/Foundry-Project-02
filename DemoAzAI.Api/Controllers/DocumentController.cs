@@ -1,6 +1,7 @@
 ﻿using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
+using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,7 @@ namespace DemoAzAI.Api.Controllers
     [Route("api/document")]
     [ApiController]
     public class DocumentController (
-            IDocumentAnalysisService documentAnalysisService
+            IDocumentService documentAnalysisService
         ) : ControllerBase
     {
 
@@ -54,6 +55,14 @@ namespace DemoAzAI.Api.Controllers
                 DocumentAnalysisEntity = entity,
             };
         }
+
+        [HttpGet("chunks/filename/{fileName}")]
+        public async Task<DocumentChunkEntity?> GetDocumentChunksByNameAsync(string fileName)
+        {
+            return await documentAnalysisService.GetDocumentChunksByNameAsync(fileName);
+
+        }
+
 
     }
 }

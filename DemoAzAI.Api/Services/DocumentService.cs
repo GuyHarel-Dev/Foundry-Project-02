@@ -1,8 +1,6 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
 using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Contracts.Api.Requests;
-using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
@@ -13,13 +11,19 @@ using System.Text.Json.Serialization;
 
 namespace DemoAzAI.Api.Services
 {
-    public class DocumentAnalysisService(
+    public class DocumentService(
             DocumentIntelligenceClient client,
             IDocumentStoreService fileStoreService,
             IDocumentAnalysisRepository documentAnalysisRepository,
-            ILogger<DocumentAnalysisService> logger)
-        : IDocumentAnalysisService
+            IDocumentChunksRepository documentChunksRepository,
+            ILogger<DocumentService> logger)
+        : IDocumentService
     {
+
+        public async Task<DocumentChunkEntity?> GetDocumentChunksByNameAsync(string fileName)
+        {
+            return await documentChunksRepository.GetDocumentChunksAsync(fileName);
+        }
 
         public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
         {

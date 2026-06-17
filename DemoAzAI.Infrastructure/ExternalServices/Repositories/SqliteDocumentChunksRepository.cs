@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using DemoAzAI.Domain.Entities;
+using DemoAzAI.Domain.Models;
 using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using Microsoft.Data.Sqlite;
+using System.Text.Json;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 {
@@ -63,9 +65,29 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             return rows > 0;
         }
 
-        public async Task<List<DocumentChunkEntity>> GetDocumentChunksAsync(string fileName)
+        public async Task<DocumentChunkEntity?> GetDocumentChunksAsync(string fileName)
         {
-            throw new NotImplementedException();
+            EnsureInitialized();
+
+            using var connection =
+                new SqliteConnection(connectionString);
+
+            string sql = """
+                SELECT
+                    Id,
+                    FileName,
+                    TextChunks,
+                    CreatedAt
+                FROM DocumentChunks
+                WHERE FileName = @FileName
+                """;
+
+            var entity = await connection.QuerySingleOrDefaultAsync<DocumentChunkEntity>(
+                sql,
+                new { FileName = fileName });
+
+
+            return entity;
         }
     }
 }
