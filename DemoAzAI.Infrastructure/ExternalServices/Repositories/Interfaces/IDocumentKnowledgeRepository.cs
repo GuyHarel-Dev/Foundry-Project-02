@@ -2,9 +2,9 @@
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces
 {
-    public interface IDocumentChunksRepository
+    public interface IDocumentKnowledgeRepository
     {
         Task<bool> SaveAsync(DocumentChunkEntity document);
-        Task<DocumentChunkEntity?> GetDocumentChunksAsync(string fileName);
+        Task<DocumentChunkEntity?> GetDocumentKnowledgeAsync(string fileName);
     }
 }

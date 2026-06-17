@@ -15,31 +15,10 @@ namespace DemoAzAI.Api.Services
             DocumentIntelligenceClient client,
             IDocumentStoreService fileStoreService,
             IDocumentAnalysisRepository documentAnalysisRepository,
-            IDocumentChunksRepository documentChunksRepository,
             ILogger<DocumentService> logger)
         : IDocumentService
     {
 
-        public async Task<DocumentChunkEntity?> GetDocumentChunksByNameAsync(string fileName)
-        {
-            return await documentChunksRepository.GetDocumentChunksAsync(fileName);
-        }
-
-        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByIdAsync(string id)
-        {
-            return await documentAnalysisRepository.GetDocumentAnalysisByIdAsync(id);
-        }
-
-        public async Task<DocumentAnalysisEntity?> GetDocumentAnalysisByNameAsync(string fileName)
-        {
-            return await documentAnalysisRepository.GetDocumentAnalysisByNameAsync(fileName);
-
-        }
-
-        public async Task<IEnumerable<DocumentInfo>> GetAllDocumentAnalysisAsync()
-        {
-            return await documentAnalysisRepository.GetAllDocumentAnalysisAsync();
-        }
 
         public async Task<DocumentAnalysisEntity> AnalyzeDocumentAsync(string modelName, string fileName, bool saveToStore)
         {

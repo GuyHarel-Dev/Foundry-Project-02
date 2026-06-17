@@ -25,18 +25,6 @@ namespace DemoAzAI.Api.Controllers
             return Ok(response);
         }
 
-        [HttpPost("chunkings/chunk")]
-        public async Task<ActionResult<DocumentChunkingResponseDto>> ChunkText([FromBody] DocumentChunkingRequestDto request)
-        {
-            if (string.IsNullOrWhiteSpace(request.Prompt))
-            {
-                return BadRequest("Prompt text cannot be empty.");
-            }
-            var response = await chatService.GetDocumentChunkingResponseAsync(request);
-
-            return Ok(response);
-        }
-
     }
 }
 

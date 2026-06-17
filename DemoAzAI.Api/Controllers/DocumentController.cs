@@ -1,15 +1,16 @@
 ﻿using DemoAzAI.Api.Services.Interfaces;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
+using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DemoAzAI.Api.Controllers 
+namespace DemoAzAI.Api.Controllers
 {
     [Route("api/document")]
     [ApiController]
-    public class DocumentController (
+    public class DocumentController(
+            IDocumentAnalysisRepository documentAnalysisRepository,
             IDocumentService documentAnalysisService
         ) : ControllerBase
     {
@@ -30,14 +31,14 @@ namespace DemoAzAI.Api.Controllers
         [HttpGet("analysis")]
         public async Task<IEnumerable<DocumentInfo>> GetDocumentAnalysisAsync()
         {
-            return await documentAnalysisService.GetAllDocumentAnalysisAsync();
+            return await documentAnalysisRepository.GetAllDocumentAnalysisAsync();
         }
 
 
         [HttpGet("analysis/id/{id}")]
         public async Task<DocumentAnalysisResponseDto?> GetDocumentAnalysisByIdAsync(string id)
         {
-            var entity = await documentAnalysisService.GetDocumentAnalysisByIdAsync(id);
+            var entity = await documentAnalysisRepository.GetDocumentAnalysisByIdAsync(id);
 
             return new DocumentAnalysisResponseDto
             {
@@ -48,19 +49,12 @@ namespace DemoAzAI.Api.Controllers
         [HttpGet("analysis/filename/{fileName}")]
         public async Task<DocumentAnalysisResponseDto?> GetDocumentAnalysisByNameAsync(string fileName)
         {
-            var entity = await documentAnalysisService.GetDocumentAnalysisByNameAsync(fileName);
+            var entity = await documentAnalysisRepository.GetDocumentAnalysisByNameAsync(fileName);
 
             return new DocumentAnalysisResponseDto
             {
                 DocumentAnalysisEntity = entity,
             };
-        }
-
-        [HttpGet("chunks/filename/{fileName}")]
-        public async Task<DocumentChunkEntity?> GetDocumentChunksByNameAsync(string fileName)
-        {
-            return await documentAnalysisService.GetDocumentChunksByNameAsync(fileName);
-
         }
 
 

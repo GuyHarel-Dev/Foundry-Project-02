@@ -1,19 +1,17 @@
 ﻿using Dapper;
 using DemoAzAI.Domain.Entities;
-using DemoAzAI.Domain.Models;
 using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using Microsoft.Data.Sqlite;
-using System.Text.Json;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 {
-    public class SqliteDocumentChunksRepository : IDocumentChunksRepository
+    public class SqliteDocumentKnowledgeRepository : IDocumentKnowledgeRepository
     {
         private readonly string connectionString = string.Empty;
 
         private bool initialized = false;
 
-        public SqliteDocumentChunksRepository(string repositoryPath)
+        public SqliteDocumentKnowledgeRepository(string repositoryPath)
         {
             connectionString = $"Data Source={repositoryPath}/document_chunks.db";
         }
@@ -27,11 +25,23 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 new SqliteConnection(connectionString);
 
             connection.Execute("""
-                CREATE TABLE IF NOT EXISTS DocumentChunks (
+                CREATE TABLE IF NOT EXISTS Document (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     FileName TEXT NOT NULL UNIQUE,
-                    TextChunks TEXT NOT NULL UNIQUE,
                     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+                """);
+
+            connection.Execute("""
+                CREATE TABLE IF NOT EXISTS DocumentKnowledge (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    DocumentId INTEGER NOT NULL,
+                    ChunkIndex INTEGER NOT NULL,
+                    ChunkText TEXT NOT NULL,
+                    Embedding TEXT NOT NULL,
+                    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY(DocumentId)
+                    REFERENCES Documents(Id)
                 );
                 """);
 
@@ -88,6 +98,11 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 
 
             return entity;
+        }
+
+        public Task<DocumentChunkEntity?> GetDocumentKnowledgeAsync(string fileName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

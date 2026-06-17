@@ -59,7 +59,7 @@ public partial class Analyze
             sendDocumentAnalysisBusy = true;
 
             var response = await apiClient.PostAsync<DocumentAnalysisRequestDto, DocumentAnalysisResponseDto>
-                ("api/document-analysis", 
+                ("api/document/analysis", 
                 request, logger, BasePageLog);
 
             if (response is not null && response.Value is not null)

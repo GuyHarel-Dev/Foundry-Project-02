@@ -100,25 +100,25 @@ namespace DemoAzAI.Blazor.Components.Pages
             try
             {
 
-                if (selectedDocumentAnalysisEntity is null)
-                {
-                    AddBasePageExecutionError($"Select a document stored result first", logger);
-                    return;
-                }
+                //if (selectedDocumentAnalysisEntity is null)
+                //{
+                //    AddBasePageExecutionError($"Select a document stored result first", logger);
+                //    return;
+                //}
 
-                sendKnowledgeExtractionRequestBusy = true;
+                //sendKnowledgeExtractionRequestBusy = true;
 
-                var request = new DocumentChunkingRequestDto()
-                {
-                    FileName = selectedDocumentAnalysisEntity.FileName,
-                    TextChunks = selectedDocumentAnalysisEntity?.DocumentAnalysisResult?.DocContent ?? string.Empty,
-                    SaveToStore = saveKnowledgeChunksToStore
-                };
+                //var request = new DocumentChunkingRequestDto()
+                //{
+                //    FileName = selectedDocumentAnalysisEntity.FileName,
+                //    TextToChunk = selectedDocumentAnalysisEntity?.DocumentAnalysisResult?.DocContent ?? string.Empty,
+                //    SaveToStore = saveKnowledgeChunksToStore
+                //};
 
-                var result = await apiClient.PostAsync<DocumentChunkingRequestDto, DocumentChunkingResponseDto>("api/chat/chunkings/chunk", request, logger, BasePageLog);
+                //var result = await apiClient.PostAsync<DocumentChunkingRequestDto, DocumentChunkingResponseDto>("api/knowledge/chunkings/chunk", request, logger, BasePageLog);
 
-                documentKnowledgeChunks = result?.Value?.ChatResponse;
-                documentKnowledgeChunksStatistics = result?.Value?.ModelStatistics?.ToString();
+                //documentKnowledgeChunks = result?.Value?.TextChunks;
+                //documentKnowledgeChunksStatistics = result?.Value?.ModelStatistics?.ToString();
 
             }
             catch (Exception ex)
