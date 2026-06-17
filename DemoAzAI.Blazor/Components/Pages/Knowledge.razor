@@ -6,6 +6,7 @@
 @using DemoAzAI.Application
 @using DemoAzAI.Blazor.Components.Fragments
 @using DemoAzAI.Domain.Models
+@using DemoAzAI.Domain.Entities
 
 @inject IExecutionStepTracer StepTracer
 
@@ -35,7 +36,7 @@
 
         <div class="document-text-area">
             <label for="DocumentAnalysisText">Text from document analysis:</label>
-            <textarea>@documentText</textarea>
+            <textarea>@GetSelectedDocumentEntityAnalysisResult()</textarea>
         </div>
 
         <div class="document-extract-area">
@@ -77,10 +78,10 @@
 
     private List<DocumentInfo> storedDocuments { get; set; } = new();
 
-    private string? documentText { get; set; } = string.Empty;
     private string? documentKnowledgeChunks { get; set; } = string.Empty;
     private string? documentKnowledgeChunksStatistics { get; set; } = string.Empty;
 
+    private DocumentAnalysisEntity? selectedDocumentAnalysisEntity { get; set; } = null;
     private bool saveKnowledgeChunksToStore { get; set; } = false;
 
 }

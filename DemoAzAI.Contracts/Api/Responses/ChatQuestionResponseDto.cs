@@ -2,9 +2,10 @@
 
 namespace DemoAzAI.Contracts.Api.Responses
 {
-    public class ChatResponseDto
+    public class ChatQuestionResponseDto
     {
         public string ChatResponse { get; set; } = string.Empty;
         public ModelStatistics? ModelStatistics { get; set; }
     }
+
 }

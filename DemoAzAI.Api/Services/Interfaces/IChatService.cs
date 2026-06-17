@@ -5,6 +5,7 @@ namespace DemoAzAI.Api.Services.Interfaces
 {
     public interface IChatService
     {
-        Task<ChatResponseDto> GetPromptResponseAsync(ChatRequestDto request, CancellationToken cancellationToken = default);
+        Task<ChatQuestionResponseDto> GetPromptResponseAsync(ChatQuestionRequestDto request, CancellationToken cancellationToken = default);
+        Task<DocumentChunkingResponseDto> GetDocumentChunkingResponseAsync(DocumentChunkingRequestDto request, CancellationToken cancellationToken = default);
     }
 }

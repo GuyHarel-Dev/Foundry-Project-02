@@ -10,8 +10,8 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         public ApiClient apiClient { get; set; } = default!;
 
-        public List<string> PageBaseExecutionSteps { get; set; } = new();
-        public List<string> pageLogger { get; set; } = new();
+        public List<string> BasePageSteps { get; set; } = new();
+        public List<string> BasePageLog { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
@@ -25,22 +25,28 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         public string GetPageBaseExecutionErrorsString()
         {
+            if (BasePageLog.Any() == false)
+                return string.Empty;
+
             var sb = new StringBuilder();
-            foreach (string msg in pageLogger)
+            foreach (string msg in BasePageLog)
             {
                 sb.AppendLine(msg);
             }
             return sb.ToString();
         }
 
-        public void AddExecutionError(string title)
+        public void AddBasePageExecutionError(string title, ILogger? logger = null)
         {
-            pageLogger.Add($"{title}");
+            BasePageLog.Add($"{title}");
 
+            if (logger != null)
+                logger.LogError(title);
         }
-        public void AddExecutionStep(string title)
+
+        public void AddBasePageExecutionStep(string title)
         {
-            PageBaseExecutionSteps.Add($"{title}");
+            BasePageSteps.Add($"{title}");
         }
 
 

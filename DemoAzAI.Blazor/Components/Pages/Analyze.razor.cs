@@ -19,7 +19,7 @@ public partial class Analyze
     {
         if (firstRender)
         {
-            var storeInfos = await documentService.GetAllDocumentInfosFromStoreAsync(logger, pageLogger);
+            var storeInfos = await documentService.GetAllDocumentInfosFromStoreAsync(logger, BasePageLog);
 
             if (storeInfos != null)
                 storedDocumentInfo = [.. storeInfos];
@@ -33,11 +33,11 @@ public partial class Analyze
     {
         documentSelectedName = e.Value?.ToString() ?? string.Empty;
 
-        var response = await documentService.GetDocumentAnalysisByNameAsync(documentSelectedName, logger, pageLogger);
+        var response = await documentService.GetDocumentAnalysisByNameAsync(documentSelectedName, logger, BasePageLog);
 
         if (response?.DocumentAnalysisEntity is null)
         {
-            pageLogger.Add($"Document selected: {documentSelectedName} was not found in the document result service. Start a document analysis to add to the repository");
+            BasePageLog.Add($"Document selected: {documentSelectedName} was not found in the document result service. Start a document analysis to add to the repository");
             return;
         }
 
@@ -60,7 +60,7 @@ public partial class Analyze
 
             var response = await apiClient.PostAsync<DocumentAnalysisRequestDto, DocumentAnalysisResponseDto>
                 ("api/document-analysis", 
-                request, logger, pageLogger);
+                request, logger, BasePageLog);
 
             if (response is not null && response.Value is not null)
             {

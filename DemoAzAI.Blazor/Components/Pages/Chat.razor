@@ -77,13 +77,13 @@
             // executionSteps = StepTracer.GetSteps();
             await RefreshUIAsync();
 
-            var request = new ChatRequestDto()
+            var request = new ChatQuestionRequestDto()
             {
                 SystemPrompt = "You are a conversational agent. When you answer please prefix your answer with: Hello Mr Potato",
                 Prompt = question
             };
 
-            var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/prompt/response", request);
+            var result = await apiClient.PostAsync<ChatQuestionRequestDto, ChatQuestionResponseDto>("api/chat/questions/answer", request);
 
             if (result == null || result.Value is null)
             {

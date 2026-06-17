@@ -6,6 +6,7 @@ using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Components;
+using static Dapper.SqlMapper;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
@@ -33,7 +34,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 sendKnowledgeExtractionRequestBusy = true;
 
-                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document/analysis", logger, pageLogger);
+                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document/analysis", logger, BasePageLog);
 
                 if (result is not null)
                 {
@@ -65,10 +66,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
             if (docId != null)
             {
-                var entity = await GetDocumentAnalysisByIdAsync(docId);
-
-                documentText = entity?.DocumentAnalysisResult?.DocContent;
-
+                selectedDocumentAnalysisEntity = await GetDocumentAnalysisByIdAsync(docId);
             }
 
         }
@@ -77,7 +75,7 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             try
             {
-                var result = await apiClient.GetAsync<DocumentAnalysisResponseDto>($"api/document/analysis/id/{docId}", logger, pageLogger);
+                var result = await apiClient.GetAsync<DocumentAnalysisResponseDto>($"api/document/analysis/id/{docId}", logger, BasePageLog);
                 
                 return result?.Value?.DocumentAnalysisEntity;
             }
@@ -93,34 +91,34 @@ namespace DemoAzAI.Blazor.Components.Pages
             return null;
         }
 
+        private string? GetSelectedDocumentEntityAnalysisResult()
+        {
+            return selectedDocumentAnalysisEntity?.DocumentAnalysisResult?.DocContent;
+        }
         private async Task ExtractKnowledgeFromText()
         {
             try
             {
+
+                if (selectedDocumentAnalysisEntity is null)
+                {
+                    AddBasePageExecutionError($"Select a document stored result first", logger);
+                    return;
+                }
+
                 sendKnowledgeExtractionRequestBusy = true;
 
-                var request = new DocumentKnowledgeRequestDto()
+                var request = new DocumentChunkingRequestDto()
                 {
-                    SystemPrompt = """
-                    You are a text chunking service. 
-                    You analyse the given prompt and extract the semantically relevant name and value pairs.
-                    Each name and value pair separated by a colon, on a separe line.
-                    Just supply the answer, simple text line, no json, no dialog or explanation
-                    """,
-
-                    DocumentText = $"{documentText}",
+                    FileName = selectedDocumentAnalysisEntity.FileName,
+                    TextChunks = selectedDocumentAnalysisEntity?.DocumentAnalysisResult?.DocContent ?? string.Empty,
                     SaveToStore = saveKnowledgeChunksToStore
                 };
 
-                //var result = await apiClient.PostAsync<ChatRequestDto, ChatResponseDto>("api/chat/prompt/response", request, logger);
+                var result = await apiClient.PostAsync<DocumentChunkingRequestDto, DocumentChunkingResponseDto>("api/chat/chunkings/chunk", request, logger, BasePageLog);
 
-                //documentKnowledgeChunks = result?.Value?.ChatResponse;
-                //documentKnowledgeChunksStatistics = result?.Value?.ModelStatistics?.ToString();
-
-                if (documentKnowledgeChunks != null && saveKnowledgeChunksToStore)
-                {
-                    await SaveDocumentTextChunkToStore(documentKnowledgeChunks);
-                }
+                documentKnowledgeChunks = result?.Value?.ChatResponse;
+                documentKnowledgeChunksStatistics = result?.Value?.ModelStatistics?.ToString();
 
             }
             catch (Exception ex)
@@ -131,11 +129,6 @@ namespace DemoAzAI.Blazor.Components.Pages
             {
                 sendKnowledgeExtractionRequestBusy = false;
             }
-
-        }
-
-        private async Task SaveDocumentTextChunkToStore(string documentTextChunk)
-        {
 
         }
 

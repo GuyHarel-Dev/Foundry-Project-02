@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    [Route("api/document-store")]
+    [Route("api/store")]
     [ApiController]
-    public class DocumentStoreController(
+    public class StoreController(
             IDocumentStoreService fileStoreService
         ) : ControllerBase
     {
 
-        [HttpGet()]
+        [HttpGet("documents")]
         public async Task<ActionResult<IEnumerable<DocumentInfo>>> GetDocumentNames()
         {
             var documents = fileStoreService.GetDocumentFileInfos();
@@ -19,7 +19,7 @@ namespace WebApi.Controllers
             return Ok(documents);
         }
 
-        [HttpGet("stream/{fileName}")]
+        [HttpGet("document/stream/{fileName}")]
         public async Task<IActionResult> GetDocumentFile(string fileName)
         {
             var stream = fileStoreService.GetDocumentFileStream(fileName);

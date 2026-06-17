@@ -2,7 +2,7 @@
 {
     public class DocumentChunkEntity : DocumentEntity
     {
-        public List<string> Chunks { get; set; } = new();
+        public string TextChunks { get; set; } = string.Empty;
 
     }
 }

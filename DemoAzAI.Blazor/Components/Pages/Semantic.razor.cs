@@ -43,7 +43,7 @@ namespace DemoAzAI.Blazor.Components.Pages
                 };
 
 
-                var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/text-embedding/embed-lines", request, logger, pageLogger);
+                var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/text-embedding/embed-lines", request, logger, BasePageLog);
 
                 if (result is not null)
                 {

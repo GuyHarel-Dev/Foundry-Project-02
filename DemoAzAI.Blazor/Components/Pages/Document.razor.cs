@@ -16,7 +16,7 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             if (firstRender)
             {
-                 var storeInfos = await documentService.GetAllDocumentInfosFromStoreAsync(logger, pageLogger);
+                 var storeInfos = await documentService.GetAllDocumentInfosFromStoreAsync(logger, BasePageLog);
 
                 if (storeInfos != null)
                     storedDocumentInfo = [.. storeInfos];
@@ -40,7 +40,7 @@ namespace DemoAzAI.Blazor.Components.Pages
 
             if (selectedDocumentInfo != null)
             {
-                url = $"{apiClient.BaseClientUrl}/api/document-store/stream/{selectedDocumentInfo.FileName}";
+                url = $"{apiClient.BaseClientUrl}/api/store/document/stream/{selectedDocumentInfo.FileName}";
             }
 
             return url;

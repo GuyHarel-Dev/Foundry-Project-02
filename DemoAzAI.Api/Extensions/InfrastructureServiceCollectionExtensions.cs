@@ -18,7 +18,13 @@ namespace WebApi.Extensions
 
             });
 
-            services.AddSingleton<IDocumentRepository, SqliteDocumentRepository>();
+            services.AddSingleton(sp =>
+            {
+                var repositoryService = new SqliteDocumentChunksRepository(repositoryPath);
+                return repositoryService as IDocumentChunksRepository;
+
+            });
+            
 
             return services;
         }

@@ -14,7 +14,7 @@ namespace DemoAzAI.Blazor.Services
         {
             try
             {
-                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document-store", logger, errorMessages);
+                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/store/documents", logger, errorMessages);
 
                 if (result is not null && result.Value is not null)
                 {

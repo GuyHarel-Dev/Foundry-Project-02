@@ -28,7 +28,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 CREATE TABLE IF NOT EXISTS DocumentChunks (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     FileName TEXT NOT NULL UNIQUE,
-                    Chunks TEXT NOT NULL UNIQUE,
+                    TextChunks TEXT NOT NULL UNIQUE,
                     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
                 );
                 """);
@@ -46,16 +46,14 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 """
             INSERT INTO DocumentChunks
             (
-                Id,
                 FileName,
-                Chunks,
-                CreatedUtc
+                TextChunks,
+                CreatedAt
             )
             VALUES
             (
-                @Id,
                 @FileName,
-                @Chunks,
+                @TextChunks,
                 datetime('now')
             )
             """,
