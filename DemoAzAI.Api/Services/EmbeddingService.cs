@@ -1,5 +1,6 @@
 ﻿using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
+using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using OpenAI.Embeddings;
 using System.ClientModel;
@@ -29,7 +30,13 @@ namespace DemoAzAI.Api.Services
                 result.Value.ToFloats().ToArray()
             );
 
-            return new EmbeddingResponseDto { EmbeddedChunks = new List<EmbeddedChunk> { chunk } };
+            return new EmbeddingResponseDto
+            {
+                DocumentChunkEntity = new DocumentChunkEntity
+                {
+                    EmbeddedChunks = new List<EmbeddedChunk> { chunk }
+                }
+            };
         }
 
         public async Task<EmbeddingResponseDto> EmbedTextLinesAsync(EmbeddingTextLinesRequestDto request, CancellationToken cancellationToken = default)
@@ -51,14 +58,14 @@ namespace DemoAzAI.Api.Services
                     embedding.ToFloats().ToArray()
                 );
 
-                response.EmbeddedChunks.Add(embeddedChunk);
+                response.DocumentChunkEntity.EmbeddedChunks.Add(embeddedChunk);
             }
 
 
             return response;
 
         }
- 
+
     }
 }
 

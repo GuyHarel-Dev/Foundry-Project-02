@@ -22,12 +22,25 @@ namespace WebApi.Services
             if (chunks != null && chunks.Length > 0)
             {
 
-                var test = await EmbedDocumentChunksAsync(request, chunks);
+                var response = await EmbedDocumentChunksAsync(request, chunks);
+
+                if (response != null && request.SaveToStore)
+                {
+                    var status = SaveEmbeddedTextLinesToStore(response);
+                }
             }
 
 
             return new DocumentKnowledgeResponseDto();
 
+        }
+
+        private async Task<bool> SaveEmbeddedTextLinesToStore(EmbeddingResponseDto response)
+        {
+
+            var status = await documentChunksRepository.SaveDocumentChunkEntityAsync(response.DocumentChunkEntity);
+
+            return true;
         }
 
         private async Task<string[]?> ChunkDocumentTextAsync(DocumentKnowledgeRequestDto request)
@@ -61,9 +74,18 @@ namespace WebApi.Services
 
                 if (response != null)
                 {
+                    var entity = new DocumentChunkEntity
+                    {
+                        FileName = request.FileName,
+                        EmbeddedChunks = new List<EmbeddedChunk>()
+                    };
+
+                    entity.EmbeddedChunks.AddRange(response.DocumentChunkEntity.EmbeddedChunks);
+
                     return new EmbeddingResponseDto
                     {
-                        EmbeddedChunks = response.EmbeddedChunks
+                        DocumentChunkEntity = entity
+  
                     };
                 }
             }

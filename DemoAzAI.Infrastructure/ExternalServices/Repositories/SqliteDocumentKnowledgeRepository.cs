@@ -2,6 +2,7 @@
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using Microsoft.Data.Sqlite;
+using System.Text.Json;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 {
@@ -33,12 +34,11 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 """);
 
             connection.Execute("""
-                CREATE TABLE IF NOT EXISTS DocumentKnowledge (
+                CREATE TABLE IF NOT EXISTS DocumentEmbedding (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    DocumentId INTEGER NOT NULL,
                     ChunkIndex INTEGER NOT NULL,
                     ChunkText TEXT NOT NULL,
-                    Embedding TEXT NOT NULL,
+                    EmbeddingVectorJson TEXT NOT NULL,
                     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY(DocumentId)
                     REFERENCES Documents(Id)
@@ -48,31 +48,73 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             initialized = true;
         }
 
-        public async Task<bool> SaveAsync(DocumentChunkEntity document)
+        public async Task<bool> SaveDocumentChunkEntityAsync(DocumentChunkEntity document)
         {
             using var connection = new SqliteConnection(connectionString);
 
             EnsureInitialized();
 
-            var rows = await connection.ExecuteAsync(
-                """
-            INSERT INTO DocumentChunks
+            var fileName = document.FileName;
+
+            var fileId = await connection.ExecuteScalarAsync<long>(
+            """
+            INSERT INTO Document
             (
                 FileName,
-                TextChunks,
                 CreatedAt
             )
             VALUES
             (
                 @FileName,
-                @TextChunks,
                 datetime('now')
-            )
+            );
+
+            SELECT last_insert_rowid();
+
             """,
-                document);
+                fileName);
+
+            var chunks = document.EmbeddedChunks;
+
+            if (chunks != null && chunks.Any())
+            {
+                var index = 0;
+                foreach (var chunk in chunks)
+                {
+                    var test = await connection.ExecuteAsync(
+                        """
+                        INSERT INTO DocumentEmbedding
+                        (
+                            ChunkIndex,
+                            ChunkText,
+                            EmbeddingVectorJson,
+                            CreatedAt
+                        )
+                        VALUES
+                        (
+                            @ChunkIndex,
+                            @ChunkText,
+                            @EmbeddingVectorJson,
+                            datetime('now')
+                        );
+
+                        SELECT last_insert_rowid();
+
+                        """,
+                        new
+                        {
+                            ChunkIndex = index,
+                            ChunkText = chunk.Text,
+                            EmbeddingVectorJson = JsonSerializer.Serialize(chunk.EmbeddingVector),
+                            CreatedAt = DateTime.UtcNow
+                        });
+
+                    index += 1;
+                }
+            }
 
 
-            return rows > 0;
+            return fileId > 0;
         }
 
         public async Task<DocumentChunkEntity?> GetDocumentChunksAsync(string fileName)
