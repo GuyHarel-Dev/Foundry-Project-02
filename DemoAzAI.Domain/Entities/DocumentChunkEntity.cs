@@ -1,8 +1,10 @@
-﻿namespace DemoAzAI.Domain.Entities
+﻿using DemoAzAI.Domain.Models;
+
+namespace DemoAzAI.Domain.Entities
 {
     public class DocumentChunkEntity : DocumentEntity
     {
-        public string TextChunks { get; set; } = string.Empty;
+        public List<EmbeddedChunk> EmbeddedChunks { get; set; } = new();
 
     }
 }

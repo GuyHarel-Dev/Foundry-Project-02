@@ -1,5 +1,4 @@
-﻿using DemoAzAI.Api.Services.Interfaces;
-using DemoAzAI.Contracts.Api.Requests;
+﻿using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +14,13 @@ namespace WebApi.Controllers
     {
 
         [HttpPost("extract")]
-        public async Task<ActionResult<DocumentKnowledgeResponseDto>> ExtractKnowledge([FromBody] DocumentKnowledgeRequestDto request)
+        public async Task<ActionResult<DocumentKnowledgeResponseDto>> ExtractKnowledgeAsync([FromBody] DocumentKnowledgeRequestDto request)
         {
             if (string.IsNullOrWhiteSpace(request.TextToChunk))
             {
                 return BadRequest("TextToChunk property cannot be empty.");
             }
-            //var response = await knowledgeService.GetDocumentChunkingAsync(request);
+            var response = await knowledgeService.GetDocumentKnowledgeAsync(request);
             return new DocumentKnowledgeResponseDto();
 
             //return Ok(response);

@@ -9,16 +9,16 @@ namespace DemoAzAI.Api.Controllers
     [ApiController]
     public class EmbeddingController(
                 IEmbeddingService embeddingService
-                /*ISemanticSearchService semanticSearchService*/) 
+        ) 
         : ControllerBase
     {
 
         [HttpPost("embed-lines")]
-        public async Task<ActionResult<EmbeddingResponseDto>> EmbedTextLines([FromBody] EmbeddingRequestDto request)
+        public async Task<ActionResult<EmbeddingResponseDto>> EmbedTextLines([FromBody] EmbeddingTextLinesRequestDto request)
         {
             var response = await embeddingService.EmbedTextLinesAsync(request);
 
-            if (response == null || response.TextEmbeddings.Any() == false)
+            if (response == null || response.EmbeddedChunks.Any() == false)
                 throw new InvalidOperationException(
                     "The embedding provider returned no embeddings.");
 
@@ -26,29 +26,13 @@ namespace DemoAzAI.Api.Controllers
         }
 
         [HttpPost("embed")]
-        public async Task<ActionResult<EmbeddingResponseDto>> EmbedText([FromBody] EmbeddingRequestDto request)
+        public async Task<ActionResult<EmbeddingResponseDto>> EmbedText([FromBody] EmbeddingTextRequestDto request)
         {
             var response = await embeddingService.EmbedTextAsync(request.Text);
 
             return Ok(response);
         }
 
-        //[HttpGet("search/store")]
-        //public async Task<ActionResult<List<SemanticSearchResult>>> SearchEmbeddingStoreForSimilarTextLinesAsync([FromQuery] string? question)
-        //{
-        //    if (string.IsNullOrEmpty(question))
-        //    {
-        //        return BadRequest("Search question cannot be null or empty");
-        //    }
-        //    //if (embeddingService.EmbeddingStoreCount == 0)
-        //    //{
-        //    //    return BadRequest("No embeddings stored yet. Please embed some text before searching.");
-        //    //};
-
-        //    var result = await embeddingService.SearchEmbeddingStoreForSimilarTextLinesAsync(question);
-
-        //    return Ok(result);
-        //}
     }
 }
 

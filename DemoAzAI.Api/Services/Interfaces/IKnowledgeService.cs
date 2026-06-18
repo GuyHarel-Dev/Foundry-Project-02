@@ -1,10 +1,12 @@
-﻿using DemoAzAI.Domain.Entities;
+﻿using DemoAzAI.Contracts.Api.Requests;
+using DemoAzAI.Contracts.Api.Responses;
+using DemoAzAI.Domain.Entities;
 
 namespace WebApi.Services.Interfaces
 {
     public interface IKnowledgeService
     {
-        Task GetDocumentKnowledge(string documentId);
+        Task<DocumentKnowledgeResponseDto> GetDocumentKnowledgeAsync(DocumentKnowledgeRequestDto request);
         Task<DocumentChunkEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName);
     }
 }

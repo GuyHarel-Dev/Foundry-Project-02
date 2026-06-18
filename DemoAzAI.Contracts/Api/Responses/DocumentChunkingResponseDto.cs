@@ -4,7 +4,7 @@ namespace DemoAzAI.Contracts.Api.Responses
 {
     public class DocumentKnowledgeResponseDto
     {
-        public string TextChunks { get; set; } = string.Empty;
+        public List<string> TextChunks { get; set; } = new();
         public ModelStatistics? ModelStatistics { get; set; }
     }
 }

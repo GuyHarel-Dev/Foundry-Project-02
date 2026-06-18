@@ -1,5 +1,6 @@
 ﻿using DemoAzAI.Api.Services;
 using DemoAzAI.Api.Services.Interfaces;
+using WebApi.Services;
 using WebApi.Services.Interfaces;
 
 namespace WebApi.Extensions
@@ -17,8 +18,8 @@ namespace WebApi.Extensions
             services.AddScoped<IEmbeddingService,
                 EmbeddingService>();
 
-            //services.AddScoped<ISemanticSearchService,
-            //    SemanticSearchService>();
+            services.AddScoped<IKnowledgeService,
+                KnowledgeService>();
 
             return services;
         }

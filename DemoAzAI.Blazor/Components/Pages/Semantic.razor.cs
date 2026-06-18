@@ -37,13 +37,13 @@ namespace DemoAzAI.Blazor.Components.Pages
                 //    }
                 //};
 
-                var request = new EmbeddingRequestDto()
+                var request = new EmbeddingTextLinesRequestDto()
                 {
                     TextLines = documentAnalysisTextChunk.Split("\n", StringSplitOptions.RemoveEmptyEntries).ToList()
                 };
 
 
-                var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/text-embedding/embed-lines", request, logger, BasePageLog);
+                var result = await apiClient.PostAsync<EmbeddingTextLinesRequestDto, EmbeddingResponseDto>("api/text-embedding/embed-lines", request, logger, BasePageLog);
 
                 if (result is not null)
                 {

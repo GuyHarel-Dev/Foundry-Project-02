@@ -1,12 +1,8 @@
-using Azure;
-using DemoAzAI.Application;
-using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Components;
-using static Dapper.SqlMapper;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
@@ -32,8 +28,6 @@ namespace DemoAzAI.Blazor.Components.Pages
             try
             {
 
-                sendKnowledgeExtractionRequestBusy = true;
-
                 var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document/analysis", logger, BasePageLog);
 
                 if (result is not null)
@@ -48,7 +42,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             }
             finally
             {
-                sendKnowledgeExtractionRequestBusy = false;
+
             }
 
 
@@ -100,25 +94,25 @@ namespace DemoAzAI.Blazor.Components.Pages
             try
             {
 
-                //if (selectedDocumentAnalysisEntity is null)
-                //{
-                //    AddBasePageExecutionError($"Select a document stored result first", logger);
-                //    return;
-                //}
+                if (selectedDocumentAnalysisEntity is null)
+                {
+                    AddBasePageExecutionError($"Select a document stored result first", logger);
+                    return;
+                }
 
-                //sendKnowledgeExtractionRequestBusy = true;
+                sendKnowledgeExtractionRequestBusy = true;
 
-                //var request = new DocumentChunkingRequestDto()
-                //{
-                //    FileName = selectedDocumentAnalysisEntity.FileName,
-                //    TextToChunk = selectedDocumentAnalysisEntity?.DocumentAnalysisResult?.DocContent ?? string.Empty,
-                //    SaveToStore = saveKnowledgeChunksToStore
-                //};
+                var request = new DocumentKnowledgeRequestDto()
+                {
+                    FileName = selectedDocumentAnalysisEntity.FileName,
+                    TextToChunk = selectedDocumentAnalysisEntity?.DocumentAnalysisResult?.DocContent ?? string.Empty,
+                    SaveToStore = saveKnowledgeChunksToStore
+                };
 
-                //var result = await apiClient.PostAsync<DocumentChunkingRequestDto, DocumentChunkingResponseDto>("api/knowledge/chunkings/chunk", request, logger, BasePageLog);
+                var result = await apiClient.PostAsync<DocumentKnowledgeRequestDto, DocumentKnowledgeResponseDto>("api/knowledge/extract", request, logger, BasePageLog);
 
                 //documentKnowledgeChunks = result?.Value?.TextChunks;
-                //documentKnowledgeChunksStatistics = result?.Value?.ModelStatistics?.ToString();
+                documentKnowledgeChunksStatistics = result?.Value?.ModelStatistics?.ToString();
 
             }
             catch (Exception ex)
