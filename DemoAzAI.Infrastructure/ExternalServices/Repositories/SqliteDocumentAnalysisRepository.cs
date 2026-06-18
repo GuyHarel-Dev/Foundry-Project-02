@@ -179,6 +179,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             return status > 0;
 
         }
+
         private void EnsureInitialized()
         {
             if (initialized)

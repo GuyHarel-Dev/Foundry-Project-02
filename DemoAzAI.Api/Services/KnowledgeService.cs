@@ -11,7 +11,7 @@ namespace WebApi.Services
     public class KnowledgeService(
             IChatService chatService,
             IEmbeddingService embeddingService,
-            IDocumentKnowledgeRepository documentChunksRepository
+            IDocumentKnowledgeRepository documentKnowledgeRepository
         ) : IKnowledgeService
     {
         public async Task<DocumentKnowledgeResponseDto> GetDocumentKnowledgeAsync(DocumentKnowledgeRequestDto request)
@@ -22,25 +22,22 @@ namespace WebApi.Services
             if (chunks != null && chunks.Length > 0)
             {
 
-                var response = await EmbedDocumentChunksAsync(request, chunks);
+                var response = await EmbedDocumentChunksAsync(request, chunks); 
 
                 if (response != null && request.SaveToStore)
                 {
-                    var status = SaveEmbeddedTextLinesToStore(response);
+                    var exists = await documentKnowledgeRepository.DocumentExistsAsync(request.FileName);
+
+                    if (exists)
+                        await documentKnowledgeRepository.DeleteDocumentAsync(request.FileName);
+
+                    var status = await documentKnowledgeRepository.SaveDocumentAsync(response.DocumentChunkEntity);
                 }
             }
 
 
             return new DocumentKnowledgeResponseDto();
 
-        }
-
-        private async Task<bool> SaveEmbeddedTextLinesToStore(EmbeddingResponseDto response)
-        {
-
-            var status = await documentChunksRepository.SaveDocumentChunkEntityAsync(response.DocumentChunkEntity);
-
-            return true;
         }
 
         private async Task<string[]?> ChunkDocumentTextAsync(DocumentKnowledgeRequestDto request)

@@ -2,6 +2,7 @@
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using Microsoft.Data.Sqlite;
+using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
@@ -14,7 +15,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 
         public SqliteDocumentKnowledgeRepository(string repositoryPath)
         {
-            connectionString = $"Data Source={repositoryPath}/document_chunks.db";
+            connectionString = $"Data Source={repositoryPath}/document_knowledge.db";
         }
 
         private void EnsureInitialized()
@@ -25,40 +26,101 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             using var connection =
                 new SqliteConnection(connectionString);
 
-            connection.Execute("""
-                CREATE TABLE IF NOT EXISTS Document (
+            connection.Execute(
+                """
+                CREATE TABLE IF NOT EXISTS Documents (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     FileName TEXT NOT NULL UNIQUE,
                     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
                 );
-                """);
 
-            connection.Execute("""
-                CREATE TABLE IF NOT EXISTS DocumentEmbedding (
+                CREATE TABLE IF NOT EXISTS DocumentEmbeddings (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                    DocumentId INTEGER NOT NULL,
+
                     ChunkIndex INTEGER NOT NULL,
+
                     ChunkText TEXT NOT NULL,
+
                     EmbeddingVectorJson TEXT NOT NULL,
+
                     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+
                     FOREIGN KEY(DocumentId)
-                    REFERENCES Documents(Id)
+                        REFERENCES Documents(Id)
+                        ON DELETE CASCADE,
+
+                    UNIQUE(DocumentId, ChunkIndex)
                 );
+
+                CREATE INDEX IF NOT EXISTS IX_DocumentEmbeddings_DocumentId
+                ON DocumentEmbeddings(DocumentId);
                 """);
 
             initialized = true;
         }
 
-        public async Task<bool> SaveDocumentChunkEntityAsync(DocumentChunkEntity document)
+        public async Task<bool> DocumentExistsAsync(string fileName)
         {
-            using var connection = new SqliteConnection(connectionString);
+            EnsureInitialized();
+
+            await using var connection = new SqliteConnection(connectionString);
+
+            const string sql = """
+                SELECT COUNT(1)
+                FROM Documents
+                WHERE FileName = @fileName;
+                """;
+
+            var count = await connection.ExecuteScalarAsync<long>(
+                sql,
+                new { fileName = fileName });
+
+            return count > 0;
+        }
+
+        public async Task<bool> DeleteDocumentAsync(string fileName)
+        {
 
             EnsureInitialized();
 
+            using var connection =
+                new SqliteConnection(connectionString);
+
+            string sql = """
+                    DELETE FROM Documents
+                    WHERE FileName = @fileName;
+                    """;
+
+            var status = await connection.ExecuteAsync(
+                sql,
+                new
+                {
+                    fileName = fileName
+                });
+
+            return status > 0;
+
+
+        }
+        public async Task<bool> SaveDocumentAsync(DocumentChunkEntity document)
+        {
+            EnsureInitialized();
+
+            using var connection = new SqliteConnection(connectionString);
+
+            await connection.OpenAsync();
+
+            await using var transaction = await connection.BeginTransactionAsync();
+
             var fileName = document.FileName;
 
-            var fileId = await connection.ExecuteScalarAsync<long>(
-            """
-            INSERT INTO Document
+            try
+            {
+                var documentId = await connection.ExecuteScalarAsync<long>(
+                         """
+            INSERT INTO Documents
             (
                 FileName,
                 CreatedAt
@@ -72,19 +134,20 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             SELECT last_insert_rowid();
 
             """,
-                fileName);
+                         new { FileName = fileName }, transaction);
 
-            var chunks = document.EmbeddedChunks;
+                var chunks = document.EmbeddedChunks;
 
-            if (chunks != null && chunks.Any())
-            {
-                var index = 0;
-                foreach (var chunk in chunks)
+                if (chunks != null && chunks.Any())
                 {
-                    var test = await connection.ExecuteAsync(
-                        """
-                        INSERT INTO DocumentEmbedding
+                    var index = 0;
+                    foreach (var chunk in chunks)
+                    {
+                        var test = await connection.ExecuteAsync(
+                            """
+                        INSERT INTO DocumentEmbeddings
                         (
+                            DocumentId,
                             ChunkIndex,
                             ChunkText,
                             EmbeddingVectorJson,
@@ -92,32 +155,40 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                         )
                         VALUES
                         (
+                            @DocumentId,
                             @ChunkIndex,
                             @ChunkText,
                             @EmbeddingVectorJson,
                             datetime('now')
                         );
 
-                        SELECT last_insert_rowid();
-
                         """,
-                        new
-                        {
-                            ChunkIndex = index,
-                            ChunkText = chunk.Text,
-                            EmbeddingVectorJson = JsonSerializer.Serialize(chunk.EmbeddingVector),
-                            CreatedAt = DateTime.UtcNow
-                        });
+                            new
+                            {
+                                DocumentId = documentId,
+                                ChunkIndex = index,
+                                ChunkText = chunk.Text,
+                                EmbeddingVectorJson = JsonSerializer.Serialize(chunk.EmbeddingVector),
+                                CreatedAt = DateTime.UtcNow
+                            }, transaction);
 
-                    index += 1;
+                        index += 1;
+                    }
                 }
+
+                await transaction.CommitAsync();
+
+                return true;
             }
-
-
-            return fileId > 0;
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+         
         }
 
-        public async Task<DocumentChunkEntity?> GetDocumentChunksAsync(string fileName)
+        public async Task<DocumentChunkEntity?> GetDocumentAsync(string fileName)
         {
             EnsureInitialized();
 
@@ -142,7 +213,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             return entity;
         }
 
-        public Task<DocumentChunkEntity?> GetDocumentKnowledgeAsync(string fileName)
+        public Task<DocumentChunkEntity?> GetDocumentsync(string fileName)
         {
             throw new NotImplementedException();
         }

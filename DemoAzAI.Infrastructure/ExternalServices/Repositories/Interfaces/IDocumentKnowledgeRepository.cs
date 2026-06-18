@@ -4,7 +4,10 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces
 {
     public interface IDocumentKnowledgeRepository
     {
-        Task<DocumentChunkEntity?> GetDocumentKnowledgeAsync(string fileName);
-        Task<bool> SaveDocumentChunkEntityAsync(DocumentChunkEntity document);
+        Task<DocumentChunkEntity?> GetDocumentsync(string fileName);
+        Task<bool> SaveDocumentAsync(DocumentChunkEntity document);
+
+        Task<bool> DocumentExistsAsync(string fileName);
+        Task<bool> DeleteDocumentAsync(string fileName);
     }
 }
