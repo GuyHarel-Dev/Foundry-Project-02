@@ -109,7 +109,8 @@ namespace DemoAzAI.Blazor.Components.Pages
                     SaveToStore = saveKnowledgeChunksToStore
                 };
 
-                var result = await apiClient.PostAsync<DocumentKnowledgeRequestDto, DocumentKnowledgeResponseDto>("api/knowledge/extract", request, logger, BasePageLog);
+                var result = await apiClient.PostAsync<DocumentKnowledgeRequestDto, DocumentKnowledgeResponseDto>
+                    ("api/knowledge/embed", request, logger, BasePageLog);
 
                 //documentKnowledgeChunks = result?.Value?.TextChunks;
                 documentKnowledgeChunksStatistics = result?.Value?.ModelStatistics?.ToString();

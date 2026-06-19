@@ -14,7 +14,7 @@ namespace WebApi.Services
             IDocumentKnowledgeRepository documentKnowledgeRepository
         ) : IKnowledgeService
     {
-        public async Task<DocumentKnowledgeResponseDto> GetDocumentKnowledgeAsync(DocumentKnowledgeRequestDto request)
+        public async Task<DocumentKnowledgeResponseDto> EmbedDocumentKnowledgeAsync(DocumentKnowledgeRequestDto request)
         {
 
             var chunks = await ChunkDocumentTextAsync(request);
@@ -31,7 +31,7 @@ namespace WebApi.Services
                     if (exists)
                         await documentKnowledgeRepository.DeleteDocumentAsync(request.FileName);
 
-                    var status = await documentKnowledgeRepository.SaveDocumentAsync(response.DocumentChunkEntity);
+                    var status = await documentKnowledgeRepository.SaveDocumentAsync(response.DocumentEmbeddingEntity);
                 }
             }
 
@@ -71,17 +71,17 @@ namespace WebApi.Services
 
                 if (response != null)
                 {
-                    var entity = new DocumentChunkEntity
+                    var entity = new DocumentEmbeddingEntity
                     {
                         FileName = request.FileName,
                         EmbeddedChunks = new List<EmbeddedChunk>()
                     };
 
-                    entity.EmbeddedChunks.AddRange(response.DocumentChunkEntity.EmbeddedChunks);
+                    entity.EmbeddedChunks.AddRange(response.DocumentEmbeddingEntity.EmbeddedChunks);
 
                     return new EmbeddingResponseDto
                     {
-                        DocumentChunkEntity = entity
+                        DocumentEmbeddingEntity = entity
   
                     };
                 }
@@ -91,10 +91,10 @@ namespace WebApi.Services
             return null;
         }
 
-        public async Task<DocumentChunkEntity?> GetDocumentChunksByNameAsync(string fileName)
+        public async Task<DocumentEmbeddingEntity?> GetDocumentChunksByNameAsync(string fileName)
         {
             // return await documentChunksRepository.GetDocumentChunksAsync(fileName);
-            return new DocumentChunkEntity();
+            return new DocumentEmbeddingEntity();
         }
 
         public Task GetDocumentKnowledge(string documentId)
@@ -102,7 +102,7 @@ namespace WebApi.Services
             throw new NotImplementedException();
         }
 
-        public Task<DocumentChunkEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName)
+        public Task<DocumentEmbeddingEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName)
         {
             throw new NotImplementedException();
         }

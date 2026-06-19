@@ -2,8 +2,8 @@
 {
     public record EmbeddedChunk
     (
-        Guid Id,
-        string Text,
+        long ChunkIndex,
+        string ChunkText,
         float[] EmbeddingVector
     );
 

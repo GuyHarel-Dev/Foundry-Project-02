@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using DemoAzAI.Domain.Entities;
+using DemoAzAI.Domain.Models;
 using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using Microsoft.Data.Sqlite;
 using System.Reflection.Metadata;
@@ -104,7 +105,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 
 
         }
-        public async Task<bool> SaveDocumentAsync(DocumentChunkEntity document)
+        public async Task<bool> SaveDocumentAsync(DocumentEmbeddingEntity document)
         {
             EnsureInitialized();
 
@@ -119,29 +120,28 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             try
             {
                 var documentId = await connection.ExecuteScalarAsync<long>(
-                         """
-            INSERT INTO Documents
-            (
-                FileName,
-                CreatedAt
-            )
-            VALUES
-            (
-                @FileName,
-                datetime('now')
-            );
+                    """
+                    INSERT INTO Documents
+                    (
+                        FileName,
+                        CreatedAt
+                    )
+                    VALUES
+                    (
+                        @FileName,
+                        datetime('now')
+                    );
 
-            SELECT last_insert_rowid();
+                    SELECT last_insert_rowid();
 
-            """,
-                         new { FileName = fileName }, transaction);
+                    """,
+                     new { FileName = fileName }, transaction);
 
-                var chunks = document.EmbeddedChunks;
 
-                if (chunks != null && chunks.Any())
+                if (document.EmbeddedChunks != null && document.EmbeddedChunks.Any())
                 {
                     var index = 0;
-                    foreach (var chunk in chunks)
+                    foreach (var chunk in document.EmbeddedChunks)
                     {
                         var test = await connection.ExecuteAsync(
                             """
@@ -167,7 +167,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                             {
                                 DocumentId = documentId,
                                 ChunkIndex = index,
-                                ChunkText = chunk.Text,
+                                ChunkText = chunk.ChunkText,
                                 EmbeddingVectorJson = JsonSerializer.Serialize(chunk.EmbeddingVector),
                                 CreatedAt = DateTime.UtcNow
                             }, transaction);
@@ -185,35 +185,52 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 await transaction.RollbackAsync();
                 throw;
             }
-         
+
         }
 
-        public async Task<DocumentChunkEntity?> GetDocumentAsync(string fileName)
+        public async Task<DocumentEmbeddingEntity?> GetDocumentAsync(DocumentEmbeddingEntity document)
         {
             EnsureInitialized();
 
-            using var connection =
-                new SqliteConnection(connectionString);
+            using var connection = new SqliteConnection(connectionString);
+
+            await connection.OpenAsync();
 
             string sql = """
                 SELECT
                     Id,
                     FileName,
-                    TextChunks,
                     CreatedAt
-                FROM DocumentChunks
+                FROM Documents
                 WHERE FileName = @FileName
                 """;
 
-            var entity = await connection.QuerySingleOrDefaultAsync<DocumentChunkEntity>(
+            var entity = await connection.QuerySingleOrDefaultAsync<DocumentEmbeddingEntity>(
                 sql,
-                new { FileName = fileName });
+                new { FileName = document.FileName });
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            var chunks = await connection.QueryAsync<EmbeddedChunk>(
+                """
+                SELECT
+                    ChunkIndex,
+                    ChunkText,
+                    EmbeddingVectorJson
+                FROM DocumentEmbeddings
+                WHERE DocumentId = @DocumentId
+                ORDER BY ChunkIndex
+                """,
+                new { DocumentId = entity.Id });
 
 
             return entity;
         }
 
-        public Task<DocumentChunkEntity?> GetDocumentsync(string fileName)
+        public Task<DocumentEmbeddingEntity?> GetDocumentsync(string fileName)
         {
             throw new NotImplementedException();
         }

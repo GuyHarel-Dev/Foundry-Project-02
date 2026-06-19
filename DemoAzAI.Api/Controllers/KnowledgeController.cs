@@ -13,25 +13,25 @@ namespace WebApi.Controllers
         ) : ControllerBase
     {
 
-        [HttpPost("extract")]
-        public async Task<ActionResult<DocumentKnowledgeResponseDto>> ExtractKnowledgeAsync([FromBody] DocumentKnowledgeRequestDto request)
+        [HttpPost("embed")]
+        public async Task<ActionResult<DocumentKnowledgeResponseDto>> EmbedDocumentKnowledgeAsync([FromBody] DocumentKnowledgeRequestDto request)
         {
             if (string.IsNullOrWhiteSpace(request.TextToChunk))
             {
                 return BadRequest("TextToChunk property cannot be empty.");
             }
-            var response = await knowledgeService.GetDocumentKnowledgeAsync(request);
+            var response = await knowledgeService.EmbedDocumentKnowledgeAsync(request);
             return new DocumentKnowledgeResponseDto();
 
             //return Ok(response);
         }
 
         [HttpGet("chunks/filename/{fileName}")]
-        public async Task<DocumentChunkEntity?> GetDocumentChunksByNameAsync(string fileName)
+        public async Task<DocumentEmbeddingEntity?> GetDocumentChunksByNameAsync(string fileName)
         {
             //return await documentAnalysisService.GetDocumentChunksByNameAsync(fileName);
 
-            return new DocumentChunkEntity();
+            return new DocumentEmbeddingEntity();
 
         }
     }

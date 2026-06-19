@@ -23,16 +23,17 @@ namespace DemoAzAI.Api.Services
             ClientResult<OpenAIEmbedding> result = await embeddingClient
                 .GenerateEmbeddingAsync(text, cancellationToken: cancellationToken);
 
+            var index = 0;
             var chunk = new EmbeddedChunk
             (
-                Guid.NewGuid(),
+                index,
                 text,
                 result.Value.ToFloats().ToArray()
             );
 
             return new EmbeddingResponseDto
             {
-                DocumentChunkEntity = new DocumentChunkEntity
+                DocumentEmbeddingEntity = new DocumentEmbeddingEntity
                 {
                     EmbeddedChunks = new List<EmbeddedChunk> { chunk }
                 }
@@ -50,15 +51,16 @@ namespace DemoAzAI.Api.Services
 
             EmbeddingResponseDto response = new();
 
+            var index = 0;
             foreach (OpenAIEmbedding embedding in result.Value)
             {
                 EmbeddedChunk embeddedChunk = new EmbeddedChunk(
-                    Guid.NewGuid(),
+                    index++,
                     textLines[embedding.Index],
                     embedding.ToFloats().ToArray()
                 );
 
-                response.DocumentChunkEntity.EmbeddedChunks.Add(embeddedChunk);
+                response.DocumentEmbeddingEntity.EmbeddedChunks.Add(embeddedChunk);
             }
 
 
