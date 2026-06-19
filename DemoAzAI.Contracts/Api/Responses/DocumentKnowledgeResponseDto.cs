@@ -5,8 +5,6 @@ namespace DemoAzAI.Contracts.Api.Responses
 {
     public class DocumentKnowledgeResponseDto
     {
-        public DocumentEntity? DocumentEntity { get; set; }
-
-        public ModelStatistics? ModelStatistics { get; set; }
+        public ModelStatistics? ChunkingStatistics { get; set; }
     }
 }

@@ -113,7 +113,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 
             await connection.OpenAsync();
 
-            //await using var transaction = await connection.BeginTransactionAsync();
+            await using var transaction = await connection.BeginTransactionAsync();
 
             try
             {
@@ -133,13 +133,11 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                     SELECT last_insert_rowid();
 
                     """,
-                     new { FileName = document.FileName });
+                     new { FileName = document.FileName }, transaction);
 
 
                 if (document.EmbeddedTexts != null && document.EmbeddedTexts.Any())
                 {
-                    var test = JsonSerializer.Serialize(document.EmbeddedTexts[0].Vector);
-
                     var index = 0;
                     foreach (var chunk in document.EmbeddedTexts)
                     {
@@ -170,19 +168,19 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                                 ChunkText = chunk.Text,
                                 EmbeddingVectorJson = JsonSerializer.Serialize(chunk.Vector),
                                 CreatedAt = DateTime.UtcNow
-                            });
+                            }, transaction);
 
                         index += 1;
                     }
                 }
 
-                //await transaction.CommitAsync();
+                await transaction.CommitAsync();
 
                 return true;
             }
             catch (Exception ex)
             {
-                //await transaction.RollbackAsync();
+                await transaction.RollbackAsync();
                 throw;
             }
         }

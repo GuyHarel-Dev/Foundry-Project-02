@@ -16,28 +16,29 @@ namespace WebApi.Services
     {
         public async Task<DocumentKnowledgeResponseDto?> EmbedDocumentKnowledgeAsync(DocumentKnowledgeRequestDto request)
         {
+            var response = new DocumentKnowledgeResponseDto();
 
-            var chunks = await ChunkDocumentTextAsync(request);
+            var chunks = await ChunkDocumentTextAsync(request, response);
 
             if (chunks != null && chunks.Length > 0)
             {
-                var response = await EmbedDocumentChunksAsync(request, chunks); 
+                var embeddingResponse = await EmbedDocumentChunksAsync(request, chunks); 
 
-                if (response != null && request.SaveToStore)
+                if (embeddingResponse != null && request.SaveToStore)
                 {
                     await DeleteDocumentIfExists(request);
 
                     var docToSave = new DocumentKnowledgeEntity
                     {
                         FileName = request.FileName,
-                        EmbeddedTexts = response.EmbeddedTexts
+                        EmbeddedTexts = embeddingResponse.EmbeddedTexts
                     };
 
-                    var status = await documentKnowledgeRepository.SaveDocumentKnowledgeAsync(docToSave);
+                    var saved = await documentKnowledgeRepository.SaveDocumentKnowledgeAsync(docToSave);
                 }
             }
 
-            return null;
+            return response;
 
         }
 
@@ -49,7 +50,7 @@ namespace WebApi.Services
                 await documentKnowledgeRepository.DeleteDocumentKnowledgeAsync(request.FileName);
         }
 
-        private async Task<string[]?> ChunkDocumentTextAsync(DocumentKnowledgeRequestDto request)
+        private async Task<string[]?> ChunkDocumentTextAsync(DocumentKnowledgeRequestDto request, DocumentKnowledgeResponseDto response)
         {
             var chatRequest = new ChatQuestionRequestDto
             {
@@ -57,11 +58,12 @@ namespace WebApi.Services
                 SystemPrompt = AiPrompts.DocumentKnowledgeExtraction
             };
 
-            var response = await chatService.GetPromptResponseAsync(chatRequest);
+            var promptResponse = await chatService.GetPromptResponseAsync(chatRequest);
 
-            if (response != null && response.ChatResponse != null)
+            if (promptResponse != null && promptResponse.ChatResponse != null)
             {
-                return response.ChatResponse.Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                response.ChunkingStatistics = promptResponse.ModelStatistics;
+                return promptResponse.ChatResponse.Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             }
 
             return [];

@@ -18,9 +18,9 @@ namespace DemoAzAI.Api.Controllers
         {
             var response = await embeddingService.EmbedTextLinesAsync(request);
 
-            //if (response == null || response.DocumentEmbeddingEntity.EmbeddedChunks.Any() == false)
-            //    throw new InvalidOperationException(
-            //        "The embedding provider returned no embeddings.");
+            if (response == null || response.EmbeddedTexts is null || response.EmbeddedTexts.Any() == false)
+                throw new InvalidOperationException(
+                    "EmbedTextLines returned no embeddings.");
 
             return Ok(response);
         }

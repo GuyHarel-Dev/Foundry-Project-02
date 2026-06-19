@@ -20,7 +20,10 @@ namespace WebApi.Controllers
             {
                 return BadRequest("TextToChunk property cannot be empty.");
             }
-            return await knowledgeService.EmbedDocumentKnowledgeAsync(request);
+
+            var response = await knowledgeService.EmbedDocumentKnowledgeAsync(request);
+
+            return response;
         }
 
         [HttpGet("embeddings/{fileName}")]

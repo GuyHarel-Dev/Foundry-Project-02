@@ -113,7 +113,7 @@ namespace DemoAzAI.Blazor.Components.Pages
                     ("api/knowledge/embed", request, logger, BasePageLog);
 
                 //documentKnowledgeChunks = result?.Value?.TextChunks;
-                documentKnowledgeChunksStatistics = result?.Value?.ModelStatistics?.ToString();
+                documentKnowledgeChunksStatistics = result?.Value?.ChunkingStatistics?.ToString();
 
             }
             catch (Exception ex)
