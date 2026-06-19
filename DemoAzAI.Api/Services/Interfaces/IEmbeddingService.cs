@@ -6,7 +6,7 @@ namespace WebApi.Services.Interfaces
 {
     public interface IEmbeddingService
     {
-        Task<EmbeddingResponseDto> EmbedTextAsync(string text, CancellationToken cancellationToken = default);
-        Task<EmbeddingResponseDto> EmbedTextLinesAsync(EmbeddingTextLinesRequestDto request, CancellationToken cancellationToken = default);
+        Task<EmbeddingTextResponseDto> EmbedTextAsync(string text, CancellationToken cancellationToken = default);
+        Task<EmbeddingTextLinesResponseDto> EmbedTextLinesAsync(EmbeddingTextLinesRequestDto request, CancellationToken cancellationToken = default);
     }
 }

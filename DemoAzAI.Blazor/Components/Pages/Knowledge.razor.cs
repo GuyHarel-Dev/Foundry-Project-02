@@ -128,54 +128,6 @@ namespace DemoAzAI.Blazor.Components.Pages
         }
 
 
-        private async Task EmbedTextLines()
-        {
-
-            //try
-            //{
-            //    isBusy = true;
-
-            //    embeddedText = string.Empty;
-            //    executionSteps = string.Empty;
-
-            //    executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(EmbedTextLines)}: Starting embedding text...", clearSteps: true);
-
-            //    await RefreshUI();
-
-            //    List<string> lines = textToEmbed
-            //        .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-            //        .ToList();
-
-            //    var request = new EmbeddingRequestDto
-            //    {
-            //        AddEmbeddingsToStore = true,
-            //        TextLines = lines
-            //    };
-
-            //    var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed/chunks", request);
-
-            //    if (!result.IsSuccess)
-            //    {
-            //        executionSteps = "API returned no data.";
-            //        Logger.LogInformation(result.ErrorMessage);
-            //        return;
-
-            //    }
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogError(ex, "Error while embedding text lines.");
-            //}
-            //finally
-            //{
-            //    isBusy = false;
-            //}
-
-        }
-
-
-
     }
 
 

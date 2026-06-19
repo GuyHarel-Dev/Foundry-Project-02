@@ -4,10 +4,9 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces
 {
     public interface IDocumentKnowledgeRepository
     {
-        Task<DocumentEmbeddingEntity?> GetDocumentsync(string fileName);
-        Task<bool> SaveDocumentAsync(DocumentEmbeddingEntity document);
-        Task<DocumentEmbeddingEntity?> GetDocumentAsync(DocumentEmbeddingEntity document);
-        Task<bool> DocumentExistsAsync(string fileName);
-        Task<bool> DeleteDocumentAsync(string fileName);
+        Task<bool> SaveDocumentKnowledgeAsync(DocumentEmbeddingEntity document);
+        Task<DocumentEmbeddingEntity?> GetDocumentKnowledgeAsync(string fileName);
+        Task<bool> DocumentKnowledgeExistsAsync(string fileName);
+        Task<bool> DeleteDocumentKnowledgeAsync(string fileName);
     }
 }

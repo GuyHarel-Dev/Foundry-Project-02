@@ -1,12 +1,12 @@
 ﻿using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using OpenAI.Embeddings;
 using System.ClientModel;
 using WebApi.Services.Interfaces;
 
 #pragma warning disable OPENAI001 // pour using OpenAI.Responses;
+
 
 namespace DemoAzAI.Api.Services
 {
@@ -16,55 +16,50 @@ namespace DemoAzAI.Api.Services
         : IEmbeddingService
 
     {
-        public async Task<EmbeddingResponseDto> EmbedTextAsync(string text, CancellationToken cancellationToken = default)
+        public async Task<EmbeddingTextResponseDto> EmbedTextAsync(string text, CancellationToken cancellationToken = default)
         {
             logger.LogInformation("Starting embedding generation for text: {text}", text);
 
             ClientResult<OpenAIEmbedding> result = await embeddingClient
                 .GenerateEmbeddingAsync(text, cancellationToken: cancellationToken);
 
-            var index = 0;
-            var chunk = new EmbeddedChunk
-            (
-                index,
-                text,
-                result.Value.ToFloats().ToArray()
-            );
-
-            return new EmbeddingResponseDto
+            var embeddedText = new EmbeddedText
             {
-                DocumentEmbeddingEntity = new DocumentEmbeddingEntity
-                {
-                    EmbeddedChunks = new List<EmbeddedChunk> { chunk }
-                }
+                Text = text,
+                Vector = result.Value.ToFloats().ToArray()
+            };
+            
+            return new EmbeddingTextResponseDto
+            {
+                EmbeddedText = embeddedText 
             };
         }
 
-        public async Task<EmbeddingResponseDto> EmbedTextLinesAsync(EmbeddingTextLinesRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<EmbeddingTextLinesResponseDto> EmbedTextLinesAsync(EmbeddingTextLinesRequestDto request, CancellationToken cancellationToken = default)
         {
             var textLines = request.TextLines;
 
             logger.LogInformation("Starting embedding generation for {Count} text lines.", textLines.Count);
 
             ClientResult<OpenAIEmbeddingCollection> result = await embeddingClient
-                .GenerateEmbeddingsAsync(request.TextLines, cancellationToken: cancellationToken);
+                .GenerateEmbeddingsAsync(textLines, cancellationToken: cancellationToken);
 
-            EmbeddingResponseDto response = new();
-
-            var index = 0;
-            foreach (OpenAIEmbedding embedding in result.Value)
+            var response = new EmbeddingTextLinesResponseDto
             {
-                EmbeddedChunk embeddedChunk = new EmbeddedChunk(
-                    index++,
-                    textLines[embedding.Index],
-                    embedding.ToFloats().ToArray()
-                );
+                EmbeddedTexts = new List<EmbeddedText>()
+            };
 
-                response.DocumentEmbeddingEntity.EmbeddedChunks.Add(embeddedChunk);
+            foreach (var emb in result.Value)
+            {
+                response.EmbeddedTexts.Add(new EmbeddedText 
+                    { 
+                        Text = textLines.ElementAt(emb.Index), 
+                        Vector = emb.ToFloats().ToArray() 
+                });
             }
 
-
             return response;
+
 
         }
 

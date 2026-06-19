@@ -5,7 +5,7 @@ using WebApi.Services.Interfaces;
 
 namespace DemoAzAI.Api.Controllers
 {
-    [Route("api/text-embedding")]
+    [Route("api/embedding")]
     [ApiController]
     public class EmbeddingController(
                 IEmbeddingService embeddingService
@@ -13,20 +13,20 @@ namespace DemoAzAI.Api.Controllers
         : ControllerBase
     {
 
-        [HttpPost("embed-lines")]
-        public async Task<ActionResult<EmbeddingResponseDto>> EmbedTextLines([FromBody] EmbeddingTextLinesRequestDto request)
+        [HttpPost("text-lines")]
+        public async Task<ActionResult<EmbeddingTextLinesResponseDto>> EmbedTextLines([FromBody] EmbeddingTextLinesRequestDto request)
         {
             var response = await embeddingService.EmbedTextLinesAsync(request);
 
-            if (response == null || response.DocumentEmbeddingEntity.EmbeddedChunks.Any() == false)
-                throw new InvalidOperationException(
-                    "The embedding provider returned no embeddings.");
+            //if (response == null || response.DocumentEmbeddingEntity.EmbeddedChunks.Any() == false)
+            //    throw new InvalidOperationException(
+            //        "The embedding provider returned no embeddings.");
 
             return Ok(response);
         }
 
-        [HttpPost("embed")]
-        public async Task<ActionResult<EmbeddingResponseDto>> EmbedText([FromBody] EmbeddingTextRequestDto request)
+        [HttpPost("text")]
+        public async Task<ActionResult<EmbeddingTextResponseDto>> EmbedText([FromBody] EmbeddingTextRequestDto request)
         {
             var response = await embeddingService.EmbedTextAsync(request.Text);
 

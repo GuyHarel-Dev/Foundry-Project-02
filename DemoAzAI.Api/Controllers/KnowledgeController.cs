@@ -20,15 +20,13 @@ namespace WebApi.Controllers
             {
                 return BadRequest("TextToChunk property cannot be empty.");
             }
-            var response = await knowledgeService.EmbedDocumentKnowledgeAsync(request);
-            return new DocumentKnowledgeResponseDto();
-
-            //return Ok(response);
+            return await knowledgeService.EmbedDocumentKnowledgeAsync(request);
         }
 
-        [HttpGet("chunks/filename/{fileName}")]
-        public async Task<DocumentEmbeddingEntity?> GetDocumentChunksByNameAsync(string fileName)
+        [HttpGet("embeddings/{fileName}")]
+        public async Task<DocumentEmbeddingEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName)
         {
+            var test = knowledgeService.GetDocumentKnowledgeByFileNameAsync(fileName);
             //return await documentAnalysisService.GetDocumentChunksByNameAsync(fileName);
 
             return new DocumentEmbeddingEntity();

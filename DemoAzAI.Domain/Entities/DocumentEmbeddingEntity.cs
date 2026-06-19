@@ -1,11 +1,14 @@
-﻿using DemoAzAI.Domain.Models;
-
-namespace DemoAzAI.Domain.Entities
+﻿namespace DemoAzAI.Domain.Entities
 {
-    public class DocumentEmbeddingEntity : DocumentEntity
+    public class DocumentEmbeddingEntity
     {
-        public List<EmbeddedChunk> EmbeddedChunks { get; set; } = new();
+        public string? Id { get; set; }
+        public string? DocumentId { get; set; }
+        public long? ChunkIndex { get; set; }
+        public string? ChunkText { get; set; }
+        public string? EmbeddingVectorJson { get; set; }
 
+        public float[]? EmbeddingVector { get; set; }
     }
 }
  

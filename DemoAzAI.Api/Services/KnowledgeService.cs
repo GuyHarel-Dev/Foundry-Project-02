@@ -1,4 +1,5 @@
 ﻿using DemoAzAI.Api.Services.Interfaces;
+using DemoAzAI.Application.AI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
@@ -26,12 +27,12 @@ namespace WebApi.Services
 
                 if (response != null && request.SaveToStore)
                 {
-                    var exists = await documentKnowledgeRepository.DocumentExistsAsync(request.FileName);
+                    var exists = await documentKnowledgeRepository.DocumentKnowledgeExistsAsync(request.FileName);
 
                     if (exists)
-                        await documentKnowledgeRepository.DeleteDocumentAsync(request.FileName);
+                        await documentKnowledgeRepository.DeleteDocumentKnowledgeAsync(request.FileName);
 
-                    var status = await documentKnowledgeRepository.SaveDocumentAsync(response.DocumentEmbeddingEntity);
+                    //var status = await documentKnowledgeRepository.SaveDocumentKnowledgeAsync(response.DocumentEmbeddingEntity);
                 }
             }
 
@@ -45,7 +46,7 @@ namespace WebApi.Services
             var chatRequest = new ChatQuestionRequestDto
             {
                 Prompt = request.TextToChunk,
-                SystemPrompt = request.SystemPrompt
+                SystemPrompt = AiPrompts.DocumentKnowledgeExtraction
             };
 
             var response = await chatService.GetPromptResponseAsync(chatRequest);
@@ -58,7 +59,7 @@ namespace WebApi.Services
             return [];
         }
 
-        private async Task<EmbeddingResponseDto?> EmbedDocumentChunksAsync(DocumentKnowledgeRequestDto request, string[] chunks)
+        private async Task<EmbeddingTextResponseDto?> EmbedDocumentChunksAsync(DocumentKnowledgeRequestDto request, string[] chunks)
         {
             if (request != null && chunks.Length > 0)
             {
@@ -71,19 +72,19 @@ namespace WebApi.Services
 
                 if (response != null)
                 {
-                    var entity = new DocumentEmbeddingEntity
-                    {
-                        FileName = request.FileName,
-                        EmbeddedChunks = new List<EmbeddedChunk>()
-                    };
+                    //var entity = new DocumentEmbeddingEntity
+                    //{
+                    //    FileName = request.FileName,
+                    //    EmbeddedChunks = new List<EmbeddedChunk>()
+                    //};
 
-                    entity.EmbeddedChunks.AddRange(response.DocumentEmbeddingEntity.EmbeddedChunks);
+                    //entity.EmbeddedChunks.AddRange(response.DocumentEmbeddingEntity.EmbeddedChunks);
 
-                    return new EmbeddingResponseDto
-                    {
-                        DocumentEmbeddingEntity = entity
+                    //return new EmbeddingResponseDto
+                    //{
+                    //    DocumentEmbeddingEntity = entity
   
-                    };
+                    //};
                 }
             }
 
@@ -91,20 +92,10 @@ namespace WebApi.Services
             return null;
         }
 
-        public async Task<DocumentEmbeddingEntity?> GetDocumentChunksByNameAsync(string fileName)
+        public async Task<DocumentEmbeddingEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName)
         {
-            // return await documentChunksRepository.GetDocumentChunksAsync(fileName);
+            var test = await documentKnowledgeRepository.GetDocumentKnowledgeAsync(fileName);
             return new DocumentEmbeddingEntity();
-        }
-
-        public Task GetDocumentKnowledge(string documentId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DocumentEmbeddingEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName)
-        {
-            throw new NotImplementedException();
         }
     }
 }

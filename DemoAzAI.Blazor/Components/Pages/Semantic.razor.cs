@@ -23,7 +23,7 @@ namespace DemoAzAI.Blazor.Components.Pages
             {
 
                 sendTextEmbeddingRequestBusy = true;
-               
+
                 //var request = new EmbeddingRequestDto()
                 //{
                 //    TextLines = new List<string>()
@@ -43,14 +43,14 @@ namespace DemoAzAI.Blazor.Components.Pages
                 };
 
 
-                var result = await apiClient.PostAsync<EmbeddingTextLinesRequestDto, EmbeddingResponseDto>("api/text-embedding/embed-lines", request, logger, BasePageLog);
+                var result = await apiClient.PostAsync<EmbeddingTextLinesRequestDto, EmbeddingTextResponseDto>("api/text-embedding/embed-lines", request, logger, BasePageLog);
 
                 if (result is not null)
                 {
                     documentAnalysisTextChunk = result.Value!.GetSummary();
                 }
 
-  
+
             }
             catch (Exception ex)
             {
@@ -85,14 +85,14 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisEntity>>("api/store/document/analysis/results", logger);
 
-                if (result is not null) 
+                if (result is not null)
                 {
                     storedDocuments = result.Value!.ToList();
                     //DocumentAnalysisText = storedDocuments.First().AnalysisResult.DocumentsFieldsContent;
                 }
-    
 
-                }
+
+            }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Error while getting document results from store.");
@@ -128,60 +128,6 @@ namespace DemoAzAI.Blazor.Components.Pages
             await RefreshUIAsync();
         }
 
-        private async Task EmbedTextLines()
-        {
-
-            //try
-            //{
-            //    isBusy = true;
-
-            //    embeddedText = string.Empty;
-            //    executionSteps = string.Empty;
-
-            //    executionSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(EmbedTextLines)}: Starting embedding text...", clearSteps: true);
-
-            //    await RefreshUI();
-
-            //    List<string> lines = textToEmbed
-            //        .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-            //        .ToList();
-
-            //    var request = new EmbeddingRequestDto
-            //    {
-            //        AddEmbeddingsToStore = true,
-            //        TextLines = lines
-            //    };
-
-            //    var result = await apiClient.PostAsync<EmbeddingRequestDto, EmbeddingResponseDto>("api/embedding/embed/chunks", request);
-
-            //    if (!result.IsSuccess)
-            //    {
-            //        executionSteps = "API returned no data.";
-            //        Logger.LogInformation(result.ErrorMessage);
-            //        return;
-
-            //    }
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogError(ex, "Error while embedding text lines.");
-            //}
-            //finally
-            //{
-            //    isBusy = false;
-            //}
-
-        }
-
-
-
-
-
-        private static string TextToEmbedDefault = @"Cats are playful pets
-Dogs are loyal animals
-Pizza is delicious
-Machine learning uses vectors";
     }
 }
 
