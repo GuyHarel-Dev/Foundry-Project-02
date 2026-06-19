@@ -3,7 +3,6 @@ using DemoAzAI.Application.AI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
-using DemoAzAI.Domain.Models;
 using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using WebApi.Services.Interfaces;
 
@@ -15,30 +14,39 @@ namespace WebApi.Services
             IDocumentKnowledgeRepository documentKnowledgeRepository
         ) : IKnowledgeService
     {
-        public async Task<DocumentKnowledgeResponseDto> EmbedDocumentKnowledgeAsync(DocumentKnowledgeRequestDto request)
+        public async Task<DocumentKnowledgeResponseDto?> EmbedDocumentKnowledgeAsync(DocumentKnowledgeRequestDto request)
         {
 
             var chunks = await ChunkDocumentTextAsync(request);
 
             if (chunks != null && chunks.Length > 0)
             {
-
                 var response = await EmbedDocumentChunksAsync(request, chunks); 
 
                 if (response != null && request.SaveToStore)
                 {
-                    var exists = await documentKnowledgeRepository.DocumentKnowledgeExistsAsync(request.FileName);
+                    await DeleteDocumentIfExists(request);
 
-                    if (exists)
-                        await documentKnowledgeRepository.DeleteDocumentKnowledgeAsync(request.FileName);
+                    var docToSave = new DocumentKnowledgeEntity
+                    {
+                        FileName = request.FileName,
+                        EmbeddedTexts = response.EmbeddedTexts
+                    };
 
-                    //var status = await documentKnowledgeRepository.SaveDocumentKnowledgeAsync(response.DocumentEmbeddingEntity);
+                    var status = await documentKnowledgeRepository.SaveDocumentKnowledgeAsync(docToSave);
                 }
             }
 
+            return null;
 
-            return new DocumentKnowledgeResponseDto();
+        }
 
+        private async Task DeleteDocumentIfExists(DocumentKnowledgeRequestDto request)
+        {
+            var exists = await documentKnowledgeRepository.DocumentKnowledgeExistsAsync(request.FileName);
+
+            if (exists)
+                await documentKnowledgeRepository.DeleteDocumentKnowledgeAsync(request.FileName);
         }
 
         private async Task<string[]?> ChunkDocumentTextAsync(DocumentKnowledgeRequestDto request)
@@ -59,7 +67,7 @@ namespace WebApi.Services
             return [];
         }
 
-        private async Task<EmbeddingTextResponseDto?> EmbedDocumentChunksAsync(DocumentKnowledgeRequestDto request, string[] chunks)
+        private async Task<EmbeddingTextLinesResponseDto?> EmbedDocumentChunksAsync(DocumentKnowledgeRequestDto request, string[] chunks)
         {
             if (request != null && chunks.Length > 0)
             {
@@ -68,34 +76,17 @@ namespace WebApi.Services
                     TextLines = chunks.ToList()
                 };
 
-                var response = await embeddingService.EmbedTextLinesAsync(embeddingRequest);
+                return  await embeddingService.EmbedTextLinesAsync(embeddingRequest);
 
-                if (response != null)
-                {
-                    //var entity = new DocumentEmbeddingEntity
-                    //{
-                    //    FileName = request.FileName,
-                    //    EmbeddedChunks = new List<EmbeddedChunk>()
-                    //};
-
-                    //entity.EmbeddedChunks.AddRange(response.DocumentEmbeddingEntity.EmbeddedChunks);
-
-                    //return new EmbeddingResponseDto
-                    //{
-                    //    DocumentEmbeddingEntity = entity
-  
-                    //};
-                }
             }
-
 
             return null;
         }
 
-        public async Task<DocumentEmbeddingEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName)
+        public async Task<DocumentKnowledgeEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName)
         {
             var test = await documentKnowledgeRepository.GetDocumentKnowledgeAsync(fileName);
-            return new DocumentEmbeddingEntity();
+            return new DocumentKnowledgeEntity();
         }
     }
 }

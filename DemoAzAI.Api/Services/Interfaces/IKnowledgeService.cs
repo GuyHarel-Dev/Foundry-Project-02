@@ -7,6 +7,6 @@ namespace WebApi.Services.Interfaces
     public interface IKnowledgeService
     {
         Task<DocumentKnowledgeResponseDto> EmbedDocumentKnowledgeAsync(DocumentKnowledgeRequestDto request);
-        Task<DocumentEmbeddingEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName);
+        Task<DocumentKnowledgeEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName);
     }
 }

@@ -7,8 +7,6 @@ namespace DemoAzAI.Contracts.Api.Responses
     {
         public DocumentEntity? DocumentEntity { get; set; }
 
-        public List<DocumentEmbeddingEntity>? DocumentEmbeddingEntities { get; set; } 
-
         public ModelStatistics? ModelStatistics { get; set; }
     }
 }

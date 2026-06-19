@@ -24,12 +24,9 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("embeddings/{fileName}")]
-        public async Task<DocumentEmbeddingEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName)
+        public async Task<DocumentKnowledgeEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName)
         {
-            var test = knowledgeService.GetDocumentKnowledgeByFileNameAsync(fileName);
-            //return await documentAnalysisService.GetDocumentChunksByNameAsync(fileName);
-
-            return new DocumentEmbeddingEntity();
+            return await knowledgeService.GetDocumentKnowledgeByFileNameAsync(fileName);
 
         }
     }

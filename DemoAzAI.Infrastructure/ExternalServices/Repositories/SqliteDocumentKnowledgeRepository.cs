@@ -105,7 +105,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 
 
         }
-        public async Task<bool> SaveDocumentKnowledgeAsync(DocumentEmbeddingEntity document)
+        public async Task<bool> SaveDocumentKnowledgeAsync(DocumentKnowledgeEntity document)
         {
             EnsureInitialized();
 
@@ -113,83 +113,81 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
 
             await connection.OpenAsync();
 
-            await using var transaction = await connection.BeginTransactionAsync();
+            //await using var transaction = await connection.BeginTransactionAsync();
 
-            //var fileName = document.FileName;
+            try
+            {
+                var documentId = await connection.ExecuteScalarAsync<long>(
+                    """
+                    INSERT INTO Documents
+                    (
+                        FileName,
+                        CreatedAt
+                    )
+                    VALUES
+                    (
+                        @FileName,
+                        datetime('now')
+                    );
 
-            //try
-            //{
-            //    var documentId = await connection.ExecuteScalarAsync<long>(
-            //        """
-            //        INSERT INTO Documents
-            //        (
-            //            FileName,
-            //            CreatedAt
-            //        )
-            //        VALUES
-            //        (
-            //            @FileName,
-            //            datetime('now')
-            //        );
+                    SELECT last_insert_rowid();
 
-            //        SELECT last_insert_rowid();
-
-            //        """,
-            //         new { FileName = fileName }, transaction);
+                    """,
+                     new { FileName = document.FileName });
 
 
-            //    if (document.EmbeddedChunks != null && document.EmbeddedChunks.Any())
-            //    {
-            //        var index = 0;
-            //        foreach (var chunk in document.EmbeddedChunks)
-            //        {
-            //            var test = await connection.ExecuteAsync(
-            //                """
-            //            INSERT INTO DocumentEmbeddings
-            //            (
-            //                DocumentId,
-            //                ChunkIndex,
-            //                ChunkText,
-            //                EmbeddingVectorJson,
-            //                CreatedAt
-            //            )
-            //            VALUES
-            //            (
-            //                @DocumentId,
-            //                @ChunkIndex,
-            //                @ChunkText,
-            //                @EmbeddingVectorJson,
-            //                datetime('now')
-            //            );
+                if (document.EmbeddedTexts != null && document.EmbeddedTexts.Any())
+                {
+                    var test = JsonSerializer.Serialize(document.EmbeddedTexts[0].Vector);
 
-            //            """,
-            //                new
-            //                {
-            //                    DocumentId = documentId,
-            //                    ChunkIndex = index,
-            //                    ChunkText = chunk.ChunkText,
-            //                    EmbeddingVectorJson = JsonSerializer.Serialize(chunk.EmbeddingVector),
-            //                    CreatedAt = DateTime.UtcNow
-            //                }, transaction);
+                    var index = 0;
+                    foreach (var chunk in document.EmbeddedTexts)
+                    {
+                        var status = await connection.ExecuteAsync(
+                        """
+                        INSERT INTO DocumentEmbeddings
+                        (
+                            DocumentId,
+                            ChunkIndex,
+                            ChunkText,
+                            EmbeddingVectorJson,
+                            CreatedAt
+                        )
+                        VALUES
+                        (
+                            @DocumentId,
+                            @ChunkIndex,
+                            @ChunkText,
+                            @EmbeddingVectorJson,
+                            datetime('now')
+                        );
 
-            //            index += 1;
-            //        }
-            //    }
+                        """,
+                            new
+                            {
+                                DocumentId = documentId,
+                                ChunkIndex = index,
+                                ChunkText = chunk.Text,
+                                EmbeddingVectorJson = JsonSerializer.Serialize(chunk.Vector),
+                                CreatedAt = DateTime.UtcNow
+                            });
 
-            //    await transaction.CommitAsync();
+                        index += 1;
+                    }
+                }
 
-            //    return true;
-            //}
-            //catch (Exception)
-            //{
-            //    await transaction.RollbackAsync();
-            //    throw;
-            //}
+                //await transaction.CommitAsync();
 
-            return true;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //await transaction.RollbackAsync();
+                throw;
+            }
         }
 
-        public async Task<DocumentEmbeddingEntity?> GetDocumentKnowledgeAsync(string fileName)
+        public async Task<DocumentKnowledgeEntity?> GetDocumentKnowledgeAsync(string fileName)
         {
             EnsureInitialized();
 
@@ -206,7 +204,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 WHERE FileName = @FileName
                 """;
 
-            var entity = await connection.QuerySingleOrDefaultAsync<DocumentEmbeddingEntity>(
+            var entity = await connection.QuerySingleOrDefaultAsync<DocumentKnowledgeEntity>(
                 sql,
                 new { FileName = fileName });
 
@@ -215,7 +213,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 return null;
             }
 
-            var chunks = await connection.QueryAsync<DocumentEmbeddingEntity>(
+            var chunks = await connection.QueryAsync<DocumentKnowledgeEntity>(
                 """
                 SELECT
                     ChunkIndex,
@@ -225,7 +223,7 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 WHERE DocumentId = @DocumentId
                 ORDER BY ChunkIndex
                 """,
-                new { DocumentId = entity.Id });
+                new { DocumentId = entity.DocumentId });
 
 
             return entity;
