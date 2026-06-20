@@ -45,7 +45,7 @@
         <label>Semantic search:</label>
         <form @onsubmit="SearchEmbeddings">
             <label for="searchPhrase">Enter a phrase to research:</label>
-            <input class="search-phrase" @bind="inputSearchPhrase" placeholder="Enter your search phrase..." />
+            <input class="search-phrase" @bind="searchPhrase" placeholder="Enter your search phrase..." />
 
             <button type="submit" class="ask-button" disabled="@semanticSearchIsBusy">
                 <span>Search document knowledge</span>
@@ -61,8 +61,8 @@
     </div>
 
     
-    <div class="question-area">
-
+    <div class="semantic-search-result-area">
+        <textarea @bind="searchResult"></textarea>
     </div>
 
 </div>
@@ -72,7 +72,9 @@
     private IEnumerable<DocumentInfo>? storedEmbeddings { get; set; }
 
     private string? documentKnowledge { get; set; } = string.Empty;
-    private string? inputSearchPhrase { get; set; } = string.Empty;
+
+    private string? searchPhrase { get; set; } = string.Empty;
+    private string? searchResult { get; set; } = string.Empty;
 
     private DocumentKnowledgeEntity? selectedDocumentKnowledgeEntity { get; set; }
 

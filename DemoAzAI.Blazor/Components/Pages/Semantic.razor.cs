@@ -39,13 +39,13 @@ namespace DemoAzAI.Blazor.Components.Pages
                     return;
                 }
 
-                if (string.IsNullOrEmpty(inputSearchPhrase))
+                if (string.IsNullOrEmpty(searchPhrase))
                 {
                     AddBasePageExecutionError($"Enter a search phrase", logger);
                     return;
                 }
 
-                var phraseEmbedding = await EmbedSearchPhraseAsync(inputSearchPhrase);
+                var phraseEmbedding = await EmbedSearchPhraseAsync(searchPhrase);
 
                 if (phraseEmbedding == null)
                 {
@@ -62,7 +62,9 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 if (phraseEmbedding != null && selectedDocumentKnowledgeEntity != null)
                 {
-                    var test = await ComparePhraseAndDocumentEmbeddings(phraseEmbedding, selectedDocumentKnowledgeEntity);
+                    var documentKnowledgeEntity = await ComparePhraseAndDocumentEmbeddings(phraseEmbedding, selectedDocumentKnowledgeEntity);
+
+                    searchResult = documentKnowledgeEntity.CosineSimilaritiesToString(1.0f);
                 }
             }
             catch (Exception ex)

@@ -9,6 +9,22 @@ namespace DemoAzAI.Domain.Entities
         public DateTime CreatedAt { get; set; }
         public List<DocumentEmbeddingEntity>? Embeddings { get; set; }
 
+        public string CosineSimilaritiesToString(float threshold)
+        {
+            var sb = new StringBuilder();
+
+            if (Embeddings != null)
+            {
+                foreach (var emb in Embeddings)
+                {
+                    sb.AppendLine($"{emb.CosineSimilarity} [{emb.ChunkText}]");
+                }
+            }
+
+            return sb.ToString();
+        }
+
+
         public override string ToString()
         {
             var sb = new StringBuilder();
