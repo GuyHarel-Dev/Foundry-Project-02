@@ -31,7 +31,7 @@ namespace DemoAzAI.Api.Services
             
             return new EmbeddingTextResponseDto
             {
-                EmbeddedText = embeddedText 
+                EmbeddedEntity = embeddedText 
             };
         }
 

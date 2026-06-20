@@ -1,9 +1,11 @@
 ﻿using Azure.Core;
+using DemoAzAI.AI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Components;
+using System.Text.Json;
 
 namespace DemoAzAI.Blazor.Components.Pages
 {
@@ -37,7 +39,7 @@ namespace DemoAzAI.Blazor.Components.Pages
                     return;
                 }
 
-                if (string.IsNullOrEmpty(inputSearchPhrase) )
+                if (string.IsNullOrEmpty(inputSearchPhrase))
                 {
                     AddBasePageExecutionError($"Enter a search phrase", logger);
                     return;
@@ -45,22 +47,22 @@ namespace DemoAzAI.Blazor.Components.Pages
 
                 var phraseEmbedding = await EmbedSearchPhraseAsync(inputSearchPhrase);
 
-                if (phraseEmbedding == null )
+                if (phraseEmbedding == null)
                 {
                     AddBasePageExecutionError($"Error: No phrase embeddings in context", logger);
                     return;
                 }
 
-                if (selectedDocumentEmbeddingsEntity == null)
+                if (selectedDocumentKnowledgeEntity == null)
                 {
                     AddBasePageExecutionError($"Error: No document embeddings  in context", logger);
                     return;
 
                 }
 
-                if (phraseEmbedding != null && selectedDocumentEmbeddingsEntity != null)
+                if (phraseEmbedding != null && selectedDocumentKnowledgeEntity != null)
                 {
-                    var test = await ComparePhraseAndDocumentEmbeddings(phraseEmbedding, selectedDocumentEmbeddingsEntity);
+                    var test = await ComparePhraseAndDocumentEmbeddings(phraseEmbedding, selectedDocumentKnowledgeEntity);
                 }
             }
             catch (Exception ex)
@@ -73,12 +75,33 @@ namespace DemoAzAI.Blazor.Components.Pages
             }
         }
 
-        private async Task<string> ComparePhraseAndDocumentEmbeddings(
-            EmbeddingTextResponseDto phraseEmbedding, 
-            DocumentKnowledgeEntity documentEmbedding)
+        private async Task<DocumentKnowledgeEntity> ComparePhraseAndDocumentEmbeddings(
+            EmbeddingTextResponseDto phraseEmbedding,
+            DocumentKnowledgeEntity documentKnowledge)
         {
 
-            return "abc";
+            var phraseEmbeddingVector = phraseEmbedding.EmbeddedEntity?.EmbeddingVector;
+            var documentEmbeddingsVector = documentKnowledge.Embeddings;
+
+            if (phraseEmbeddingVector != null && documentEmbeddingsVector != null)
+            {
+                foreach (var embedding in documentEmbeddingsVector)
+                {
+                    if (embedding.EmbeddingVectorJson != null)
+                    {
+                        var documentFloats = JsonSerializer.Deserialize<float[]>(embedding.EmbeddingVectorJson);
+
+                        if (documentFloats != null)
+                        {
+                            embedding.CosineSimilarity = VectorMath.CosineSimilarity(phraseEmbeddingVector, documentFloats);
+                        }
+
+                    }
+
+                }
+            }
+
+            return documentKnowledge;
         }
 
         private async Task<EmbeddingTextResponseDto?> EmbedSearchPhraseAsync(string searchPhrase)
@@ -95,7 +118,7 @@ namespace DemoAzAI.Blazor.Components.Pages
         }
 
 
-        private async Task 
+        private async Task
             GetDocumentEmbeddingsAsync()
         {
             try
@@ -130,8 +153,8 @@ namespace DemoAzAI.Blazor.Components.Pages
 
             if (docId != null)
             {
-                selectedDocumentEmbeddingsEntity = await GetDocumentEmbeddingByNameAsync(docId);
-                documentKnowledge = selectedDocumentEmbeddingsEntity?.ToString();
+                selectedDocumentKnowledgeEntity = await GetDocumentEmbeddingByNameAsync(docId);
+                documentKnowledge = selectedDocumentKnowledgeEntity?.ToString();
             }
 
         }

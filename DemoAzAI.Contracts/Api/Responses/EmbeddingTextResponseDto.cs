@@ -5,7 +5,7 @@ namespace DemoAzAI.Contracts.Api.Responses
 {
     public class EmbeddingTextResponseDto
     {
-        public DocumentEmbeddingEntity? EmbeddedText { get; set; }
+        public DocumentEmbeddingEntity? EmbeddedEntity { get; set; }
 
         public string GetSummary()
         {

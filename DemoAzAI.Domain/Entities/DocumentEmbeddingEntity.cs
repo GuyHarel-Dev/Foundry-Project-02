@@ -6,5 +6,7 @@
         public string? EmbeddingVectorJson { get; set; }
         public float[]? EmbeddingVector { get; set; }
 
+        public float CosineSimilarity { get; set; }
+
     }
 }
