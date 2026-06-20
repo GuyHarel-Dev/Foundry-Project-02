@@ -28,16 +28,24 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("embeddings")]
-        public async Task<IEnumerable<DocumentInfo>?> GetDocumentKnowledgeNamesAsync()
+        public async Task<ActionResult<IEnumerable<DocumentInfo>>?> GetDocumentKnowledgeNamesAsync()
         {
-            return await knowledgeService.GetDocumentKnowledgeEmbeddingsAsync();
+            var entities = await knowledgeService.GetDocumentKnowledgeEmbeddingsAsync();
+            return Ok(entities);
 
         }
 
         [HttpGet("embeddings/{fileName}")]
-        public async Task<DocumentKnowledgeEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName)
+        public async Task<ActionResult<DocumentKnowledgeEntity?>> GetDocumentKnowledgeByFileNameAsync(string fileName)
         {
-            return await knowledgeService.GetDocumentKnowledgeByFileNameAsync(fileName);
+            var entity = await knowledgeService.GetDocumentKnowledgeByFileNameAsync(fileName);
+
+            if (entity == null) 
+            {
+                return NotFound($"Document embeddings not found for document name: {fileName}");
+            }
+
+            return entity;
 
         }
     }

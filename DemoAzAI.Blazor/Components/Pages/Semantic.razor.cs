@@ -17,35 +17,33 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             if (firstRender)
             {
-                await GetDocumentAnalysisAsync();
+                await GetDocumentEmbeddingsAsync();
                 StateHasChanged();
             }
 
         }
 
-        private async Task GetDocumentAnalysisAsync()
+        private async Task GetDocumentEmbeddingsAsync()
         {
             try
             {
 
-                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document/analysis", logger, BasePageLog);
+                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/knowledge/embeddings", logger, BasePageLog);
 
                 if (result is not null)
                 {
-                    //storedDocuments = result.Value!.ToList();
+                    storedEmbeddings = result.Value!;
                 }
 
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error while getting document results from store.");
+                logger.LogError(ex, "Error while getting document embeddings from store.");
             }
             finally
             {
 
             }
-
-
         }
 
         private async Task OnDocumentSelected(ChangeEventArgs e)
@@ -59,56 +57,32 @@ namespace DemoAzAI.Blazor.Components.Pages
 
             if (docId != null)
             {
-                //selectedDocumentAnalysisEntity = await GetDocumentAnalysisByIdAsync(docId);
+                selectedDocumentEmbeddingsEntity = await GetDocumentEmbeddingByNameAsync(docId);
+                documentKnowledge = selectedDocumentEmbeddingsEntity?.ToString();
             }
 
         }
 
-        private async Task SendTextEmbeddingRequest()
+        private async Task<DocumentKnowledgeEntity?> GetDocumentEmbeddingByNameAsync(string docId)
         {
             try
             {
+                var result = await apiClient.GetAsync<DocumentKnowledgeEntity>($"api/knowledge/embeddings/{docId}", logger, BasePageLog);
 
-                sendTextEmbeddingRequestBusy = true;
-
-                //var request = new EmbeddingRequestDto()
-                //{
-                //    TextLines = new List<string>()
-                //    {
-                //        "The cat is sleeping on the sofa",
-                //        "A kitten is resting on a couch",
-                //        "The dog is playing in the garden",
-                //        "The stock market closed higher today",
-                //        "Interest rates were increased by the central bank",
-                //        "A recipe for chocolate cake requires eggs and flour"
-                //    }
-                //};
-
-                var request = new EmbeddingTextLinesRequestDto()
-                {
-                    TextLines = documentAnalysisTextChunk.Split("\n", StringSplitOptions.RemoveEmptyEntries).ToList()
-                };
-
-
-                var result = await apiClient.PostAsync<EmbeddingTextLinesRequestDto, EmbeddingTextResponseDto>("api/text-embedding/embed-lines", request, logger, BasePageLog);
-
-                if (result is not null)
-                {
-                    documentAnalysisTextChunk = result.Value!.GetSummary();
-                }
-
-
+                return result?.Value;
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Error while getting document results from store.");
+                logger.LogError(ex, "Error while getting document analysis from store.");
             }
             finally
             {
-                sendTextEmbeddingRequestBusy = false;
+
             }
 
+            return null;
         }
+
 
         private async Task SemanticSearch()
         {

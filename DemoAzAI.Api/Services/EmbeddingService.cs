@@ -1,6 +1,6 @@
 ﻿using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain.Models;
+using DemoAzAI.Domain.Entities;
 using OpenAI.Embeddings;
 using System.ClientModel;
 using WebApi.Services.Interfaces;
@@ -23,10 +23,10 @@ namespace DemoAzAI.Api.Services
             ClientResult<OpenAIEmbedding> result = await embeddingClient
                 .GenerateEmbeddingAsync(text, cancellationToken: cancellationToken);
 
-            var embeddedText = new EmbeddedText
+            var embeddedText = new DocumentEmbeddingEntity
             {
-                Text = text,
-                Vector = result.Value.ToFloats().ToArray()
+                ChunkText = text,
+                EmbeddingVector = result.Value.ToFloats().ToArray()
             };
             
             return new EmbeddingTextResponseDto
@@ -46,15 +46,15 @@ namespace DemoAzAI.Api.Services
 
             var response = new EmbeddingTextLinesResponseDto
             {
-                EmbeddedTexts = new List<EmbeddedText>()
+                EmbeddedTexts = new List<DocumentEmbeddingEntity>()
             };
 
             foreach (var emb in result.Value)
             {
-                response.EmbeddedTexts.Add(new EmbeddedText 
+                response.EmbeddedTexts.Add(new DocumentEmbeddingEntity 
                     { 
-                        Text = textLines.ElementAt(emb.Index), 
-                        Vector = emb.ToFloats().ToArray() 
+                        ChunkText = textLines.ElementAt(emb.Index), 
+                        EmbeddingVector = emb.ToFloats().ToArray() 
                 });
             }
 

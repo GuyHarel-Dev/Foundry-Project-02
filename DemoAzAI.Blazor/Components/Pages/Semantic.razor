@@ -4,6 +4,7 @@
 
 @using DemoAzAI.Application
 @using DemoAzAI.Blazor.Components.Fragments
+@using DemoAzAI.Domain.Models
 @using DemoAzAI.Domain.Entities
 
 @inject IExecutionStepTracer StepTracer
@@ -21,80 +22,37 @@
     <div class="select-document-text-area">
         <span>Select a document stored results:</span>
         <select @onchange="OnDocumentSelected">
-            @foreach (var doc in storedDocuments)
+            @if (storedEmbeddings != null)
             {
-                <option value="@doc.Id">@doc.FileName</option>
+                foreach (var doc in storedEmbeddings)
+                {
+                    <option value="@doc.FileName">@doc.FileName</option>
+                }
             }
+
         </select>
 
     </div>
 
 
-    <div class="prepare-document-text-area">
+    <div class="document-knowledge-area">
 
-        <label>Prepare document result text for vectorization:</label>
+        <label>Selected document knowledge:</label>
 
-        <div class="content-area">
-
-            <div class="document-chunk-area">
                 <label>Text prepared for vectorization:</label>
-                <textarea @bind="documentAnalysisTextChunk"></textarea>
-
-                <form @onsubmit="SendTextEmbeddingRequest">
-
-                    <button type="submit" class="ask-button">
-                        <span>Send text preparation request</span>
-                    </button>
-
-                    @if (sendTextPreparationRequestBusy)
-                    {
-                        <LoadingPanel Message="Sending text embedding request to api..." />
-                    }
-                </form>
-@*                 <label>Vectorization request statistics:</label>
-                <textarea>@DocumentAnalysisTextChunkStatistics</textarea> *@
-
-            </div>
-
-        </div>
-
+        <textarea @bind="documentKnowledge"></textarea>
 
     </div>
 
-    <div class="vectorize-document-text-area">
-        <label>Vectorize text for cosinus similarity search</label>
-        <textarea>@documentAnalysisTextChunk</textarea>
-
-        <form @onsubmit="SendTextEmbeddingRequest">
-
-            <button type="submit" class="ask-button">
-                <span>Send vectorize request</span>
-            </button>
-
-            @if (sendTextEmbeddingRequestBusy)
-            {
-                <LoadingPanel Message="Sending text embedding request to api..." />
-            }
-        </form>
-
-    </div>
-    <div class="search-document-text-area"></div>
 
 </div>
 
 @code {
 
-    private bool sendTextPreparationRequestBusy { get; set; } = false;
-    private bool sendTextEmbeddingRequestBusy { get; set; } = false;
+    private IEnumerable<DocumentInfo>? storedEmbeddings { get; set; }
 
-    private bool getDocumentResultsFromStoreIsBusy { get; set; } = false;
+    private string? documentKnowledge { get; set; } = string.Empty;
 
-    private List<DocumentAnalysisEntity> storedDocuments { get; set; } = new();
-
-    private string documentAnalysisTextChunk { get; set; } = "abcd";
-    private string vectorizedText { get; set; } = string.Empty;
-
-    // private string DocumentAnalysisTextChunkStatistics { get; set; } = string.Empty;
-    // private string DocumentAnalysisTextChunkVectorized { get; set; } = string.Empty;
+    private DocumentKnowledgeEntity? selectedDocumentEmbeddingsEntity { get; set; }
 
 }

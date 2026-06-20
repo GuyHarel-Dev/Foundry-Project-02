@@ -1,11 +1,11 @@
-﻿using DemoAzAI.Domain.Models;
+﻿using DemoAzAI.Domain.Entities;
 using System.Text;
 
 namespace DemoAzAI.Contracts.Api.Responses
 {
     public class EmbeddingTextLinesResponseDto
     {
-        public List<EmbeddedText>? EmbeddedTexts { get; set; }
+        public List<DocumentEmbeddingEntity>? EmbeddedTexts { get; set; }
 
         public string GetSummary()
         {

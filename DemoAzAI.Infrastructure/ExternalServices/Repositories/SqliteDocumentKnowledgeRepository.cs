@@ -136,10 +136,10 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                      new { FileName = document.FileName }, transaction);
 
 
-                if (document.EmbeddedTexts != null && document.EmbeddedTexts.Any())
+                if (document.Embeddings != null && document.Embeddings.Any())
                 {
                     var index = 0;
-                    foreach (var chunk in document.EmbeddedTexts)
+                    foreach (var chunk in document.Embeddings)
                     {
                         var status = await connection.ExecuteAsync(
                         """
@@ -165,8 +165,8 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                             {
                                 DocumentId = documentId,
                                 ChunkIndex = index,
-                                ChunkText = chunk.Text,
-                                EmbeddingVectorJson = JsonSerializer.Serialize(chunk.Vector),
+                                ChunkText = chunk.ChunkText,
+                                EmbeddingVectorJson = JsonSerializer.Serialize(chunk.EmbeddingVector),
                                 CreatedAt = DateTime.UtcNow
                             }, transaction);
 
@@ -202,16 +202,16 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 WHERE FileName = @FileName
                 """;
 
-            var entity = await connection.QuerySingleOrDefaultAsync<DocumentKnowledgeEntity>(
+            var document = await connection.QuerySingleOrDefaultAsync<DocumentInfo>(
                 sql,
                 new { FileName = fileName });
 
-            if (entity == null)
+            if (document == null)
             {
                 return null;
             }
 
-            var chunks = await connection.QueryAsync<DocumentKnowledgeEntity>(
+            var embeddings = await connection.QueryAsync<DocumentEmbeddingEntity>(
                 """
                 SELECT
                     ChunkIndex,
@@ -221,10 +221,14 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
                 WHERE DocumentId = @DocumentId
                 ORDER BY ChunkIndex
                 """,
-                new { DocumentId = entity.DocumentId });
+                new { DocumentId = document.Id });
 
-
-            return entity;
+            return new DocumentKnowledgeEntity
+            {
+                FileName = fileName,
+                DocumentId = document.Id,
+                Embeddings = embeddings.ToList()
+            };
         }
 
         public async Task<IEnumerable<DocumentInfo>?> GetDocumentKnowledgeEmbeddingsAsync()

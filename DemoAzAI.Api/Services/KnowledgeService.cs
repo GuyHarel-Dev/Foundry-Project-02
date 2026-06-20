@@ -32,7 +32,7 @@ namespace WebApi.Services
                     var docToSave = new DocumentKnowledgeEntity
                     {
                         FileName = request.FileName,
-                        EmbeddedTexts = embeddingResponse.EmbeddedTexts
+                        Embeddings = embeddingResponse.EmbeddedTexts
                     };
 
                     var saved = await documentKnowledgeRepository.SaveDocumentKnowledgeAsync(docToSave);
