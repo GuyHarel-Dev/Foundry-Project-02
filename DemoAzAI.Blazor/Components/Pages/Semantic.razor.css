@@ -12,8 +12,7 @@
     }
 
     .page-area .select-document-text-area,
-    .page-area .prepare-document-text-area,
-    .page-area .vectorize-document-text-area {
+    .page-area .document-knowledge-area {
         background-color: #300c4d;
         border: 1px solid #d0d0d0;
         border-radius: 6px;

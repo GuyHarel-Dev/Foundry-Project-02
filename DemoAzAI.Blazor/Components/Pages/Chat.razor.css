@@ -9,16 +9,14 @@ input {
     margin-bottom: 0.5rem;
 }
 
-.stats_log_area {
-    display: flex;
-    width: 100%;
-    gap: 10px;
+.page-area .question-area,
+.page-area .response_area {
+    background-color: #300c4d;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    padding-top: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
 }
-
-    .stats_log_area .log_area {
-        width: 50%;
-    }
-
-    .stats_log_area .stat_area {
-        width: 50%;
-    }
