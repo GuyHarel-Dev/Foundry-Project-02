@@ -227,5 +227,27 @@ namespace DemoAzAI.Infrastructure.ExternalServices.Repositories
             return entity;
         }
 
+        public async Task<IEnumerable<DocumentInfo>?> GetDocumentKnowledgeEmbeddingsAsync()
+        {
+            EnsureInitialized();
+
+            using var connection = new SqliteConnection(connectionString);
+
+            await connection.OpenAsync();
+
+            string sql = """
+                SELECT
+                    Id,
+                    FileName,
+                    CreatedAt
+                FROM Documents
+                """;
+
+            var entity = await connection.QueryAsync<DocumentInfo>(
+                sql);
+
+
+            return entity;
+        }
     }
 }

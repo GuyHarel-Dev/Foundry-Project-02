@@ -17,13 +17,13 @@ namespace DemoAzAI.Blazor.Components.Pages
         {
             if (firstRender)
             {
-                await GetDocumentResultsAsync();
+                await GetDocumentAnalysisAsync();
                 StateHasChanged();
             }
 
         }
 
-        private async Task GetDocumentResultsAsync()
+        private async Task GetDocumentAnalysisAsync()
         {
             try
             {

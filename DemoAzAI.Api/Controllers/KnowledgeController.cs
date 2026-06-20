@@ -1,6 +1,7 @@
 ﻿using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
+using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Services.Interfaces;
 
@@ -24,6 +25,13 @@ namespace WebApi.Controllers
             var response = await knowledgeService.EmbedDocumentKnowledgeAsync(request);
 
             return response;
+        }
+
+        [HttpGet("embeddings")]
+        public async Task<IEnumerable<DocumentInfo>?> GetDocumentKnowledgeNamesAsync()
+        {
+            return await knowledgeService.GetDocumentKnowledgeEmbeddingsAsync();
+
         }
 
         [HttpGet("embeddings/{fileName}")]

@@ -1,6 +1,7 @@
 ﻿using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
+using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace DemoAzAI.Blazor.Components.Pages
@@ -12,9 +13,55 @@ namespace DemoAzAI.Blazor.Components.Pages
         [Inject]
         private ILogger<Semantic> logger { get; set; } = default!;
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await GetDocumentResultsFromStore();
+            if (firstRender)
+            {
+                await GetDocumentAnalysisAsync();
+                StateHasChanged();
+            }
+
+        }
+
+        private async Task GetDocumentAnalysisAsync()
+        {
+            try
+            {
+
+                var result = await apiClient.GetAsync<IEnumerable<DocumentInfo>>("api/document/analysis", logger, BasePageLog);
+
+                if (result is not null)
+                {
+                    //storedDocuments = result.Value!.ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error while getting document results from store.");
+            }
+            finally
+            {
+
+            }
+
+
+        }
+
+        private async Task OnDocumentSelected(ChangeEventArgs e)
+        {
+            if (e.Value == null)
+            {
+                return;
+            }
+
+            var docId = e.Value.ToString();
+
+            if (docId != null)
+            {
+                //selectedDocumentAnalysisEntity = await GetDocumentAnalysisByIdAsync(docId);
+            }
+
         }
 
         private async Task SendTextEmbeddingRequest()
@@ -59,47 +106,6 @@ namespace DemoAzAI.Blazor.Components.Pages
             finally
             {
                 sendTextEmbeddingRequestBusy = false;
-            }
-
-        }
-
-        private async Task OnDocumentSelected(ChangeEventArgs e)
-        {
-            if (e.Value == null)
-            {
-                return;
-            }
-
-            var docId = e.Value.ToString();
-
-            //DocumentAnalysisText = storedDocuments.First(doc => doc.Id == docId).AnalysisResult.DocumentsFieldsContent;
-            //DocumentAnalysisTextChunk = string.Empty;
-        }
-
-        private async Task GetDocumentResultsFromStore()
-        {
-            try
-            {
-
-                getDocumentResultsFromStoreIsBusy = true;
-
-                var result = await apiClient.GetAsync<IEnumerable<DocumentAnalysisEntity>>("api/store/document/analysis/results", logger);
-
-                if (result is not null)
-                {
-                    storedDocuments = result.Value!.ToList();
-                    //DocumentAnalysisText = storedDocuments.First().AnalysisResult.DocumentsFieldsContent;
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Error while getting document results from store.");
-            }
-            finally
-            {
-                getDocumentResultsFromStoreIsBusy = false;
             }
 
         }

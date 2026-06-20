@@ -3,6 +3,7 @@ using DemoAzAI.Application.AI;
 using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
+using DemoAzAI.Domain.Models;
 using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using WebApi.Services.Interfaces;
 
@@ -87,8 +88,12 @@ namespace WebApi.Services
 
         public async Task<DocumentKnowledgeEntity?> GetDocumentKnowledgeByFileNameAsync(string fileName)
         {
-            var test = await documentKnowledgeRepository.GetDocumentKnowledgeAsync(fileName);
-            return new DocumentKnowledgeEntity();
+            return await documentKnowledgeRepository.GetDocumentKnowledgeAsync(fileName);
+        }
+
+        public async Task<IEnumerable<DocumentInfo>?> GetDocumentKnowledgeEmbeddingsAsync()
+        {
+            return await documentKnowledgeRepository.GetDocumentKnowledgeEmbeddingsAsync();
         }
     }
 }
