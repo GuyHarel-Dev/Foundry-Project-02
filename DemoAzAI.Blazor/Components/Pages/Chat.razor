@@ -59,9 +59,6 @@
         {
             isBusy = true;
 
-            // AddExecutionStep(StepTracer, $"{nameof(SendQuestion)}: Sending question to chat model");
-
-            // executionSteps = StepTracer.GetSteps();
             await RefreshUIAsync();
 
             var request = new ChatQuestionRequestDto()
@@ -74,18 +71,13 @@
 
             if (result == null || result.Value is null)
             {
-                // executionSteps = "API returned no data.";
                 return;
 
             }
             if (!result.IsSuccess)
             {
-                // executionSteps = result.ErrorMessage ?? "Unknown API error.";
                 return;
             }
-
-
-            // AddExecutionStep(StepTracer, $"{nameof(SendQuestion)}: Received answer for question: {question}");
 
             var responseDto = result.Value;
 

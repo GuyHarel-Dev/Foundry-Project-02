@@ -36,17 +36,32 @@
 
 
     <div class="document-knowledge-area">
-
         <label>Selected document knowledge:</label>
         <textarea @bind="documentKnowledge"></textarea>
-
     </div>
 
     <div class="semantic-search-area">
 
         <label>Semantic search:</label>
-        <input type="text" />
-        <textarea @bind="documentKnowledge"></textarea>
+        <form @onsubmit="SearchEmbeddings">
+            <label for="searchPhrase">Enter a phrase to research:</label>
+            <input class="search-phrase" @bind="inputSearchPhrase" placeholder="Enter your search phrase..." />
+
+            <button type="submit" class="ask-button" disabled="@semanticSearchIsBusy">
+                <span>Search document knowledge</span>
+            </button>
+
+            <!-- call wait panel -->
+            @if (semanticSearchIsBusy)
+            {
+                <LoadingPanel Message="Performing semantic search using embeddings..."></LoadingPanel>
+            }
+        </form>
+
+    </div>
+
+    
+    <div class="question-area">
 
     </div>
 
@@ -57,7 +72,10 @@
     private IEnumerable<DocumentInfo>? storedEmbeddings { get; set; }
 
     private string? documentKnowledge { get; set; } = string.Empty;
+    private string? inputSearchPhrase { get; set; } = string.Empty;
 
     private DocumentKnowledgeEntity? selectedDocumentEmbeddingsEntity { get; set; }
+
+    private bool semanticSearchIsBusy;
 
 }

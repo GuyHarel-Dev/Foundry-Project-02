@@ -1,4 +1,5 @@
-﻿using DemoAzAI.Contracts.Api.Requests;
+﻿using Azure.Core;
+using DemoAzAI.Contracts.Api.Requests;
 using DemoAzAI.Contracts.Api.Responses;
 using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
@@ -23,7 +24,79 @@ namespace DemoAzAI.Blazor.Components.Pages
 
         }
 
-        private async Task GetDocumentEmbeddingsAsync()
+        private async Task SearchEmbeddings()
+        {
+
+            try
+            {
+                semanticSearchIsBusy = true;
+
+                if (string.IsNullOrEmpty(documentKnowledge))
+                {
+                    AddBasePageExecutionError($"Select a document knowledge entity, first", logger);
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(inputSearchPhrase) )
+                {
+                    AddBasePageExecutionError($"Enter a search phrase", logger);
+                    return;
+                }
+
+                var phraseEmbedding = await EmbedSearchPhraseAsync(inputSearchPhrase);
+
+                if (phraseEmbedding == null )
+                {
+                    AddBasePageExecutionError($"Error: No phrase embeddings in context", logger);
+                    return;
+                }
+
+                if (selectedDocumentEmbeddingsEntity == null)
+                {
+                    AddBasePageExecutionError($"Error: No document embeddings  in context", logger);
+                    return;
+
+                }
+
+                if (phraseEmbedding != null && selectedDocumentEmbeddingsEntity != null)
+                {
+                    var test = await ComparePhraseAndDocumentEmbeddings(phraseEmbedding, selectedDocumentEmbeddingsEntity);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error while analyzing the document.");
+            }
+            finally
+            {
+                semanticSearchIsBusy = false;
+            }
+        }
+
+        private async Task<string> ComparePhraseAndDocumentEmbeddings(
+            EmbeddingTextResponseDto phraseEmbedding, 
+            DocumentKnowledgeEntity documentEmbedding)
+        {
+
+            return "abc";
+        }
+
+        private async Task<EmbeddingTextResponseDto?> EmbedSearchPhraseAsync(string searchPhrase)
+        {
+            var request = new EmbeddingTextRequestDto
+            {
+                Text = searchPhrase
+            };
+
+            var response = await apiClient.PostAsync<EmbeddingTextRequestDto, EmbeddingTextResponseDto>
+                 ("api/embedding/text", request, logger, BasePageLog);
+
+            return response?.Value;
+        }
+
+
+        private async Task 
+            GetDocumentEmbeddingsAsync()
         {
             try
             {
@@ -84,29 +157,6 @@ namespace DemoAzAI.Blazor.Components.Pages
         }
 
 
-        private async Task SemanticSearch()
-        {
-            //if (string.IsNullOrWhiteSpace(semanticQuestion))
-            //{
-            //    semanticQuestion = "Please enter a semantic question...";
-            //    return;
-            //}
-
-            //searchSteps = AddUiStepperStep(StepTracer, "BlazorUi", $"{nameof(SemanticSearch)}: Searching embedding store...");
-
-            //var request = new EmbeddingRequestDto
-            //{
-            //    AddEmbeddingsToStore = false,
-            //    TextLines = semanticQuestion
-            //        .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-            //        .ToList()
-            //};
-
-            // api/embedding/search/store
-
-
-            await RefreshUIAsync();
-        }
 
     }
 }
