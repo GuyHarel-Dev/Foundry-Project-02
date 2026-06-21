@@ -60,8 +60,8 @@
             </div>
 
             <div class="display-knowledge">
-                <label>Knowledge groups (chunks) extracted:</label>
-                <textarea>@documentKnowledgeChunks</textarea>
+@*                 <label>Knowledge groups (chunks) extracted:</label>
+                <textarea>@documentKnowledgeChunks</textarea> *@
                 <label>Knowledge extraction statistics:</label>
                 <textarea>@documentKnowledgeChunksStatistics</textarea>
             </div>
@@ -78,7 +78,7 @@
 
     private List<DocumentInfo> storedDocuments { get; set; } = new();
 
-    private string? documentKnowledgeChunks { get; set; } = string.Empty;
+    // private string? documentKnowledgeChunks { get; set; } = string.Empty;
     private string? documentKnowledgeChunksStatistics { get; set; } = string.Empty;
 
     private DocumentAnalysisEntity? selectedDocumentAnalysisEntity { get; set; } = null;

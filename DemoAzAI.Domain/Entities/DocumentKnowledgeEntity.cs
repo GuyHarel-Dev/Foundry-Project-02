@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DemoAzAI.Domain.Entities
 {
@@ -38,16 +39,16 @@ namespace DemoAzAI.Domain.Entities
         public override string ToString()
         {
             var sb = new StringBuilder();
-
-            sb.AppendLine($"DocumentId:{DocumentId}");
-            sb.AppendLine($"FileName:{FileName}");
             
             if ( Embeddings != null )
             {
                 foreach (var emb in Embeddings)
-                { 
-                    sb.AppendLine($"  {emb.ChunkText}, ");
-                    sb.AppendLine($"  [{emb.EmbeddingVectorJson?.Substring(1, 128)}...]");
+                {
+                    var chunk = emb.ChunkText;
+                    var vector = $"[{emb.EmbeddingVectorJson?.Substring(1, 64)}...]";
+
+                    sb.AppendLine($"{chunk}: ");
+                    sb.AppendLine(vector);
                     sb.AppendLine();
                 }
             }
