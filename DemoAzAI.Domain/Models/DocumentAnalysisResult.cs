@@ -7,7 +7,6 @@
         public string ApiVersion { get; set; } = string.Empty;
         public string DocContent { get; set; } = string.Empty;
         public string DocFormat { get; set; } = string.Empty;
-
         public int PageCount { get; set; }
         public int ParagraphCount { get; set; }
         public int SectionCount { get; set; }

@@ -3,7 +3,6 @@ using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 using DemoAzAI.Infrastructure.ExternalServices.Repositories.Interfaces;
 using Microsoft.Data.Sqlite;
-using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace DemoAzAI.Infrastructure.ExternalServices.Repositories

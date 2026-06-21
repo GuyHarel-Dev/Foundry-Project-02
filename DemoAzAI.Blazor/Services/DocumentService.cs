@@ -1,6 +1,5 @@
 ﻿using DemoAzAI.Blazor.Services.Api;
 using DemoAzAI.Contracts.Api.Responses;
-using DemoAzAI.Domain.Entities;
 using DemoAzAI.Domain.Models;
 
 namespace DemoAzAI.Blazor.Services

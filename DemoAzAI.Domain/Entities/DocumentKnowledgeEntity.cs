@@ -17,10 +17,20 @@ namespace DemoAzAI.Domain.Entities
             {
                 foreach (var emb in Embeddings)
                 {
-                    sb.AppendLine($"{emb.CosineSimilarity} [{emb.ChunkText}]");
+                    sb.AppendLine($"{emb.CosineSimilarity.ToString("P0")} [{emb.ChunkText}]");
                 }
             }
 
+            // Sort
+            var sortedLines = sb.ToString()
+                                .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                                .OrderByDescending(line => line);
+
+            sb.Clear();
+            foreach (var line in sortedLines)
+            {
+                sb.AppendLine(line);
+            }
             return sb.ToString();
         }
 

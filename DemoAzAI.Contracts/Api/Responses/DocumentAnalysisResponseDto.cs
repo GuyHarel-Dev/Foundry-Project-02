@@ -1,5 +1,4 @@
 ﻿using DemoAzAI.Domain.Entities;
-using DemoAzAI.Domain.Models;
 
 namespace DemoAzAI.Contracts.Api.Responses
 {

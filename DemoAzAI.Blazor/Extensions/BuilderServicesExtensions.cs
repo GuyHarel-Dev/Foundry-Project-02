@@ -1,7 +1,6 @@
 ﻿using DemoAzAI.Application;
 using DemoAzAI.Blazor.Services;
 using DemoAzAI.Blazor.Services.Api;
-using DemoAzAI.Blazor.Services.PageStateContainers;
 
 namespace UI.Extensions
 {
@@ -27,7 +26,6 @@ namespace UI.Extensions
         {
             services.AddScoped<IExecutionStepTracer, ExecutionStepTracer>();
             services.AddScoped<IDocumentService, DocumentService>();
-            services.AddScoped<DocumentSelectionPageState>();
 
             return services;
         }

@@ -1,5 +1,4 @@
 ﻿using DemoAzAI.Blazor.Services.Api;
-using DemoAzAI.Domain.Models;
 using Microsoft.AspNetCore.Components;
 using System.Text;
 
